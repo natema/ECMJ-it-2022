@@ -92,12 +92,21 @@ f₁(5)
 # In _anonymous form_
 x->sin(x)
 
+# ╔═╡ 9ad81252-bf77-4e5c-8d00-e91e06187ffc
+triplica(x) = 3x
+
+# ╔═╡ d2b105a1-9b00-4cd6-af40-65ac94ec81a3
+triplica(3)
+
+# ╔═╡ aedbc3e2-27c0-4df3-a184-3ededbd65fcb
+(x->3x)(4)
+
 # ╔═╡ 98498f84-76ab-11eb-23cf-857c776a9163
 (x->sin(x))(π/2)
 
 # ╔═╡ c6c860a6-76ab-11eb-1dec-1b2f179a0fa9
 # In _long form+
-function f₃(x,α=3) # parametro di default
+function f₃(x, α=3) # parametro di default
 	return x^α  # la keyword "return" è facoltativa
 end
 
@@ -114,16 +123,10 @@ md"""
 In Julia, possiamo definire come argomenti di una funzione degli argomenti detti "keywork", elencandoli come argomenti della funzione dopo un punto e virgola, come nel seguente esempio:
 """
 
-# ╔═╡ 71c074f0-76ac-11eb-2164-c36381212bff
-f₄(x;α) = x^α
-
 # ╔═╡ f72db3ea-2ffe-4765-a035-ebbbe399abb8
 md"""
 Il valore di input delle _keyword_ deve essere indicato esplicitamente, come nell'esempio seguente per la keyword $\alpha$:
 """
-
-# ╔═╡ 87b99c8a-76ac-11eb-1c94-8f1ffe3be593
-f₄(2, α=5)
 
 # ╔═╡ 504076fc-76ac-11eb-30c3-bfa75c991cb2
 md"""
@@ -134,14 +137,6 @@ Vedere la [pagina della documentazione di Julia sulle funzioni](https://docs.jul
 md"""
 Ricordiamoci inoltre di non esitare nel cercare di rendere le idee matematiche più concrete cercando di visualizzarle: 
 """
-
-# ╔═╡ 02367402-9ff6-4659-9d78-4c281f898750
-begin 
-	points = 0:.01:2
-	plot(points, f₄.(points, α=2), title="f₄(x, α)", ylabel="f₃", xlabel="x", label="α=2")
-	plot!(points, f₄.(points, α=3), label="α=3")
-	plot!(points, f₄.(points, α=4), label="α=4")
-end
 
 # ╔═╡ f1dd24d8-76ac-11eb-1de7-a763a1b95668
 md"""
@@ -173,7 +168,16 @@ begin
 end
 
 # ╔═╡ 8a99f186-76af-11eb-031b-f1c288993c7f
-ϵ = 10.0^cₑₚₛ 
+ϵ = 10.0^(-10) 
+
+# ╔═╡ e0fb6fdc-cd5a-4aa7-bbbc-e5d86e80d032
+(sin(1+ϵ)-sin(1))/ϵ
+
+# ╔═╡ a9ecdb99-1936-40ab-b7d6-98d9fbbb3442
+cos(1)
+
+# ╔═╡ 49a38ff3-004a-46de-b84a-6fd1ddc1ceaa
+ForwardDiff.derivative(sin,1)
 
 # ╔═╡ df07d542-3238-4d92-bf83-1de3e9e42984
 md"""
@@ -257,6 +261,17 @@ Scegliamo in modo interattivo il valore di un parametro β che fisseremo come te
 
 β = $(@bind β Slider(1:10, show_value=true, default=1))
 """
+
+# ╔═╡ 71c074f0-76ac-11eb-2164-c36381212bff
+f₄(x; α) = x^α + β
+
+# ╔═╡ 02367402-9ff6-4659-9d78-4c281f898750
+begin 
+	points = 0:.01:2
+	plot(points, f₄.(points, α=2), title="f₄(x, α)", ylabel="f₃", xlabel="x", label="α=2")
+	plot!(points, f₄.(points, α=3), label="α=3")
+	plot!(points, f₄.(points, α=4), label="α=4")
+end
 
 # ╔═╡ 525d1b08-b8aa-4ffe-b5b3-f7ea5e343023
 surface(-1:0.01:1, -1:0.01:1, (x,y)->f₆(x, y, β), c=:Blues)
@@ -1671,6 +1686,9 @@ version = "0.9.1+5"
 # ╠═539aeec8-76ab-11eb-32a3-95c6672a0ea9
 # ╠═81a00b78-76ab-11eb-072a-6b96847c2ce4
 # ╠═2369fb18-76ab-11eb-1189-85309c8f925b
+# ╠═9ad81252-bf77-4e5c-8d00-e91e06187ffc
+# ╠═d2b105a1-9b00-4cd6-af40-65ac94ec81a3
+# ╠═aedbc3e2-27c0-4df3-a184-3ededbd65fcb
 # ╠═98498f84-76ab-11eb-23cf-857c776a9163
 # ╠═c6c860a6-76ab-11eb-1dec-1b2f179a0fa9
 # ╠═f07fbc6c-76ab-11eb-3382-87c7d65b4078
@@ -1678,7 +1696,6 @@ version = "0.9.1+5"
 # ╟─b3faf4d8-76ac-11eb-0be9-7dda3d37aba0
 # ╠═71c074f0-76ac-11eb-2164-c36381212bff
 # ╟─f72db3ea-2ffe-4765-a035-ebbbe399abb8
-# ╠═87b99c8a-76ac-11eb-1c94-8f1ffe3be593
 # ╟─504076fc-76ac-11eb-30c3-bfa75c991cb2
 # ╟─44be265b-f7c2-43ee-b4e5-e6184deeb0d6
 # ╠═02367402-9ff6-4659-9d78-4c281f898750
@@ -1688,7 +1705,10 @@ version = "0.9.1+5"
 # ╟─28cd454c-76ae-11eb-0d1e-a56995100d59
 # ╟─632a1f8c-76ae-11eb-2088-15c3e3c0a210
 # ╠═8a99f186-76af-11eb-031b-f1c288993c7f
-# ╟─df07d542-3238-4d92-bf83-1de3e9e42984
+# ╠═e0fb6fdc-cd5a-4aa7-bbbc-e5d86e80d032
+# ╠═a9ecdb99-1936-40ab-b7d6-98d9fbbb3442
+# ╠═49a38ff3-004a-46de-b84a-6fd1ddc1ceaa
+# ╠═df07d542-3238-4d92-bf83-1de3e9e42984
 # ╟─f7df6cda-76b1-11eb-11e4-8d0af0349651
 # ╠═8c6b0236-76b4-11eb-2acf-91da23bedf0e
 # ╠═a397d526-76b5-11eb-3cce-4374e33324d1

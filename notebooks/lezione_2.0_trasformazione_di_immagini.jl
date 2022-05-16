@@ -129,7 +129,7 @@ Proviamo a sperimentare con la seguente immagine:
 """
 
 # ╔═╡ 516e73e2-74fb-11eb-213e-9dbd9472e0db
-armadillo =  load(download("https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png"))
+armadillo = load(download("https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png"))
 
 # ╔═╡ 56c539dc-4ff2-4885-8ef4-6a3f32216859
 md"""
@@ -144,8 +144,20 @@ md"""
 Una strategia naturale per "pixellare" un'immagine consiste nel considerare un pixel ogni $r$, sia lungo che righe che lungo le colonne:
 """
 
+# ╔═╡ 5490e23f-e0cb-4e7c-8dbb-b3b2fd9664cd
+1:10
+
+# ╔═╡ a2d3bef6-ea73-4a54-bbae-25f8c5bd215d
+1:0.1:10
+
+# ╔═╡ 1431a4e7-07fc-4fca-99fe-e1405d94b936
+size(armadillo)
+
 # ╔═╡ 754c3704-74fb-11eb-1199-2b9798d7251f
 downsample_armadillo = armadillo[1:r:end, 1:r:end]
+
+# ╔═╡ ed84e80f-f912-4b36-bf8c-1201434ee6a1
+size(downsample_armadillo)
 
 # ╔═╡ 09a0acac-66a9-49ea-b5f0-6c87fe5baf61
 md"""
@@ -218,13 +230,16 @@ Vediamo ora come trasformare l'immagine cambiando la posizione dei singoli pixel
 # ╔═╡ 9ce0b980-74aa-11eb-0678-01209451fb65
 upsidedown_zeros = zerofaces[ end:-1:1 , :]
 
+# ╔═╡ 92ad22dc-d092-40d8-832d-f5fb0e2ac780
+mirrored_zeros = zerofaces[:, end:-1:1]
+
 # ╔═╡ 68821bf4-7502-11eb-0d3c-03d7a00fdba4
 md"""
 Proviamo adesso a sovrapporre una versione scalata dell'immagine originale e della versione capovolta:
 """
 
 # ╔═╡ 447e7c9e-74b1-11eb-27ea-71aa4338b11a
-(.5 * upsidedown_zeros .+ .5 * zerofaces) 
+(.5*upsidedown_zeros .+ .5*zerofaces) 
 
 # ╔═╡ c9dff6f4-7503-11eb-2715-0bf9d3ece9e1
 md"""
@@ -321,11 +336,19 @@ Cominciamo col definire alcuni filtri:
 
 # ╔═╡ 7d89704f-2557-421a-9f38-93ecfd2675ae
 begin
-	identity = [0 0 0 ; 0 1 0 ; 0 0 0]
-	edge_detect = [0 -1 0; -1 4 -1; 0 -1 0] 
+	identity = [0 0 0 ; 
+				0 1 0 ; 
+				0 0 0]
+	edge_detect = [0 -1 0; 
+				   -1 4 -1; 
+				   0 -1 0] 
 	sharpen = identity .+ edge_detect  # superposizione
-	box_blur = [1 1 1;1 1 1;1 1 1]/9
-	∇x = [-1 0 1;-1 0 1;-1 0 1]/2 # derivata centrata in $x$
+	box_blur = [1 1 1;
+				1 1 1;
+				1 1 1]/9
+	∇x = [-1 0 1;
+		  -1 0 1;
+		  -1 0 1]/2 # derivata centrata in $x$
 	∇y = ∇x'
 end
 
@@ -340,8 +363,17 @@ md"""
 La funzione `OffsetArray` permette di reindicizzare un array in modo più consono alla notazione solitamente utilizzata per le convoluzioni (date un'occhiata alla documentazione per `OffsetArray` per maggiori dettagli):
 """
 
+# ╔═╡ c2e0856c-ca38-4746-9ba6-79cae88ed25f
+test_vec = ones(10)
+
+# ╔═╡ 52d99247-3d0b-4f16-83d4-9a071a6e6cbf
+test_vec[-1]
+
+# ╔═╡ ef161233-1a9a-4604-b181-c5fb69169fc2
+test_vec[1]
+
 # ╔═╡ 54448d18-7528-11eb-209a-9717affa0d02
- kernelize(M) = OffsetArray( M, -1:1, -1:1)	
+ kernelize(M) = OffsetArray(M, -1:1, -1:1)	
 
 # ╔═╡ 13935c9b-bee9-4d86-8aae-5bc12865e7e2
 md"""
@@ -467,6 +499,9 @@ Z = centered(M)
 md"""
 Infine utilizzando l'array comprehension, assieme alle funzioni `CartesianIndices` che restituisce un oggetto di tipo `CartesianIndex` e l'attributo `I` di tale oggetto che restituisce la tupla corrispondente, possiamo elencare i possibili indicidi di $Z$: 
 """
+
+# ╔═╡ a4579a99-7aa2-4167-b46c-b3e597546832
+[c.I for c ∈ CartesianIndices(M)]
 
 # ╔═╡ deac4cf2-7523-11eb-2832-7b9d31389b08
 the_indices = [c.I for c ∈ CartesianIndices(Z)]
@@ -1617,7 +1652,11 @@ version = "0.9.1+5"
 # ╟─56c539dc-4ff2-4885-8ef4-6a3f32216859
 # ╠═b5d0ef90-74fb-11eb-3126-792f954c7be7
 # ╟─044ce1b8-ba9e-48e8-8bd1-9292139d2fee
+# ╠═5490e23f-e0cb-4e7c-8dbb-b3b2fd9664cd
+# ╠═a2d3bef6-ea73-4a54-bbae-25f8c5bd215d
+# ╠═1431a4e7-07fc-4fca-99fe-e1405d94b936
 # ╠═754c3704-74fb-11eb-1199-2b9798d7251f
+# ╠═ed84e80f-f912-4b36-bf8c-1201434ee6a1
 # ╟─09a0acac-66a9-49ea-b5f0-6c87fe5baf61
 # ╠═9eb917ba-74fb-11eb-0527-15e981ce9c6a
 # ╟─b9da7332-74ff-11eb-241b-fb87e77d646a
@@ -1631,6 +1670,7 @@ version = "0.9.1+5"
 # ╠═ab2bc924-7501-11eb-03ba-8dfc1ffe3f36
 # ╟─e11d6300-7501-11eb-239a-135596309d20
 # ╠═9ce0b980-74aa-11eb-0678-01209451fb65
+# ╠═92ad22dc-d092-40d8-832d-f5fb0e2ac780
 # ╟─68821bf4-7502-11eb-0d3c-03d7a00fdba4
 # ╠═447e7c9e-74b1-11eb-27ea-71aa4338b11a
 # ╟─c9dff6f4-7503-11eb-2715-0bf9d3ece9e1
@@ -1650,6 +1690,9 @@ version = "0.9.1+5"
 # ╟─1ae2588c-961c-42e9-bcc2-a72fee23832a
 # ╠═995392ee-752a-11eb-3394-0de331e24f40
 # ╟─bf0fcfad-ec43-4644-b361-e1a33245c9a6
+# ╠═c2e0856c-ca38-4746-9ba6-79cae88ed25f
+# ╠═52d99247-3d0b-4f16-83d4-9a071a6e6cbf
+# ╠═ef161233-1a9a-4604-b181-c5fb69169fc2
 # ╠═54448d18-7528-11eb-209a-9717affa0d02
 # ╟─13935c9b-bee9-4d86-8aae-5bc12865e7e2
 # ╠═acbc563a-7528-11eb-3c38-75a5b66c9241
@@ -1677,6 +1720,7 @@ version = "0.9.1+5"
 # ╟─2a886c32-eedd-4b8c-82a5-5a891cb799c5
 # ╠═08642690-7523-11eb-00dd-63d4cf6513dc
 # ╟─6a9720ca-7491-4f24-a3bf-11000dfebe1d
+# ╠═a4579a99-7aa2-4167-b46c-b3e597546832
 # ╠═deac4cf2-7523-11eb-2832-7b9d31389b08
 # ╠═32887dfa-7524-11eb-35cd-051eff594fa9
 # ╟─00000000-0000-0000-0000-000000000001
