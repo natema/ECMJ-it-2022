@@ -12,7 +12,7 @@ end
 
 # ╔═╡ 2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
 md"""
-# [Elementi di Modellizzazione Computazionale in Julia (2022)](http://www.informatica.uniroma2.it/f0?fid=220&srv=0&os=2021&cdl=0&id=ECMJ)
+# [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it/)
 
 ### [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/)
 """
@@ -21,6 +21,8 @@ md"""
 md"""
 La presente pagina presenta brevemente il contentuo del corso *Elementi di Modellizzazione Computazionale in Julia* presso il [Corso di Laurea Triennale in Informatica dell'Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/), e raccoglie i link alle lezioni. 
 Il corso si basa largamente sul materiale del corso [*Introduction to Computational Thinking* del MIT (2021)](https://computationalthinking.mit.edu/Spring21/).
+
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ 30549592-8213-4de9-b495-7a705d49c4b3
@@ -296,7 +298,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
-# ╠═2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
+# ╟─2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
 # ╟─a2370118-e314-400b-b8ed-2354f4524b8f
 # ╟─754b5737-84ef-4ef2-972c-c4bbe275894a
 # ╟─30549592-8213-4de9-b495-7a705d49c4b3

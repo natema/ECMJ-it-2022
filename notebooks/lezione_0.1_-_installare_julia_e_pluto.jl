@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -12,10 +12,15 @@ end
 
 # ╔═╡ 2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
 md"""
-## Elementi di Modellizzazione Computazionale in Julia
+## [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it/)
 
 ### 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
+"""
+
+# ╔═╡ 0e6c5977-f56b-425d-ab72-6f7fe120ef1c
+md"""
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ ffa5b3a9-b6f2-4423-a143-7476dd6b93b3
@@ -23,10 +28,13 @@ md"""
 
 #### Link utili: 
 
-- [Elenco dei notebooks delle lezioni](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0_-_syllabus.jl.html)
+- [Pagina Github del materiale](https://github.com/natema/ECMJ-it)
 - [Pagina ufficiale del corso](http://www.informatica.uniroma2.it/f0?fid=220&srv=0&os=2021&cdl=0&id=ECMJ)
 - [Pagina del docente, Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/)
+"""
 
+# ╔═╡ 634d7570-f63c-40ed-beec-3983e4754330
+md"""
 # Lezione 0.1  - Installazione del linguaggio Julia e all'uso dei notebook Pluto
 
 In questa lezione vedremo come installare Julia e lanciare un Pluto notebook.
@@ -311,8 +319,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
+# ╟─0e6c5977-f56b-425d-ab72-6f7fe120ef1c
 # ╟─788930f0-f646-4266-9bd9-768c3956ea99
 # ╟─ffa5b3a9-b6f2-4423-a143-7476dd6b93b3
+# ╟─634d7570-f63c-40ed-beec-3983e4754330
 # ╟─ebdcb75a-731f-4c8a-9fec-a632c54925c9
 # ╟─cefe624d-ff5c-4c14-9ef9-348318f98de4
 # ╟─2ff42d48-d747-4ee4-952b-c7002ad1d2ac
