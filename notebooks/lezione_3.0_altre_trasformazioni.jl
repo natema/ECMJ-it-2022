@@ -26,55 +26,17 @@ begin
 end
 
 # ╔═╡ 972b2230-7634-11eb-028d-df7fc722ec70
-html"""
-<div style="
-position: absolute;
-width: calc(100% - 30px);
-border: 50vw solid #282936;
-border-top: 500px solid #282936;
-border-bottom: none;
-box-sizing: content-box;
-left: calc(-50vw + 15px);
-top: -500px;
-height: 500px;
-pointer-events: none;
-"></div>
+md"""
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
 
-<div style="
-height: 500px;
-width: 100%;
-background: #282936;
-color: #fff;
-padding-top: 68px;
-">
-<span style="
-font-family: Vollkorn, serif;
-font-weight: 700;
-font-feature-settings: 'lnum', 'pnum';
-"> <p style="
-font-size: 1.5rem;
-opacity: .8;
-"><em>Section 1.5</em></p>
-<p style="text-align: center; font-size: 2rem;">
-<em> Transformations II: Composability, Linearity and Nonlinearity </em>
-</p>
+#### 
 
-<p style="
-font-size: 1.5rem;
-text-align: center;
-opacity: .8;
-"><em>Lecture Video</em></p>
-<div style="display: flex; justify-content: center;">
-<div  notthestyle="position: relative; right: 0; top: 0; z-index: 300;">
-<iframe src="https://www.youtube.com/embed/VDPf3RjoCpY" width=400 height=250  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-</div>
-</div>
+[Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
-<style>
-body {
-overflow-x: hidden;
-}
-</style>"""
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+
+# Questo materiale è ancora WORK IN PROGRESS
+"""
 
 # ╔═╡ b7895bd2-7634-11eb-211e-ef876d23bd88
 PlutoUI.TableOfContents(aside=true)

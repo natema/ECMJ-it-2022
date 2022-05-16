@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.0
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -39,11 +39,16 @@ end
 
 # ╔═╡ 42448984-e662-4b53-b425-2ad71e3b31b9
 md"""
-### [Elementi di Modellizzazione Computazionale in Julia](http://www.informatica.uniroma2.it/f0?fid=220&srv=0&os=2021&cdl=0&id=ECMJ)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
 
 #### 
 
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
+"""
+
+# ╔═╡ 5294d5d4-9987-4963-9cc3-f733e7488a4e
+md"""
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ 46d0df32-75e8-4dae-9324-86e8bddcaea5
@@ -296,6 +301,7 @@ sierpinski(n)
 
 # ╔═╡ Cell order:
 # ╟─42448984-e662-4b53-b425-2ad71e3b31b9
+# ╟─5294d5d4-9987-4963-9cc3-f733e7488a4e
 # ╟─46d0df32-75e8-4dae-9324-86e8bddcaea5
 # ╟─2eedd484-82cc-43a8-a64d-45dce70cd6d3
 # ╠═e02f7ea6-7024-11eb-3672-fd59a6cff79b

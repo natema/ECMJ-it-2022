@@ -24,11 +24,16 @@ end
 
 # ╔═╡ 0a54d9ae-3d0e-4a4d-bde4-129215bcda55
 md"""
-### [Elementi di Modellizzazione Computazionale in Julia](http://www.informatica.uniroma2.it/f0?fid=220&srv=0&os=2021&cdl=0&id=ECMJ)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
 
 #### 
 
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
+"""
+
+# ╔═╡ 3c8970a4-ccc9-442b-a0a0-e86ed1f6b5b3
+md"""
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ a689686e-7bcf-412d-a6b7-090d2fdde733
@@ -644,6 +649,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─0a54d9ae-3d0e-4a4d-bde4-129215bcda55
+# ╟─3c8970a4-ccc9-442b-a0a0-e86ed1f6b5b3
 # ╟─a689686e-7bcf-412d-a6b7-090d2fdde733
 # ╠═6b473b2d-4326-46b4-af38-07b61de287fc
 # ╟─8be7521f-36d3-4d61-b0ed-a9cbab4a73e0
