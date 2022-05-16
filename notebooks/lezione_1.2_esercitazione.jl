@@ -652,7 +652,7 @@ hint(md"`rand()` genera un numero random, con distribuzione uniforme e di tipo F
 almost(text) = Markdown.MD(Markdown.Admonition("warning", "Ci siamo quasi.", [text]))
 
 # ╔═╡ dfa40e89-03fc-4a7a-825e-92d67ee217b2
-still_missing(text=md"Sostituite a `missing` la vostra soluzione.") = Markdown.MD(Markdown.Admonition("warning", "Partiti!", [text]))
+still_missing(text=md"Sostituite a `missing` la vostra soluzione.") = Markdown.MD(Markdown.Admonition("warning", "Al lavoro!", [text]))
 
 # ╔═╡ 086ec1ff-b62d-4566-9973-5b2cc3353409
 keep_working(text=md"La risposta non è corretta.") = Markdown.MD(Markdown.Admonition("danger", "Continuate a provare a risolvere l'esercizio", [text]))

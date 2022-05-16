@@ -41,52 +41,38 @@ Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ 
 # ╔═╡ b7895bd2-7634-11eb-211e-ef876d23bd88
 PlutoUI.TableOfContents(aside=true)
 
-# ╔═╡ 230b0118-30b7-4035-ad31-520165a76fcc
+# ╔═╡ d664f0f0-0c86-43e8-9f79-f285eb32bdd6
+begin
+	armadillo_url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png"
+	personaggi_url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_characters.png"
+	zero_url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_miniature.png"
+end
+
+# ╔═╡ c74b5fe6-167b-4dd3-93f1-fc25bc609931
 md"""
-#### Intializing packages
-
-_When running this notebook for the first time, this could take up to 15 minutes. Hang in there!_
+Scegliamo "a mano" l'immagine che utilizzeremo di seguito:
 """
-
-# ╔═╡ 230cba36-9d0a-4726-9e55-7df2c6743968
-
-
-# ╔═╡ 890d30b9-2cd0-4d3a-99f6-f7d3d7858fda
-corgis_url = "https://user-images.githubusercontent.com/6933510/108605549-fb28e180-73b4-11eb-8520-7e29db0cc965.png"
-
-# ╔═╡ 85fba8fb-a9ea-444d-831b-ec6489b58b4f
-longcorgi_url = "https://user-images.githubusercontent.com/6933510/110868198-713faa80-82c8-11eb-8264-d69df4509f49.png"
 
 # ╔═╡ 96766502-7a06-11eb-00cc-29849773dbcf
-# img_original = load(download(corgis_url));
-img_original = load(download(longcorgi_url));
-# img_original = load(download(theteam_url));
-
-# ╔═╡ 06beabc3-2aa7-4e78-9bae-dc4b37251aa2
-theteam_url = "https://news.mit.edu/sites/default/files/styles/news_article__image_gallery/public/images/202004/edelman%2520philip%2520sanders.png?itok=ZcYu9NFeg"
-
-# ╔═╡ 26dd0e98-7a75-11eb-2196-5d7bda201b19
-md"""
-After you select your image, we suggest moving this line above just above the top of your browser.
-
----------------
-"""
+# img_original = load(download(armadillo_url));
+img_original = load(download(personaggi_url));
+# img_original = load(download(zero_url));
 
 # ╔═╡ e0b657ce-7a03-11eb-1f9d-f32168cb5394
 md"""
-#  The fun stuff: playing with transforms
+# Altri giochi con le trasformazioni
+
+Continuimo a prendre dimestichezza con Julia e con vari tipi di trasformazioni giocando con delle immagini. Mentre il fatto in sé di manipolare delle immagini non è il nostro primo interesse, tale possibilità ci offre un modo di esplorare varie idee matematiche in modo visivo e sperabilmente più leggero.
 """
 
 # ╔═╡ 005ca75a-7622-11eb-2ba4-9f450e71df1f
-let
-
-range = -1.5:.1:1.5
+let range = -1.5:.1:1.5
 md"""
 	
-This is a "scrubbable" matrix: click on the number and drag to change!
+Ridefiniamo una matrice _scrubbable_ come fatto nella lezione precedente: 
 	
-**A =**  
-	
+ $A =$
+
 ``(``	
  $(@bind a Scrubbable( range; default=1.0))
  $(@bind b Scrubbable( range; default=0.0))
@@ -96,15 +82,41 @@ This is a "scrubbable" matrix: click on the number and drag to change!
 $(@bind c Scrubbable(range; default=0.0 ))
 $(@bind d Scrubbable(range; default=1.0)) 
 ``)``  
-	
-
-	
 """
 end
 
-# ╔═╡ 23ade8ee-7a09-11eb-0e40-296c6b831d74
+# ╔═╡ 85686412-7a75-11eb-3d83-9f2f8a3c5509
+A = [a b ; c d]
+
+# ╔═╡ 0f742343-f41f-4de3-9b08-a95fef040623
 md"""
-Grab a [linear](#a0afe3ae-76b9-11eb-2301-cde7260ddd7f) or [nonlinear](#a290d5e2-7a02-11eb-37db-41bf86b1f3b3) transform, or make up your own!
+Selezionimao inoltre una trasformazione $T^{-1}$:|
+"""
+
+# ╔═╡ 313a1972-7106-46ca-9fdd-1e004b63b8e4
+md"""
+Visualizziamo l'immagine con cui lavoreremo, usando varie funzioni che definiremo in seguito: 
+"""
+
+# ╔═╡ b52f4faa-ecc1-492b-b720-43b1c3623f9d
+md"""
+Di seguito settiamo in modo interattivo i parametri utilizzati da alcune delle trasformazioni precedenti, e varie altre proprietà dell'immagine visualizzata: 
+"""
+
+# ╔═╡ ce55beee-7643-11eb-04bc-b517703facff
+md"""
+##### Parametri della trasformazione
+
+α = $(@bind α Slider(-30:.1:30, show_value=true, default=0))
+
+β = $(@bind β Slider(-10:.1:10, show_value=true, default = 5))
+
+h = $(@bind h Slider(.1:.1:10, show_value=true, default = 5))
+"""
+
+# ╔═╡ bc696d68-9841-4a44-8448-c351ae7847ef
+md"""
+##### Parametri della visualizzazione
 """
 
 # ╔═╡ 2efaa336-7630-11eb-0c17-a7d4a0141dac
@@ -114,66 +126,52 @@ zoom = $(@bind  z Scrubbable(.1:.1:3,  default=1))
 
 # ╔═╡ 7f28ac40-7914-11eb-1403-b7bec34aeb94
 md"""
-pan = [$(@bind panx Scrubbable(-1:.1:1, default=0)), 
+traslazione = [$(@bind panx Scrubbable(-1:.1:1, default=0)), 
 $(@bind pany Scrubbable(-1:.1:1, default=0)) ]
 """
 
-# ╔═╡ ce55beee-7643-11eb-04bc-b517703facff
-md"""
-α= $(@bind α Slider(-30:.1:30, show_value=true, default=0))
-β= $(@bind β Slider(-10:.1:10, show_value=true, default = 5))
-h= $(@bind h Slider(.1:.1:10, show_value=true, default = 5))
-"""
-
-# ╔═╡ b76a5bd6-802f-11eb-0951-1f1092dee8de
-1+1
-
 # ╔═╡ 5d33f6ea-7e9c-11eb-2fb3-dbb7cb07c60c
 md"""
-pixels = $(@bind pixels Slider(1:1000, default=800, show_value=true))
+risoluzione = $(@bind pixels Slider(1:1000, default=800, show_value=true))
 """
 
 # ╔═╡ 45dccdec-7912-11eb-01b4-a97e30344f39
 md"""
-Show grid lines $(@bind show_grid CheckBox(default=true))
-ngrid = $(@bind ngrid Slider(5:5:20, show_value=true, default = 10))
+mostra la griglia: $(@bind show_grid CheckBox(default=true))
+
+finezza della griglia: $(@bind ngrid Slider(5:5:20, show_value=true, default = 10))
 """
 
 # ╔═╡ d2fb356e-7f32-11eb-177d-4f47d6c9e59b
 md"""
-Circular Frame $(@bind circular CheckBox(default=true))
-radius = $(@bind r Slider(.1:.1:1, show_value=true, default = 1))
+Cornice circolare $(@bind circular CheckBox(default=true))
+
+Raggio: $(@bind r Slider(.1:.1:1, show_value=true, default = 1))
 """
 
 # ╔═╡ 55b5fc92-7a76-11eb-3fba-854c65eb87f9
 md"""
-Above: The original image is placed in a [-1,1] x [-1 1] box and transformed.
-"""
-
-# ╔═╡ 85686412-7a75-11eb-3d83-9f2f8a3c5509
-A = [a b ; c d];
-
-# ╔═╡ a7df7346-79f8-11eb-1de6-71f027c46643
-md"""
-## Pedagogical note: Why the Module 1 application = image processing
-
-Image processing is a great way to learn Julia, some linear algebra, and some nonlinear mathematics.  We don't presume the audience will become professional image processors, but we do believe that the principles learned transcend so many applications... and everybody loves playing with their own images!  
-"""
-
-# ╔═╡ 044e6128-79fe-11eb-18c1-395ae857dc73
-md"""
-# Last Lecture Leftovers
+L'immagine originale è collocata in un riquadro con coordinate [-1,1]x[-1 1], e poi trasformata.
 """
 
 # ╔═╡ 78d61e28-79f9-11eb-0605-e77d206cda84
 md"""
-## Interesting question about linear transformations
-If a transformation takes lines into lines and preserves the origin, does it have to be linear?
+## Domande sulle trasformazioni lineari
 
-Answer = **no**!
+Il fatto che una trasformazione mappi rette in rette e preservi l'origine, costituisce una condizione sufficiente affinché sia lineare?
+
+**No**: 
 
 The example of a **perspective map** takes all lines into lines, but paralleograms generally do not become parallelograms. 
 """
+
+# ╔═╡ 23a9fd6f-b3c9-45ef-96d5-9d8d32ec134c
+md"""
+# WORKING HERE
+"""
+
+# ╔═╡ 0f613418-807f-436d-add6-c275429a86f9
+hint(text) = Markdown.MD(Markdown.Admonition("hint", "Suggerimento", [text]))
 
 # ╔═╡ aad4d6e4-79f9-11eb-0342-b900a41cfbaf
 md"""
@@ -251,19 +249,18 @@ end
 
 # ╔═╡ 58a30e54-7a08-11eb-1c57-dfef0000255f
 # T⁻¹ = id
-#  T⁻¹ = rotate(α)
-  T⁻¹ = shear(α)
-#   T⁻¹ = lin(A) # uses the scrubbable 
-#   T⁻¹ = shear(α) ∘ shear(-α)
- # T⁻¹ = nonlin_shear(α)  
- #   T⁻¹ =   inverse(nonlin_shear(α))
-#    T⁻¹ =  nonlin_shear(-α)
-#  T⁻¹ =  xy 
+# T⁻¹ = rotate(α)
+T⁻¹ = shear(α)
+# T⁻¹ = lin(A) # uses the scrubbable 
+# T⁻¹ = shear(α) ∘ shear(-α)
+# T⁻¹ = nonlin_shear(α)  
+# T⁻¹ = inverse(nonlin_shear(α))
+# T⁻¹ = nonlin_shear(-α)
+# T⁻¹ = xy 
 # T⁻¹ = warp(α)
-# T⁻¹ = ((x,y),)-> (x+α*y^2,y+α*x^2) # may be non-invertible
-
+# T⁻¹ = ((x,y),)-> (x+α*y^2,y+α*x^2) # potrebbe essere non-invertibile
 # T⁻¹ = ((x,y),)-> (x,y^2)  
-# T⁻¹  = flipy ∘ ((x,y),) ->  ( (β*x - α*y)/(β - y)  , -h*y/ (β - y)   ) 
+# T⁻¹  = flipy ∘ ((x,y),) ->  ( (β*x - α*y)/(β-y), -h*y/(β-y) ) 
 
 # ╔═╡ 080d87e0-7aa2-11eb-18f5-2fb6a7a5bcb4
 md"""
@@ -773,7 +770,7 @@ An interpolation scheme or a newton scheme could work for going forwards, but ve
 
 # ╔═╡ c536dafb-4206-4689-ad6d-6935385d8fdf
 md"""
-# Appendix
+# Appendice
 """
 
 # ╔═╡ fb509fb4-9608-421d-9c40-a4375f459b3f
@@ -781,10 +778,9 @@ det_A = det(A)
 
 # ╔═╡ 40655bcc-6d1e-4d1e-9726-41eab98d8472
 img_sources = [
-	"https://user-images.githubusercontent.com/6933510/108605549-fb28e180-73b4-11eb-8520-7e29db0cc965.png" => "Corgis",
-	"https://images.squarespace-cdn.com/content/v1/5cb62a904d546e33119fa495/1589302981165-HHQ2A4JI07C43294HVPD/ke17ZwdGBToddI8pDm48kA7bHnZXCqgRu4g0_U7hbNpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZamWLI2zvYWH8K3-s_4yszcp2ryTI0HqTOaaUohrI8PISCdr-3EAHMyS8K84wLA7X0UZoBreocI4zSJRMe1GOxcKMshLAGzx4R3EDFOm1kBS/fluffy+corgi?format=2500w" => "Long Corgi",
-"https://previews.123rf.com/images/camptoloma/camptoloma2002/camptoloma200200020/140962183-pembroke-welsh-corgi-portrait-sitting-gray-background.jpg"=>"Portrait Corgi",
-	"https://www.eaieducation.com/images/products/506618_L.jpg"=>"Graph Paper"
+	"https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png" => "armadillo",
+	"https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_characters.png" => "personaggi",
+	"https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_miniature.png" => "zero"
 ]
 
 # ╔═╡ b754bae2-762f-11eb-1c6a-01251495a9bb
@@ -882,21 +878,13 @@ function with_gridlines(img::Array{<:Any,2}; n = 10)
     n = 2n+1
 	rows, cols = size(img)
 	result = copy(img)
-	# stroke = zero(eltype(img))#RGBA(RGB(1,1,1), 0.75)
 	
 	stroke = RGBA(1, 1, 1, 0.75)
+	result[floor.(Int, LinRange(1, rows, n)), : ] .= stroke
+	result[:, floor.(Int, LinRange(1, cols, n))] .= stroke
 	
-	
-	result[ floor.(Int, LinRange(1, rows, n)), : ] .= stroke
-	# result[ ceil.(Int,LinRange(1, rows, n) ), : ] .= stroke
-	result[ : , floor.(Int, LinRange(1, cols, n))] .= stroke
-	# result[ : , ceil.(Int,LinRange(1, cols, n) )] .= stroke
-	
-	
-    result[  rows ÷2    , :] .= RGBA(0,1,0,1)
-	# result[  1+rows ÷2    , :] .= RGBA(0,1,0,1)
-	result[ : ,  cols ÷2   ,] .= RGBA(1,0,0,1)
-	# result[ : ,  1 + cols ÷2   ,] .= RGBA(1,0,0,1)
+    result[rows÷2, :] .= RGBA(0,1,0,1)
+	result[:, cols ÷2,] .= RGBA(1,0,0,1)
 	return result
 end
 
@@ -908,25 +896,19 @@ else
 end;
 
 # ╔═╡ ca28189e-7e9a-11eb-21d6-bd819f3e0d3a
-begin
-		[			    
-			begin
-			
-			 x, y = transform_ij_to_xy(i,j, pixels)
-			
-			X, Y = ( translate(-panx,-pany)  )([x,y])
-			 X, Y = ( T⁻¹∘scale(1/z)∘translate(-panx,-pany) )([x,y])
-			 i, j = transform_xy_to_ij(img,X,Y)
-			 getpixel(img,i,j; circular=circular, r=r)
-			end	 
-		
-			for i = 1:pixels, j = 1:pixels
-		]	
-end
+[			    
+	begin
+		x, y = transform_ij_to_xy(i, j, pixels)
+		X, Y = (translate(-panx,-pany))([x,y])
+		X, Y = (T⁻¹∘scale(1/z)∘translate(-panx,-pany))([x,y])
+	 	i, j = transform_xy_to_ij(img, X, Y)
+	 	getpixel(img, i, j; circular=circular, r=r)
+	end	 
+	for i = 1:pixels, j = 1:pixels
+]	
 
 # ╔═╡ ccea7244-7f2f-11eb-1b7b-b9b8473a8c74
-transform_xy_to_ij(img,0.0,0.0)
-
+transform_xy_to_ij(img, 0.0, 0.0)
 
 # ╔═╡ c2e0e032-7c4c-11eb-2b2a-27fe69c42a01
 img;
@@ -1657,33 +1639,31 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─972b2230-7634-11eb-028d-df7fc722ec70
-# ╟─b7895bd2-7634-11eb-211e-ef876d23bd88
-# ╟─230b0118-30b7-4035-ad31-520165a76fcc
 # ╠═6b473b2d-4326-46b4-af38-07b61de287fc
-# ╟─230cba36-9d0a-4726-9e55-7df2c6743968
+# ╟─b7895bd2-7634-11eb-211e-ef876d23bd88
+# ╠═d664f0f0-0c86-43e8-9f79-f285eb32bdd6
+# ╟─c74b5fe6-167b-4dd3-93f1-fc25bc609931
 # ╠═96766502-7a06-11eb-00cc-29849773dbcf
-# ╟─890d30b9-2cd0-4d3a-99f6-f7d3d7858fda
-# ╟─85fba8fb-a9ea-444d-831b-ec6489b58b4f
-# ╟─06beabc3-2aa7-4e78-9bae-dc4b37251aa2
-# ╟─26dd0e98-7a75-11eb-2196-5d7bda201b19
 # ╟─e0b657ce-7a03-11eb-1f9d-f32168cb5394
 # ╟─005ca75a-7622-11eb-2ba4-9f450e71df1f
-# ╟─23ade8ee-7a09-11eb-0e40-296c6b831d74
+# ╠═85686412-7a75-11eb-3d83-9f2f8a3c5509
+# ╟─0f742343-f41f-4de3-9b08-a95fef040623
 # ╠═58a30e54-7a08-11eb-1c57-dfef0000255f
+# ╟─313a1972-7106-46ca-9fdd-1e004b63b8e4
+# ╠═ca28189e-7e9a-11eb-21d6-bd819f3e0d3a
+# ╟─b52f4faa-ecc1-492b-b720-43b1c3623f9d
+# ╟─ce55beee-7643-11eb-04bc-b517703facff
+# ╟─bc696d68-9841-4a44-8448-c351ae7847ef
 # ╟─2efaa336-7630-11eb-0c17-a7d4a0141dac
 # ╟─7f28ac40-7914-11eb-1403-b7bec34aeb94
-# ╟─ce55beee-7643-11eb-04bc-b517703facff
-# ╠═b76a5bd6-802f-11eb-0951-1f1092dee8de
 # ╟─5d33f6ea-7e9c-11eb-2fb3-dbb7cb07c60c
 # ╟─45dccdec-7912-11eb-01b4-a97e30344f39
 # ╟─d2fb356e-7f32-11eb-177d-4f47d6c9e59b
-# ╠═ca28189e-7e9a-11eb-21d6-bd819f3e0d3a
-# ╠═ccea7244-7f2f-11eb-1b7b-b9b8473a8c74
 # ╟─55b5fc92-7a76-11eb-3fba-854c65eb87f9
-# ╟─85686412-7a75-11eb-3d83-9f2f8a3c5509
-# ╟─a7df7346-79f8-11eb-1de6-71f027c46643
-# ╟─044e6128-79fe-11eb-18c1-395ae857dc73
-# ╟─78d61e28-79f9-11eb-0605-e77d206cda84
+# ╠═ccea7244-7f2f-11eb-1b7b-b9b8473a8c74
+# ╠═78d61e28-79f9-11eb-0605-e77d206cda84
+# ╠═23a9fd6f-b3c9-45ef-96d5-9d8d32ec134c
+# ╠═0f613418-807f-436d-add6-c275429a86f9
 # ╟─aad4d6e4-79f9-11eb-0342-b900a41cfbaf
 # ╟─d42aec08-76ad-11eb-361a-a1f2c90fd4ec
 # ╟─d9115c1a-7aa0-11eb-38e4-d977c5a6b75b
