@@ -158,7 +158,7 @@ In Julia l'indicizzazione avviene tramite l'uso delle parentesi quadre `[` e `]`
 """
 
 # ╔═╡ fbe7454c-55fa-4f47-a1de-2c68111b0620
-a_pixel = zerocal[200, 800]
+a_pixel = zerocal[240, 300]
 
 # ╔═╡ c832e8a0-6bbc-4c45-aa4b-196eacb80c82
 md"""
@@ -194,7 +194,7 @@ Ora useremo un **range di numeri** per indicizzare _un intervallo di righe o col
 """
 
 # ╔═╡ 6c33172e-82f5-4645-88c7-43e297ff80cb
-zerocal[530:650, 1:zerocal_width]
+zerocal[240:300, 1:zerocal_width]
 
 # ╔═╡ 13e38f4e-6c6c-4dbb-ab56-1dca0dda5b7a
 md"""
@@ -210,13 +210,13 @@ Possiamo anche usare i due punti `:` da soli, per indicare "_ogni indice_".
 """
 
 # ╔═╡ 3e9efc0f-9604-49d9-9433-25989172883b
-zerocal[530:650, :]
+zerocal[240:300, :]
 
 # ╔═╡ 85cf547c-22d1-406d-a02a-ee9a14445a1c
-zerocal[530, :] # visualizza i pixel della riga 530
+zerocal[240, :] # visualizza i pixel della riga 240
 
 # ╔═╡ 539f2a32-77c1-4fc8-b786-bd52469cb34e
-zerocal_head = zerocal[100:700, 500:960]
+zerocal_head = zerocal[15:310, 220:470]
 
 # ╔═╡ f377e32b-7729-46e0-9bd2-d1100ee5e0b5
 md"""
@@ -283,8 +283,19 @@ end
 
 # ╔═╡ 192e61fa-7b04-4e7e-b251-063658e624e2
 md"""
-!!! hint 
+!!! hint "Suggerimento"
 	Possiamo accedere ai diversi valori di `color` con `color.r` per il rosso, e così via.
+"""
+
+# ╔═╡ f6c1c4ef-81f7-4eca-944b-77a3d32d0a42
+md"""
+!!! hint "Soluzione"
+	```
+	function invert(color::AbstractRGB)
+		inverted_cols = 1 .- (color.r, color.g, color.b)
+		return RGB(inverted_cols)
+	end
+	```
 """
 
 # ╔═╡ 9347f15f-2a83-46e2-bbdd-8c65ae17a405
@@ -478,11 +489,32 @@ md"""
 Muovendo il cursore, dovremmo vedere il numero di pixel di colore rosso cambiare.
 
 Quello che succede dietro le quinte è che stiamo creando un vettore in cui `red_value` assume ogni valore nel range da `0` fino al valore corrente di `number_reds`. Se cambiamo `number_reds`, allora creiamo un nuovo vettore con il nuovo numero di macchie rosse.
+"""
 
-#### Esercizio
+# ╔═╡ 552e2b58-96c4-473a-b3bd-333285a65e60
+md"""
+#### Esercizio - Pixel interattivo
 
-> Si creino tre cursori con le variabili `r`, `g` e `b`. Poi si creino una singola patch di colore con il colore RGB dato da quei valori.
+> Si creino tre cursori con le variabili `r`, `g` e `b`, e si visualizzi un pixel di colore determinato da tali valori.
+"""
 
+# ╔═╡ 6f7f3ebb-0555-499c-8323-bf73990292d0
+md"""
+!!! hint "Soluzione"
+	Definire in una prima cella gli sliders: 
+	```
+	md\"""
+	r = $(@bind r Slider(0:.05:1, show_value=true, default=.5))
+	
+	g = $(@bind g Slider(0:.05:1, show_value=true, default=.5))
+	
+	b = $(@bind b Slider(0:.05:1, show_value=true, default=.5))
+	\"""
+	```
+	e in una seconda cella definire semplicemente il pixel come oggetto `RGB`: 
+	```
+	RGB(r, g, b)
+	```
 """
 
 # ╔═╡ 88c36fe3-2200-4900-8800-d74aa4f7fa68
@@ -499,18 +531,6 @@ Riassumiamo le idee principali viste in questo notebook:
 - Un'immagine non è altro che un **array** di colori
 - Possiamo ispezionare e modificare gli array usando l'**indicizzazione**
 - Possiamo creare array direttamente o usando l'**array comprehension**
-"""
-
-# ╔═╡ f6c1c4ef-81f7-4eca-944b-77a3d32d0a42
-md"""
-## Soluzioni
-!!! solution "Soluzione all'esercizio \"Inversione\""
-	```
-	function invert(color::AbstractRGB)
-		inverted_cols = 1 .- (color.r, color.g, color.b)
-		return RGB(inverted_cols)
-	end
-	```
 """
 
 # ╔═╡ 6942e036-dea0-4576-8938-d18865c330b3
@@ -1489,6 +1509,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─f83b492f-9d6d-494a-8075-17e7ffc94089
 # ╠═4661df85-5bc2-442b-b31c-44ddd6dffd41
 # ╟─192e61fa-7b04-4e7e-b251-063658e624e2
+# ╟─f6c1c4ef-81f7-4eca-944b-77a3d32d0a42
 # ╟─9347f15f-2a83-46e2-bbdd-8c65ae17a405
 # ╠═64cd6f34-5a1b-4030-b3c8-19905f7be49f
 # ╠═43e106d3-81bd-4b60-85e3-53514ab6f216
@@ -1527,12 +1548,13 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─73b119cb-a061-419a-9e6b-7692f1a028e0
 # ╠═872ca931-273f-4d95-8a3b-78bbfaf44b1b
 # ╟─087a21c4-3a2c-419c-bc11-a3a4ed83df15
+# ╟─552e2b58-96c4-473a-b3bd-333285a65e60
+# ╟─6f7f3ebb-0555-499c-8323-bf73990292d0
 # ╟─88c36fe3-2200-4900-8800-d74aa4f7fa68
 # ╠═9de5cc61-fdc0-4a82-a906-ca62b76db227
 # ╠═12864824-d447-4a0f-969d-a47868dbd9a1
 # ╠═92a1cecf-7a94-412b-93b6-ae2e17bc866e
 # ╟─3579cc61-ab1e-423f-97da-ea952422afe0
-# ╟─f6c1c4ef-81f7-4eca-944b-77a3d32d0a42
 # ╟─6942e036-dea0-4576-8938-d18865c330b3
 # ╟─db738014-ee97-4b12-b44c-340ee0a7298e
 # ╟─16f43cbf-b6b8-494e-9af9-1ba4f67dbbcd

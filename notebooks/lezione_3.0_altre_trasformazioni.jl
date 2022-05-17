@@ -34,8 +34,6 @@ md"""
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
 Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
-
-# Questo materiale è ancora WORK IN PROGRESS
 """
 
 # ╔═╡ b7895bd2-7634-11eb-211e-ef876d23bd88
@@ -159,50 +157,38 @@ md"""
 ## Domande sulle trasformazioni lineari
 
 Il fatto che una trasformazione mappi rette in rette e preservi l'origine, costituisce una condizione sufficiente affinché sia lineare?
-
-**No**: 
-
-The example of a **perspective map** takes all lines into lines, but paralleograms generally do not become parallelograms. 
 """
-
-# ╔═╡ 23a9fd6f-b3c9-45ef-96d5-9d8d32ec134c
-md"""
-# WORKING HERE
-"""
-
-# ╔═╡ 0f613418-807f-436d-add6-c275429a86f9
-hint(text) = Markdown.MD(Markdown.Admonition("hint", "Suggerimento", [text]))
-
-# ╔═╡ aad4d6e4-79f9-11eb-0342-b900a41cfbaf
-md"""
-[A nice interactive demo of perspective maps](https://www.khanacademy.org/humanities/renaissance-reformation/early-renaissance1/beginners-renaissance-florence/a/linear-perspective-interactive) from Khan academy.
-"""
-
-# ╔═╡ d42aec08-76ad-11eb-361a-a1f2c90fd4ec
-Resource("https://cdn.kastatic.org/ka-perseus-images/1b351a3653c1a12f713ec24f443a95516f916136.jpg")
 
 # ╔═╡ d9115c1a-7aa0-11eb-38e4-d977c5a6b75b
 md"""
-**Challenge exercise**: Rewrite this using Julia and Pluto!
+#### Mini-progetto
+
+Scrivere un notebook che implementa una visualizzazione prospettica su modello di quella fornita [in questa lezione di Khan Academy](https://www.khanacademy.org/humanities/renaissance-reformation/early-renaissance1/beginners-renaissance-florence/a/linear-perspective-interactive). 
 """
 
 # ╔═╡ e965cf5e-79fd-11eb-201d-695b54d08e54
 md"""
-## Julia style (a little advanced): Reminder about defining vector valued functions
+## Julia style: definire funzioni vettoriali
 """
 
 # ╔═╡ 1e11c1ec-79fe-11eb-1867-9da72b3f3bc4
 md"""
-Many people find it hard to read 
-
-
-`f(v) = [ v[1]+v[2] , v[1]-v[2] ]  ` or 
-`  f = v ->  [ v[1]+v[2] , v[1]-v[2] ]  `
-
-and instead prefer
-
-`f((x,y)) = [ x+y , x-y ] ` or
-` f = ((x,y),) -> [ x+y , x-y ] `.
+Come abbiamo accennato mostrando l'uso di tuple anziché array come argomenti di una funzione, codice scritto nel modo seguente può risultare di difficile lettura: 
+```
+f(v) = [ v[1]+v[2] , v[1]-v[2] ]
+``` 
+oppure (ancora peggio)
+```
+f = v ->  [ v[1]+v[2] , v[1]-v[2] ]  
+```
+mentre il seguente dovrebbe risultare più chiaro
+```
+f((x,y)) = [ x+y , x-y ] 
+``` 
+oppure (ma un po' peggio)
+```
+f = ((x,y),) -> [ x+y , x-y ]
+```
 
 All four of these will take a 2-vector to a 2-vector in the same way for the purposes of this lecture, i.e. `f( [1,2] )` can be defined by any of the four forms.
 
@@ -919,8 +905,15 @@ size(img)
 # ╔═╡ d0e9a1e8-7c4c-11eb-056c-aff283c49c31
 img[50,56]
 
-# ╔═╡ 2e8c4a48-d535-44ac-a1f1-4cb26c4aece6
+# ╔═╡ 0f613418-807f-436d-add6-c275429a86f9
+hint(text) = Markdown.MD(Markdown.Admonition("hint", "Soluzione", [text]))
 
+# ╔═╡ 24f636dd-7f32-4eaa-8f67-ad13bcf548fd
+md"""
+**No**: considerate per esempio una [trasformazione _prospettica_](https://en.wikipedia.org/wiki/Perspective_(graphical)). 
+
+![](https://cdn.kastatic.org/ka-perseus-images/1b351a3653c1a12f713ec24f443a95516f916136.jpg)
+""" |> hint
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1661,14 +1654,11 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─d2fb356e-7f32-11eb-177d-4f47d6c9e59b
 # ╟─55b5fc92-7a76-11eb-3fba-854c65eb87f9
 # ╠═ccea7244-7f2f-11eb-1b7b-b9b8473a8c74
-# ╠═78d61e28-79f9-11eb-0605-e77d206cda84
-# ╠═23a9fd6f-b3c9-45ef-96d5-9d8d32ec134c
-# ╠═0f613418-807f-436d-add6-c275429a86f9
-# ╟─aad4d6e4-79f9-11eb-0342-b900a41cfbaf
-# ╟─d42aec08-76ad-11eb-361a-a1f2c90fd4ec
+# ╟─78d61e28-79f9-11eb-0605-e77d206cda84
+# ╟─24f636dd-7f32-4eaa-8f67-ad13bcf548fd
 # ╟─d9115c1a-7aa0-11eb-38e4-d977c5a6b75b
 # ╟─e965cf5e-79fd-11eb-201d-695b54d08e54
-# ╟─1e11c1ec-79fe-11eb-1867-9da72b3f3bc4
+# ╠═1e11c1ec-79fe-11eb-1867-9da72b3f3bc4
 # ╟─28ef451c-7aa1-11eb-340c-ab3a1193a3c4
 # ╟─a0afe3ae-76b9-11eb-2301-cde7260ddd7f
 # ╟─fc2deb7c-7aa1-11eb-019f-d3e3c80b9ff1
@@ -1755,6 +1745,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═55898e88-36a0-4f49-897f-e0850bd2b0df
 # ╠═b754bae2-762f-11eb-1c6a-01251495a9bb
 # ╠═83d45d42-7406-11eb-2a9c-e75efe62b12c
-# ╟─2e8c4a48-d535-44ac-a1f1-4cb26c4aece6
+# ╟─0f613418-807f-436d-add6-c275429a86f9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
