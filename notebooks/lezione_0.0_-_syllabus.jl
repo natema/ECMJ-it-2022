@@ -43,29 +43,29 @@ md"""
 md"""
 ### Lezione 0
 
-- 0.0. [Presentazione del corso e programma](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.0_-_syllabus.jl.html)
-- 0.1. [Installazione di Julia e uso dei notebook Pluto](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.1_-_installare_julia_e_pluto.jl.html)
-- 0.2. [Introduzione al linguaggio Julia](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.2_-_introduzione_a_julia.jl.html)
-- 0.3 [Come produrre grafici](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.3_come_produrre_grafici.jl.html)
-- 0.4 [Esercitazione 0](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.4_esercitazione.jl.html)
+- 0.0. [Presentazione del corso e programma](https://natema.github.io/ECMJ-it/index.html)
+- 0.1. [Installazione di Julia e uso dei notebook Pluto](https://natema.github.io/ECMJ-it/lectures/lezione_0.1_-_installare_julia_e_pluto.jl.html)
+- 0.2. [Introduzione al linguaggio Julia](https://natema.github.io/ECMJ-it/lectures/lezione_0.2_-_introduzione_a_julia.jl.html)
+- 0.3 [Come produrre grafici](https://natema.github.io/ECMJ-it/lectures/lezione_0.3_come_produrre_grafici.jl.html)
+- 0.4 [Esercitazione 0](https://natema.github.io/ECMJ-it/lectures/lezione_0.4_esercitazione.jl.html)
 """
 
 # ╔═╡ 0ed9194c-47bd-46f8-8881-1a62e90057c5
 md"""
 ### Lezione 1
 
-- 1.0. [Immagini come array](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_1.0_immagini_come_array.jl.html)
-- 1.1. [Introduzione al concetto di astrazione](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_1.1_introduzione_al_concetto_di_astrazione.jl.html)
-- 1.2. [Esercitazione 1](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_1.2_esercitazione.jl.html)
+- 1.0. [Immagini come array](https://natema.github.io/ECMJ-it/lectures/lezione_1.0_immagini_come_array.jl.html)
+- 1.1. [Introduzione al concetto di astrazione](https://natema.github.io/ECMJ-it/lectures/lezione_1.1_introduzione_al_concetto_di_astrazione.jl.html)
+- 1.2. [Esercitazione 1](https://natema.github.io/ECMJ-it/lectures/lezione_1.2_esercitazione.jl.html)
 """
 
 # ╔═╡ e828a20d-5d8e-4bde-bfb2-99f8a634182c
 md"""
 ### Lezione 2 
 
-- 2.0. [Trasformazione di immagini](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_2.0_trasformazione_di_immagini.jl.html)
-- 2.1. [Trasformazioni lineari](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_2.1_trasformazioni_lineari.jl.html)
-- 2.2. [Trasformazioni e differenziazione automatica](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
+- 2.0. [Trasformazione di immagini](https://natema.github.io/ECMJ-it/lectures/lezione_2.0_trasformazione_di_immagini.jl.html)
+- 2.1. [Trasformazioni lineari](https://natema.github.io/ECMJ-it/lectures/lezione_2.1_trasformazioni_lineari.jl.html)
+- 2.2. [Trasformazioni e differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
 - 2.3. Esercitazione: Coming Soon
 """
 
@@ -79,7 +79,7 @@ md"""
 
 ### Lezione 12
 
-- 12.0. [Un primo modello climatico](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_12.0_un_primo_modello_climatico.jl.html)
+- 12.0. [Un primo modello climatico](https://natema.github.io/ECMJ-it/lectures/lezione_12.0_un_primo_modello_climatico.jl.html)
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
