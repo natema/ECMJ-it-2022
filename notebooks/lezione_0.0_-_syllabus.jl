@@ -73,7 +73,7 @@ md"""
 md"""
 ### Lezione 3
 
-- 3.0 [Altre trasformazioni](https://natema.github.io/ECMJ-it/lectures/lezione_3.0_altre_trasformazioni.jl.html))
+- 3.0 [Altre trasformazioni](https://natema.github.io/ECMJ-it/lectures/lezione_3.0_altre_trasformazioni.jl.html)
 """
 
 # ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
