@@ -14,16 +14,6 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 6b473b2d-4326-46b4-af38-07b61de287fc
-begin
-	using Colors, ColorVectorSpace, ImageShow, FileIO, ImageIO
-	using PlutoUI
-	using HypertextLiteral
-	using LinearAlgebra
-	using ForwardDiff
-	using Plots
-end
-
 # ╔═╡ c3ef3bf1-144d-4184-a4b4-f8e56750004c
 md"""
 ## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
@@ -173,7 +163,7 @@ begin
 end
 
 # ╔═╡ 8a99f186-76af-11eb-031b-f1c288993c7f
-ϵ = 10.0^cₑₚₛ 
+ϵ = 1/1000
 
 # ╔═╡ df07d542-3238-4d92-bf83-1de3e9e42984
 md"""
@@ -194,6 +184,29 @@ Ora vedremo come quanto visto sopra si estende a funzioni di più di un argoment
 
 Consideriamo per esempio la funzione $f_5(x) = 5\sin(x_1*x_2) + 2x_2/4x_3$, che possiamo implementare in Julia in un paio di modi:
 """
+
+# ╔═╡ 924d1787-5be3-4523-9f36-6430d9b5c275
+begin
+	variabile = 4
+end
+
+# ╔═╡ e9777d4a-208d-4ea4-832a-bec4b6879c2e
+variabile
+
+# ╔═╡ 35836d81-aa4d-4d44-b522-9c0fd35a3d0e
+let
+	variable₂ = 5
+end
+
+# ╔═╡ 77d90b78-1a26-4bad-b977-6b3dfd9b52da
+variabile₂
+
+# ╔═╡ e09e0244-5f7c-42ce-8e10-3b4466dde7fe
+let 
+	fun_test(s::String) = "Hello World"
+	fun_test(n::Int) = 10
+	fun_test("Hello"), fun_test(10)
+end
 
 # ╔═╡ 8c6b0236-76b4-11eb-2acf-91da23bedf0e
 begin
@@ -226,11 +239,55 @@ md"""
 Un altro trucco in Julia che permette di [aumentare la leggibilità del codice](https://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code) che utilizza vettori è di utilizzare come argomenti delle _tuple_. Così facendo, il codice funzionerà direttamente anche per vettori, mentre la sua definizione potrà far uso di espressioni più leggibili delle semplici entrate indicizzate di un vettore; illustriamo il concetto con un esempio: 
 """
 
+# ╔═╡ 4d887dc2-556a-48f5-9d78-04e84dfb6e8a
+let 
+	vettore = [1, 2, 3]
+	tupla = (1, 2, 3)
+end
+
 # ╔═╡ a8c28578-76ba-11eb-3f3f-af35ff0b6c74
 f₇((x,y,z)) = 5sin(x*y) + 2*y/4z # più leggibile di 5sin(v[1]*v[2]) + 2*v[2]/4v[3]
 
 # ╔═╡ d9e07084-76ba-11eb-18ac-c58b1bc972ba
 f₇([1,2,3]) # il codice funziona anche fornendo dei vettori come argomenti, ma non scalari (f₇(1,2,3) dà errore)
+
+# ╔═╡ ad294836-96f5-4fbf-aff2-b9d1761dc884
+f₇([1,2,3,4])
+
+# ╔═╡ 8845f38e-4413-495f-bb54-02432045146c
+range_obj = 1:10
+
+# ╔═╡ 0398b359-3e2a-40f9-80b1-0e4a211681fa
+typeof(range_obj)
+
+# ╔═╡ 290339e0-b3bb-4b54-a612-9e18fa704b5d
+for i in range_obj
+	println(i)
+end
+
+# ╔═╡ 52645fb5-a88f-4b65-8ad5-784c956bdcbd
+isbits(range_obj)
+
+# ╔═╡ 9cb93409-3a82-4c31-a0d4-691b7c7b977c
+range = 1:.1:10
+
+# ╔═╡ 8d8c42f7-c148-45d1-9c89-0a62ea3440e1
+vettore_range = [range...] # slurp operator
+
+# ╔═╡ fc590677-4d18-4c58-a8b5-f0aff202ec1c
+isbits(vettore_range)
+
+# ╔═╡ 1c462a45-cefb-4e1d-91c2-3e6f36f4f3af
+@code_llvm isbits(range_obj)
+
+# ╔═╡ b8b9dc8b-8d61-4f3e-b535-706d1a6afec9
+@code_llvm isbits(vettore_range)
+
+# ╔═╡ a1713957-5e71-4345-875a-bfc2c7fdf0de
+@code_native isbits(vettore_range)
+
+# ╔═╡ 8d2c4ca2-c57b-4d39-bb6e-357ff7f0a07f
+[1:10...]
 
 # ╔═╡ 42172fb6-76b7-11eb-0a11-b7e10c6881f5
 md"""
@@ -283,6 +340,12 @@ Ricordando che
 $f_5(x) = 5\sin(x_1*x_2) + 2x_2/4x_3$, possiamo verificare numericamente la risposta precedente per il valore di $\epsilon$ scelto interattivamente in precedenza: 
 """
 
+# ╔═╡ f1695b37-b4cb-4b28-b574-40601f73a87f
+ϵ
+
+# ╔═╡ ffb478e7-5b02-4ab3-bf93-312561ff9119
+
+
 # ╔═╡ 2705bf34-76b8-11eb-3aaa-d363085784ff
 begin
 	∂f₅∂x =  (f₅(1+ϵ, 2,   3  ) - f₅(1, 2, 3)) / ϵ
@@ -317,6 +380,9 @@ Una classe di trasformazioni fondamentali, in quanto _minimale_ dal punto di vis
 Nelle lezioni precedenti ne abbiamo viste varie lavorando con immagini.
 Vediamo di seguito qualche esempio: 
 """
+
+# ╔═╡ 9264d546-7a21-4acc-a436-7efd488d103b
+(((x, y),) -> x*y)([2,4])
 
 # ╔═╡ d364f91a-76b9-11eb-1807-75e733940d53
 begin
@@ -473,7 +539,7 @@ end
 
 # ╔═╡ ed3caab2-76bf-11eb-2544-21e8181adef5
 T = genlin(a,b,c,d) # sostituite altre trasformazioni qui per sperimentare
-# T = warp(α)
+#T = warp(α)
 
 # ╔═╡ 488d732c-7631-11eb-38c3-e9a9165d5606
 md"""
@@ -571,6 +637,19 @@ end;
 	for out_y in LinRange(f, -f, 500),
 		out_x in LinRange(-f, f, 500)
 ]
+
+# ╔═╡ bda276b0-e8ec-49af-aeb3-b0f17b0c13bb
+using Plots
+
+# ╔═╡ 6b473b2d-4326-46b4-af38-07b61de287fc
+begin
+	using Colors, ColorVectorSpace, ImageShow, FileIO, ImageIO
+	using PlutoUI
+	using HypertextLiteral
+	using LinearAlgebra
+	using ForwardDiff
+	using Plots
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1686,21 +1765,40 @@ version = "0.9.1+5"
 # ╠═d42aec08-76ad-11eb-361a-a1f2c90fd4ec
 # ╠═06437040-76ae-11eb-0b1c-23a6470f41c8
 # ╟─28cd454c-76ae-11eb-0d1e-a56995100d59
-# ╟─632a1f8c-76ae-11eb-2088-15c3e3c0a210
+# ╠═632a1f8c-76ae-11eb-2088-15c3e3c0a210
 # ╠═8a99f186-76af-11eb-031b-f1c288993c7f
 # ╟─df07d542-3238-4d92-bf83-1de3e9e42984
 # ╟─f7df6cda-76b1-11eb-11e4-8d0af0349651
+# ╠═924d1787-5be3-4523-9f36-6430d9b5c275
+# ╠═e9777d4a-208d-4ea4-832a-bec4b6879c2e
+# ╠═35836d81-aa4d-4d44-b522-9c0fd35a3d0e
+# ╠═77d90b78-1a26-4bad-b977-6b3dfd9b52da
+# ╠═e09e0244-5f7c-42ce-8e10-3b4466dde7fe
 # ╠═8c6b0236-76b4-11eb-2acf-91da23bedf0e
 # ╠═a397d526-76b5-11eb-3cce-4374e33324d1
 # ╟─978fd5e2-7a9b-4979-bb81-cf126e0ae9e2
 # ╠═bf23ab30-76b5-11eb-1adb-3d74a52cddfd
 # ╠═d5d4ac48-76b6-11eb-1687-ed853c2db7c9
 # ╟─89b2d570-76ba-11eb-0389-813bbb33efea
+# ╠═4d887dc2-556a-48f5-9d78-04e84dfb6e8a
 # ╠═a8c28578-76ba-11eb-3f3f-af35ff0b6c74
 # ╠═d9e07084-76ba-11eb-18ac-c58b1bc972ba
+# ╠═ad294836-96f5-4fbf-aff2-b9d1761dc884
+# ╠═8845f38e-4413-495f-bb54-02432045146c
+# ╠═0398b359-3e2a-40f9-80b1-0e4a211681fa
+# ╠═290339e0-b3bb-4b54-a612-9e18fa704b5d
+# ╠═52645fb5-a88f-4b65-8ad5-784c956bdcbd
+# ╠═9cb93409-3a82-4c31-a0d4-691b7c7b977c
+# ╠═8d8c42f7-c148-45d1-9c89-0a62ea3440e1
+# ╠═fc590677-4d18-4c58-a8b5-f0aff202ec1c
+# ╠═1c462a45-cefb-4e1d-91c2-3e6f36f4f3af
+# ╠═b8b9dc8b-8d61-4f3e-b535-706d1a6afec9
+# ╠═a1713957-5e71-4345-875a-bfc2c7fdf0de
+# ╠═8d2c4ca2-c57b-4d39-bb6e-357ff7f0a07f
 # ╟─42172fb6-76b7-11eb-0a11-b7e10c6881f5
 # ╠═57b0cd3c-76b7-11eb-0ece-810f3a8ede00
 # ╟─0dcec07b-4622-4e9b-9c99-c2a2b04ee2db
+# ╠═bda276b0-e8ec-49af-aeb3-b0f17b0c13bb
 # ╠═56f88155-890e-4129-926d-90c21a1907d8
 # ╟─dd3095a1-abb2-4060-9651-db200dfe1dcf
 # ╠═525d1b08-b8aa-4ffe-b5b3-f7ea5e343023
@@ -1708,10 +1806,13 @@ version = "0.9.1+5"
 # ╟─bc2c6afc-76b7-11eb-0631-51f83cd73205
 # ╠═ef06cfd8-76b7-11eb-1530-1fcd7e5c5992
 # ╟─051db7a0-76b8-11eb-14c7-531f42ef60b8
+# ╠═f1695b37-b4cb-4b28-b574-40601f73a87f
+# ╠═ffb478e7-5b02-4ab3-bf93-312561ff9119
 # ╠═2705bf34-76b8-11eb-3aaa-d363085784ff
 # ╟─dfb9d74c-76b8-11eb-24ff-e521f1294a6f
 # ╟─a0afe3ae-76b9-11eb-2301-cde7260ddd7f
 # ╟─ac1ab224-76bb-11eb-13cb-0bd44bea1042
+# ╠═9264d546-7a21-4acc-a436-7efd488d103b
 # ╠═d364f91a-76b9-11eb-1807-75e733940d53
 # ╟─77a4492c-cc79-4ace-b259-b9ee17737b1f
 # ╠═f25c6308-76b9-11eb-3563-1f0ef4cdf86a
@@ -1728,15 +1829,15 @@ version = "0.9.1+5"
 # ╟─963694d6-76be-11eb-1b27-d5d063964d24
 # ╠═b78ef2fe-76be-11eb-1f55-3d0874b298e8
 # ╟─ad728ee6-7639-11eb-0b23-c37f1366fb4e
-# ╟─40655bcc-6d1e-4d1e-9726-41eab98d8472
+# ╠═40655bcc-6d1e-4d1e-9726-41eab98d8472
 # ╟─c0c90fec-0e55-4be3-8ea2-88b8705ee258
 # ╠═4fcb4ac1-1ad1-406e-8776-4675c0fdbb43
 # ╟─ce55beee-7643-11eb-04bc-b517703facff
 # ╟─005ca75a-7622-11eb-2ba4-9f450e71df1f
 # ╠═ed3caab2-76bf-11eb-2544-21e8181adef5
 # ╠═8e0505be-359b-4459-9de3-f87ec7b60c23
-# ╟─488d732c-7631-11eb-38c3-e9a9165d5606
-# ╟─2efaa336-7630-11eb-0c17-a7d4a0141dac
+# ╠═488d732c-7631-11eb-38c3-e9a9165d5606
+# ╠═2efaa336-7630-11eb-0c17-a7d4a0141dac
 # ╟─60532aa0-740c-11eb-0402-af8ff117f042
 # ╟─3e132708-e7af-4fb7-b828-882c5123bdac
 # ╠═f085296d-48b1-4db6-bb87-db863bb54049

@@ -92,6 +92,21 @@ md"""
 Selezionimao inoltre una trasformazione $T^{-1}$:|
 """
 
+# ╔═╡ 58a30e54-7a08-11eb-1c57-dfef0000255f
+# T⁻¹ = id
+# T⁻¹ = rotate₂(α)
+#T⁻¹ = shear(α)
+# T⁻¹ = lin(A) # uses the scrubbable 
+# T⁻¹ = shear(α) ∘ shear(-α)
+# T⁻¹ = nonlin_shear(α)  
+# T⁻¹ = inverse(nonlin_shear(α))
+# T⁻¹ = nonlin_shear(-α)
+# T⁻¹ = xy 
+# T⁻¹ = warp(α)
+# T⁻¹ = ((x,y),)-> (x+α*y^2,y+α*x^2) # potrebbe essere non-invertibile
+ T⁻¹ = ((x,y),)-> (x,y^2)  
+# T⁻¹  = flipy ∘ ((x,y),) ->  ( (β*x - α*y)/(β-y), -h*y/(β-y) ) 
+
 # ╔═╡ 313a1972-7106-46ca-9fdd-1e004b63b8e4
 md"""
 Visualizziamo l'immagine con cui lavoreremo, usando varie funzioni che definiremo in seguito: 
@@ -216,6 +231,18 @@ md"""
 Rivediamo di seguito qualche famosa trasformazione lineare:
 """
 
+# ╔═╡ ce2c6e86-b6d4-4a7b-a882-eb084254c12c
+typeof([1:10...])
+
+# ╔═╡ 8c2ab108-2534-42a4-bec8-d56affa42623
+typeof(SA[1:10...])
+
+# ╔═╡ c0edf85b-f37c-4994-b7f1-6dd3ec9f7486
+isbits([1:10...])
+
+# ╔═╡ a65df307-ff61-4324-b41b-f66f0b61bc76
+isbits(SA[1:10...])
+
 # ╔═╡ d364f91a-76b9-11eb-1807-75e733940d53
 begin
 	 id((x, y)) = SA[x, y] # identità
@@ -231,21 +258,6 @@ begin
 		 					    -sin(θ)*x + cos(θ)*y] # rotazione
 	 shear(α)  = ((x, y),) -> SA[x + α*y, y] # inclinazione
 end
-
-# ╔═╡ 58a30e54-7a08-11eb-1c57-dfef0000255f
-# T⁻¹ = id
-# T⁻¹ = rotate₂(α)
-T⁻¹ = shear(α)
-# T⁻¹ = lin(A) # uses the scrubbable 
-# T⁻¹ = shear(α) ∘ shear(-α)
-# T⁻¹ = nonlin_shear(α)  
-# T⁻¹ = inverse(nonlin_shear(α))
-# T⁻¹ = nonlin_shear(-α)
-# T⁻¹ = xy 
-# T⁻¹ = warp(α)
-# T⁻¹ = ((x,y),)-> (x+α*y^2,y+α*x^2) # potrebbe essere non-invertibile
-# T⁻¹ = ((x,y),)-> (x,y^2)  
-# T⁻¹  = flipy ∘ ((x,y),) ->  ( (β*x - α*y)/(β-y), -h*y/(β-y) ) 
 
 # ╔═╡ 080d87e0-7aa2-11eb-18f5-2fb6a7a5bcb4
 md"""
@@ -265,6 +277,15 @@ Notare che `lin(A)` definita sopra è equivalente a `lin(a, b, c, d)` quando
 
 $$A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}.$$
 """
+
+# ╔═╡ 6ce72c6b-ba87-49a9-8519-380de9702682
+rand(2,2)
+
+# ╔═╡ 40a96477-e9fd-4ec0-ad72-e8d12548530f
+rand(2)
+
+# ╔═╡ acba803f-4ecf-4b96-aa5a-b3559f07f5d5
+rand(2,2)*rand(2)
 
 # ╔═╡ a290d5e2-7a02-11eb-37db-41bf86b1f3b3
 md"""
@@ -307,7 +328,7 @@ plotly; # usa il backend `plotly` per i grafici
 # ╔═╡ 9730776a-c2ad-44a6-af2d-3feb6cb91060
 begin
 	x = y = -1:.01:1
-	heatmap(x, y, (x, y) -> atan(x, y))
+	heatmap(x, y, (x, y) -> atan(x, y), c=:Blues)
 end
 
 # ╔═╡ 5de5f6d9-f957-4901-bcf3-32313cf84106
@@ -329,12 +350,28 @@ Possiamo [comporre funzioni](https://en.wikipedia.org/wiki/Function_composition)
 """
 
 # ╔═╡ 4b0e8742-7a70-11eb-1e78-813f6ad005f4
-( sin ∘ cos )(.42) ≈ sin(cos(.42))
+( sin ∘ cos )(.42) ≈ sin(cos(.42)) # ≈ = \approx + Tab
+
+# ╔═╡ c4e3cb8b-812d-4565-94d7-f3216e2019a2
+let 
+	input = 10^(-65)
+	( sin ∘ cos )(input) == sin(cos(input)) 
+end
 
 # ╔═╡ 36f00e34-dfa2-4057-8f87-271991d7e64d
 md"""
 Notare che, nonostante `( sin ∘ cos )(x) ≈ sin(cos(x))` siano _uguali_ nel senso che restituiscono lo stesso oggetto (vale a dire il valore $(round(sin(cos(.42)), digits=3))...), notare che le due espressioni esprimono due processi diversi: `sin(cos(.42))` calcola prima `x = cos(.42)` e poi `sin(x)`, mentre l'epressione `( sin ∘ cos )(.42)`, a priori, calcola il valore in `.42` dell'oggetto `sin ∘ cos` considerata come un'unica funzione.
 """
+
+# ╔═╡ ebff3a02-2e87-4b91-8b9d-8014e1ba365b
+# @code_llvm ( sin ∘ cos )(x) 
+
+# ╔═╡ 22ec4ae9-db6d-4e5f-8526-dcfe4e94d9f4
+
+# @code_llvm sin(cos(.42))
+
+# ╔═╡ 6cab4ab3-5fae-4114-b814-ad440bac12c2
+
 
 # ╔═╡ 89bfa2db-719e-4c41-904e-7e6ba39a7f68
 md"""
@@ -355,7 +392,7 @@ md"""
 
 # ╔═╡ ded7939a-2f87-4216-83b3-9bce34a54966
 let f = sin ∘ cos
-	f(.42) ≈ sin(cos(.42))
+	f(.42) == sin(cos(.42))
 end
 
 # ╔═╡ 55140305-af51-493b-8c56-2ef13992e2e0
@@ -401,7 +438,7 @@ Verifichiamo che la funzione risultante è la stessa di `warp`:
 """
 
 # ╔═╡ 01dfc571-c86e-493c-b67d-ddccfb2bf930
-warp(1)([4, 2]) ≈ warp₂(1, 4, 2)([4, 2])
+warp(1)([4, 2]) == warp₂(1, 4, 2)([4, 2])
 
 # ╔═╡ ad700740-7a74-11eb-3369-15e5fd89194d
 md"""
@@ -519,7 +556,7 @@ begin
 	P = randn(2, 2)
 	Q = randn(2, 2)
 	
-	T₁ = lin(P) ∘ lin(Q)
+	T₁ = lin(P) ∘ lin(Q) # \circ + Tab
 	T₂ = lin(P*Q)
 end
 
@@ -2282,10 +2319,17 @@ version = "0.9.1+5"
 # ╟─28ef451c-7aa1-11eb-340c-ab3a1193a3c4
 # ╟─a0afe3ae-76b9-11eb-2301-cde7260ddd7f
 # ╟─fc2deb7c-7aa1-11eb-019f-d3e3c80b9ff1
+# ╠═ce2c6e86-b6d4-4a7b-a882-eb084254c12c
+# ╠═8c2ab108-2534-42a4-bec8-d56affa42623
+# ╠═c0edf85b-f37c-4994-b7f1-6dd3ec9f7486
+# ╠═a65df307-ff61-4324-b41b-f66f0b61bc76
 # ╠═d364f91a-76b9-11eb-1807-75e733940d53
 # ╟─080d87e0-7aa2-11eb-18f5-2fb6a7a5bcb4
 # ╠═15283aba-7aa2-11eb-389c-e9f215bd03e2
 # ╟─2612d2c2-7aa2-11eb-085a-1f27b6174995
+# ╠═6ce72c6b-ba87-49a9-8519-380de9702682
+# ╠═40a96477-e9fd-4ec0-ad72-e8d12548530f
+# ╠═acba803f-4ecf-4b96-aa5a-b3559f07f5d5
 # ╟─a290d5e2-7a02-11eb-37db-41bf86b1f3b3
 # ╠═b4cdd412-7a02-11eb-149a-df1888a0f465
 # ╠═903ac4a8-b1f8-4858-a532-18c3ebb5b2d8
@@ -2298,7 +2342,11 @@ version = "0.9.1+5"
 # ╟─704a87ec-7a1e-11eb-3964-e102357a4d1f
 # ╟─b93f47fd-9900-49bc-9d14-96d9344f28fc
 # ╠═4b0e8742-7a70-11eb-1e78-813f6ad005f4
+# ╠═c4e3cb8b-812d-4565-94d7-f3216e2019a2
 # ╟─36f00e34-dfa2-4057-8f87-271991d7e64d
+# ╠═ebff3a02-2e87-4b91-8b9d-8014e1ba365b
+# ╠═22ec4ae9-db6d-4e5f-8526-dcfe4e94d9f4
+# ╠═6cab4ab3-5fae-4114-b814-ad440bac12c2
 # ╟─89bfa2db-719e-4c41-904e-7e6ba39a7f68
 # ╟─b49c1d83-53c1-4d8d-9e1d-424248688f8d
 # ╠═ded7939a-2f87-4216-83b3-9bce34a54966
