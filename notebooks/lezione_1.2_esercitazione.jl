@@ -29,10 +29,8 @@ md"""
 #### 
 
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
-"""
 
-# ╔═╡ 916a91d2-0e89-4b87-9283-945cf854515e
-md"""
+----
 Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
@@ -1948,7 +1946,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─07ba6402-24ea-458f-a850-98f646a928c8
-# ╟─916a91d2-0e89-4b87-9283-945cf854515e
 # ╟─d1419911-296e-4a38-a918-95ddde4a5fa1
 # ╟─b48d730a-7d60-4252-a7de-65d59b08f4b2
 # ╟─ac8ff080-ed61-11ea-3650-d9df06123e1f

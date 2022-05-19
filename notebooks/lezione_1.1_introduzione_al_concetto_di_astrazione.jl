@@ -160,7 +160,7 @@ md"""
 # ╔═╡ 1a2a9000-ec43-11ea-3f39-8312ea286a92
 begin
 	zeroimage = load(download("https://upload.wikimedia.org/wikipedia/commons/8/80/%E9%87%8E%E7%90%83%E8%A7%A3%E8%AA%AC.jpg"))
-	zerocal = load(download("https://web.archive.org/web/20210304183801im_/https://img.baopublishing.it/uploads/2018/02/Zerocalcare-sito.jpg"))
+	zerocal = load(download("https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zero_ritratto.jpg"))
 	nothing
 end
 
@@ -970,6 +970,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─ee43d808-70fa-11eb-0cc6-337279f41494
 # ╟─263a8a0a-70ee-11eb-236d-c941ba63dff3
 # ╟─52461588-ea1a-4e7d-aec2-3de388d31656
-# ╟─1a2a9000-ec43-11ea-3f39-8312ea286a92
+# ╠═1a2a9000-ec43-11ea-3f39-8312ea286a92
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

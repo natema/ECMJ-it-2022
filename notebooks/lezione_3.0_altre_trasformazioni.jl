@@ -42,9 +42,9 @@ PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ d664f0f0-0c86-43e8-9f79-f285eb32bdd6
 begin
-	armadillo_url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png"
-	personaggi_url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_characters.png"
-	zero_url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_miniature.png"
+	armadillo_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/armadillo_zerocalcare.png"
+	personaggi_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_characters.png"
+	zero_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_miniature.png"
 end
 
 # ╔═╡ c74b5fe6-167b-4dd3-93f1-fc25bc609931

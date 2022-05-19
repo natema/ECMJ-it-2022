@@ -121,7 +121,7 @@ Qual'è il modo migliore di rendere un'immagine **pixellata**?
 """
 
 # ╔═╡ 1c684754-ba55-4dc9-840a-369d8e7fd0e1
-zeroicon = load(download("https://www-sop.inria.fr/members/Emanuele.Natale/images/zero-pixelated.png"))
+zeroicon = load(download("https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zero-pixelated.png"))
 
 # ╔═╡ dff6395e-b40e-4c0c-8e3e-b5928756a544
 md"""
@@ -129,7 +129,7 @@ Proviamo a sperimentare con la seguente immagine:
 """
 
 # ╔═╡ 516e73e2-74fb-11eb-213e-9dbd9472e0db
-armadillo =  load(download("https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png"))
+armadillo =  load(download("https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/armadillo_zerocalcare.png"))
 
 # ╔═╡ 56c539dc-4ff2-4885-8ef4-6a3f32216859
 md"""
@@ -188,7 +188,7 @@ Proviamo a "scalare" (ridimensionare) l'immagine seguente moltiplicandone i pixe
 """
 
 # ╔═╡ 91a1bca4-74aa-11eb-3917-1dfd73d0ad9c
-zerofaces = load(download("https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_miniature.png"))
+zerofaces = load(download("https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_miniature.png"))
 
 # ╔═╡ b5a0611d-886f-488c-9844-df814fe85338
 md"""
@@ -303,7 +303,7 @@ L'operazione di [convoluzione](https://en.wikipedia.org/wiki/Convolution), oggi 
 
 Vediamo un esempio schematico (©Brilliant): 
 
-![Image by Brilliant](https://www-sop.inria.fr/members/Emanuele.Natale/images/img_brillant_conv.png)
+![Image by Brilliant](https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/img_brillant_conv.png)
 """
 
 # ╔═╡ c6e340ee-751e-11eb-3ca7-69595b3693b7

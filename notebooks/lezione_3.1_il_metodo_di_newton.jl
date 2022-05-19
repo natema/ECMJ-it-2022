@@ -29,8 +29,6 @@ md"""
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
 Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
-
-# Questo materiale è ancora WORK IN PROGRESS
 """
 
 # ╔═╡ b7768310-899a-4926-9bb4-794ce8cb98da
@@ -38,14 +36,20 @@ PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ d82f1eae-7b9c-11eb-24d8-e1dcb2eef71a
 md"""
-## Solving equations and finding inverse transformations using the Newton method
+# Trasformazioni inverse tramite metodo di Newton
 """
 
 # ╔═╡ e410c1d0-7ba1-11eb-394f-71dac89756b7
 md"""
-In science and engineering we often need to *solve systems of equations*. 
+Un problema fondamentale per la scienza e l'ingegneria è quello di risolvere [sistemi di equazioni](https://en.wikipedia.org/wiki/System_of_equations). 
 
-If the equations are *linear* then linear algebra tells us a general method to solve them; these are now routinely applied to solve systems of millions of linear equations.
+Nelle lezioni precedenti abbiamo lavorato sulla classe più semplice di tali sistemi di sistemi di equazioni, ovvero i [sistemi lineari](https://en.wikipedia.org/wiki/System_of_linear_equations). 
+In tal caso è oggi possibile risolvere sistemi con milioni di equazione, grazie alle tecnologie moderne (sia dal punto di vista delle tecniche algorithmiche che dal punto di vista dell'efficienza dell'hardware).
+
+Tuttavia, se osserviamo attentamente il mondo reale constateremo come esso non manchi mai di supera la nostra fantasia: ogni modello matematico non è che un'approssimazione della realtà. A maggior ragione, ogni sistema lineare non rappresenta che un'approssimazione della Natura, il cui comportamento cambia su scale diverse: [i sistemi reali sono non-lineari](https://en.wikipedia.org/wiki/Nonlinear_system. 
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Complex_systems_organizational_map.jpg/800px-Complex_systems_organizational_map.jpg)
+
 
 If the equations are *non*linear then things are less obvious. The main solution methods we know work by... reducing the nonlinear equations to a sequence of linear equations! They do this by *approximating* the function by a linear function and solving that to get a better solution, then repeating this operation as many times as necessary to get a *sequence* of increasingly better solutions. This is an example of an **iterative algorithm**.
 
@@ -1541,7 +1545,7 @@ version = "0.9.1+5"
 # ╠═f4fda666-7b9c-11eb-0304-716c5e710462
 # ╟─b7768310-899a-4926-9bb4-794ce8cb98da
 # ╟─d82f1eae-7b9c-11eb-24d8-e1dcb2eef71a
-# ╟─e410c1d0-7ba1-11eb-394f-71dac89756b7
+# ╠═e410c1d0-7ba1-11eb-394f-71dac89756b7
 # ╟─5ea7344c-7ba2-11eb-2cc5-0bbdca218c82
 # ╟─8c0c412e-7c2f-11eb-1880-4f6c45d77597
 # ╟─ce44554e-847f-4129-8841-1a729dfa7a2e

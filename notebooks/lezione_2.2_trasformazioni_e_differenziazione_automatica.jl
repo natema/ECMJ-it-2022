@@ -432,9 +432,9 @@ tuttavia, tale array rettangolare può essere interpretato in modo più profondo
 
 # ╔═╡ 40655bcc-6d1e-4d1e-9726-41eab98d8472
 img_sources = [
-	"https://www-sop.inria.fr/members/Emanuele.Natale/images/armadillo_zerocalcare.png" => "armadillo",
-	"https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_characters.png" => "personaggi",
-	"https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_miniature.png" => "zero"
+	"https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/armadillo_zerocalcare.png" => "armadillo",
+	"https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_characters.png" => "personaggi",
+	"https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_miniature.png" => "zero"
 ]
 
 # ╔═╡ c0c90fec-0e55-4be3-8ea2-88b8705ee258

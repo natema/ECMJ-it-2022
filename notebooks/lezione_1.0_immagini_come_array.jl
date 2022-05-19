@@ -83,7 +83,7 @@ $(html"<br>")
 """
 
 # ╔═╡ 35238013-e079-46e1-a3a1-885fca7d50e4
-url = "https://www-sop.inria.fr/members/Emanuele.Natale/images/zerocalcare_ricerca.png" 
+url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_ricerca.png" 
 
 # ╔═╡ e5a15ad7-254a-49b3-952a-7a740fbf504e
 md"""

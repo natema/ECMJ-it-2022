@@ -23,48 +23,32 @@ begin
 	using OffsetArrays
 end
 
-# ╔═╡ 83eb9ca0-ed68-11ea-0bc5-99a09c68f867
-md"_homework 2, version 1_"
+# ╔═╡ 4189fa28-3e0a-4889-b1bc-7483a89baac4
+md"""
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+
+#### 
+
+[Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
+
+----
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+"""
+
+# ╔═╡ 98db5795-c4da-4f51-a3be-15933033fa10
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ ac8ff080-ed61-11ea-3650-d9df06123e1f
 md"""
-
-# **Homework 2** - _convolutions_
-`18.S191`, Spring 2021
-
-`Due Date`: **Friday Mar 5, 2021 at 11:59pm EST**
-
-This notebook contains _built-in, live answer checks_! In some exercises you will see a coloured box, which runs a test case on your code, and provides feedback based on the result. Simply edit the code, run it, and the check runs again.
-
-_For MIT students:_ there will also be some additional (secret) test cases that will be run as part of the grading process, and we will look at your notebook and write comments.
-
-Feel free to ask questions!
+# Esercitazione 2.3
 """
-
-# ╔═╡ 911ccbce-ed68-11ea-3606-0384e7580d7c
-# edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
-
-student = (name = "SOLUTIONS", kerberos_id = "SOLUTIONS")
-
-# press the ▶ button in the bottom right of this cell to run your edits
-# or use Shift+Enter
-
-# you might need to wait until all other cells in this notebook have completed running. 
-# scroll down the page to see what's up
-
-# ╔═╡ 8ef13896-ed68-11ea-160b-3550eeabbd7d
-md"""
-
-Submission by: **_$(student.name)_** ($(student.kerberos_id)@mit.edu)
-"""
-
-# ╔═╡ 5f95e01a-ee0a-11ea-030c-9dba276aba92
-md"_Let's create a package environment:_"
 
 # ╔═╡ e08781fa-ed61-11ea-13ae-91a49b5eb74a
 md"""
 
-## **Exercise 1** - _Convolutions in 1D_
+## Esercizio 1 - Convoluzione in dimensione 1
+
+# work in progress 
 
 As we have seen in the lectures, we can produce cool effects using the mathematical technique of **convolutions**. We input one image $M$ and get a new image $M'$ back. 
 
@@ -79,6 +63,9 @@ To get started, in Exercise 1 we'll restrict ourselves to convolutions in 1D.
 So a window is just a 1D region from $-\ell$ to $\ell$.
 
 """
+
+# ╔═╡ a3067222-a83a-47b8-91c3-24ad78dd65c5
+bigbreak
 
 # ╔═╡ 80108d80-ee09-11ea-0368-31546eb0d3cc
 md"""
@@ -313,6 +300,9 @@ function create_bar()
 	x
 end
 
+# ╔═╡ 27847dc4-ee0a-11ea-0651-ebbbb3cfd58c
+bigbreak
+
 # ╔═╡ b01858b6-edf3-11ea-0826-938d33c19a43
 md"""
  
@@ -529,8 +519,8 @@ When you set `face_σ` to a low number (e.g. `2.0`), what effect does `face_l` h
 
 # ╔═╡ 7c6642a6-ee15-11ea-0526-a1aac4286cdd
 md"""
-#### Exercise 2.4
-👉 Create a **Sobel edge detection filter**.
+### Esercizio 2.4 - Sobel edge detection filter
+👉 Creare un **Sobel edge detection filter**.
 
 Here, we will need to create two filters that separately detect edges in the horizontal and vertical directions, given by the following kernels:
 
@@ -565,85 +555,24 @@ function with_sobel_edge_detect(image)
 	return missing
 end
 
-# ╔═╡ 8ffe16ce-ee20-11ea-18bd-15640f94b839
-if student.kerberos_id === "jazz"
-	md"""
-!!! danger "Oops!"
-    **Before you submit**, remember to fill in your name and kerberos ID at the top of this notebook!
-	"""
-end
-
 # ╔═╡ 2d9f3ae4-9e4c-49ce-aab0-5f87aba85c3e
-md"## Function library
-
-Just some helper functions used in the notebook."
+md"""
+## Appendice
+"""
 
 # ╔═╡ 5516c800-edee-11ea-12cf-3f8c082ef0ef
-hint(text) = Markdown.MD(Markdown.Admonition("hint", "Hint", [text]))
-
-# ╔═╡ ea435e58-ee11-11ea-3785-01af8dd72360
-hint(md"Have a look at the lecture notes to see examples of adding interactivity with a slider. You can read the Interactivity and the PlutoUI sample notebooks to learn more, you can find them in Pluto's main menu. _(Right click the Pluto logo in the top left -> Open in new tab)_.")
-
-# ╔═╡ 32a07f1d-93cd-4bf3-bac1-91afa6bb88a6
-md"""
-You can use the `÷` operator (you type `\div<TAB>` to get it with autocomplete) to do _integer division_. For example:
-
-```julia
-8 / 6 ≈ 1.3333333 # a floating point number!
-
-8 // 6 == 4 // 3  # a fraction!
-
-8 ÷ 6 == 1        # an integer!
-```
-""" |> hint
-
-# ╔═╡ 649df270-ee24-11ea-397e-79c4355e38db
-hint(md"`num_rows, num_columns = size(M)`")
-
-# ╔═╡ 0cabed84-ee1e-11ea-11c1-7d8a4b4ad1af
-hint(md"`num_rows, num_columns = size(K)`")
-
-# ╔═╡ 9def5f32-ee15-11ea-1f74-f7e6690f2efa
-hint(md"Can we just copy the 1D code? What is different in 2D?")
-
-# ╔═╡ 57360a7a-edee-11ea-0c28-91463ece500d
-almost(text) = Markdown.MD(Markdown.Admonition("warning", "Almost there!", [text]))
-
-# ╔═╡ dcb8324c-edee-11ea-17ff-375ff5078f43
-still_missing(text=md"Replace `missing` with your answer.") = Markdown.MD(Markdown.Admonition("warning", "Here we go!", [text]))
-
-# ╔═╡ 58af703c-edee-11ea-2963-f52e78fc2412
-keep_working(text=md"The answer is not quite right.") = Markdown.MD(Markdown.Admonition("danger", "Keep working on it!", [text]))
-
-# ╔═╡ f3d00a9a-edf3-11ea-07b3-1db5c6d0b3cf
-yays = [md"Great!", md"Yay ❤", md"Great! 🎉", md"Well done!", md"Keep it up!", md"Good job!", md"Awesome!", md"You got the right answer!", md"Let's move on to the next exercise."]
-
-# ╔═╡ 5aa9dfb2-edee-11ea-3754-c368fb40637c
-correct(text=rand(yays)) = Markdown.MD(Markdown.Admonition("correct", "Got it!", [text]))
-
-# ╔═╡ f0c3e99d-9eb9-459e-917a-c2338af6683c
-let
-	result = gaussian_kernel_1D(5)
+begin
+	hint(text) = Markdown.MD(Markdown.Admonition("hint", "Suggerimento", [text]))
+	almost(text) = Markdown.MD(Markdown.Admonition("warning", "Ci siamo quasi.", [text]))
+	still_missing(text=md"Sostituite a `missing` la vostra soluzione.") = Markdown.MD(Markdown.Admonition("warning", "Risolvere l'esercizio", [text]))
+	keep_working(text=md"La risposta non è corretta.") = Markdown.MD(Markdown.Admonition("danger", "Continuate a provare a risolvere l'esercizio", [text]))
+	yays = [md"Molto bene!", md"Ottimo!", md"Perfetto!", md"Eccellente!"]
+	correct(text=rand(yays)) = Markdown.MD(Markdown.Admonition("correct", "Got it!", [text]))
+	not_defined(variable_name) = Markdown.MD(Markdown.Admonition("danger", "Ops!", [md"Verificate che è stata definite una variabile di nome **$(Markdown.Code(string(variable_name)))**"]))
+	wrong_out = "Avete forse dimenticato di restituire il valore di output?"
 	
-	if ismissing(result)
-		still_missing()
-	elseif isnothing(result)
-		keep_working(md"Did you forget to write `return`?")
-	elseif !(result isa AbstractVector)
-		keep_working(md"The returned object is not a `Vector`.")
-	elseif size(result) != (11,)
-		hint(md"The returned vector has the wrong dimensions.")
-	elseif !(sum(result) ≈ 1.0)
-		keep_working(md"You need to _normalize_ the result.")
-	elseif gaussian_kernel_1D(3; σ=1) == gaussian_kernel_1D(3; σ=2)
-		keep_working(md"Use the keyword argument `σ` in your function.")
-	else
-		correct()
-	end
+	"Funzioni e settaggi per l'esercitazione"
 end
-
-# ╔═╡ 74d44e22-edee-11ea-09a0-69aa0aba3281
-not_defined(variable_name) = Markdown.MD(Markdown.Admonition("danger", "Oopsie!", [md"Make sure that you define a variable called **$(Markdown.Code(string(variable_name)))**"]))
 
 # ╔═╡ bcf98dfc-ee1b-11ea-21d0-c14439500971
 if !@isdefined(extend)
@@ -663,6 +592,22 @@ else
 		end
 	end
 end
+
+# ╔═╡ ea435e58-ee11-11ea-3785-01af8dd72360
+hint(md"Have a look at the lecture notes to see examples of adding interactivity with a slider. You can read the Interactivity and the PlutoUI sample notebooks to learn more, you can find them in Pluto's main menu. _(Right click the Pluto logo in the top left -> Open in new tab)_.")
+
+# ╔═╡ 32a07f1d-93cd-4bf3-bac1-91afa6bb88a6
+md"""
+You can use the `÷` operator (you type `\div<TAB>` to get it with autocomplete) to do _integer division_. For example:
+
+```julia
+8 / 6 ≈ 1.3333333 # a floating point number!
+
+8 // 6 == 4 // 3  # a fraction!
+
+8 ÷ 6 == 1        # an integer!
+```
+""" |> hint
 
 # ╔═╡ 7ffd14f8-ee1d-11ea-0343-b54fb0333aea
 if !@isdefined(convolve)
@@ -720,6 +665,30 @@ else
 	end
 end
 
+# ╔═╡ f0c3e99d-9eb9-459e-917a-c2338af6683c
+let
+	result = gaussian_kernel_1D(5)
+	
+	if ismissing(result)
+		still_missing()
+	elseif isnothing(result)
+		keep_working(md"Did you forget to write `return`?")
+	elseif !(result isa AbstractVector)
+		keep_working(md"The returned object is not a `Vector`.")
+	elseif size(result) != (11,)
+		hint(md"The returned vector has the wrong dimensions.")
+	elseif !(sum(result) ≈ 1.0)
+		keep_working(md"You need to _normalize_ the result.")
+	elseif gaussian_kernel_1D(3; σ=1) == gaussian_kernel_1D(3; σ=2)
+		keep_working(md"Use the keyword argument `σ` in your function.")
+	else
+		correct()
+	end
+end
+
+# ╔═╡ 649df270-ee24-11ea-397e-79c4355e38db
+hint(md"`num_rows, num_columns = size(M)`")
+
 # ╔═╡ efd1ceb4-ee1c-11ea-350e-f7e3ea059024
 if !@isdefined(extend)
 	not_defined(:extend)
@@ -740,23 +709,11 @@ else
 	end
 end
 
-# ╔═╡ 115ded8c-ee0a-11ea-3493-89487315feb7
-bigbreak = html"<br><br><br><br><br>";
+# ╔═╡ 0cabed84-ee1e-11ea-11c1-7d8a4b4ad1af
+hint(md"`num_rows, num_columns = size(K)`")
 
-# ╔═╡ 54056a02-ee0a-11ea-101f-47feb6623bec
-bigbreak
-
-# ╔═╡ a3067222-a83a-47b8-91c3-24ad78dd65c5
-bigbreak
-
-# ╔═╡ 27847dc4-ee0a-11ea-0651-ebbbb3cfd58c
-bigbreak
-
-# ╔═╡ 0001f782-ee0e-11ea-1fb4-2b5ef3d241e2
-bigbreak
-
-# ╔═╡ 5842895a-ee10-11ea-119d-81e4c4c8c53b
-bigbreak
+# ╔═╡ 9def5f32-ee15-11ea-1f74-f7e6690f2efa
+hint(md"Can we just copy the 1D code? What is different in 2D?")
 
 # ╔═╡ dfb7c6be-ee0d-11ea-194e-9758857f7b20
 function camera_input(;max_size=200, default_url="https://i.imgur.com/SUmi94P.png")
@@ -1764,14 +1721,11 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
-# ╟─83eb9ca0-ed68-11ea-0bc5-99a09c68f867
-# ╟─8ef13896-ed68-11ea-160b-3550eeabbd7d
+# ╟─4189fa28-3e0a-4889-b1bc-7483a89baac4
+# ╟─98db5795-c4da-4f51-a3be-15933033fa10
 # ╟─ac8ff080-ed61-11ea-3650-d9df06123e1f
-# ╠═911ccbce-ed68-11ea-3606-0384e7580d7c
-# ╟─5f95e01a-ee0a-11ea-030c-9dba276aba92
 # ╠═65780f00-ed6b-11ea-1ecf-8b35523a7ac0
-# ╟─54056a02-ee0a-11ea-101f-47feb6623bec
-# ╟─e08781fa-ed61-11ea-13ae-91a49b5eb74a
+# ╠═e08781fa-ed61-11ea-13ae-91a49b5eb74a
 # ╟─a3067222-a83a-47b8-91c3-24ad78dd65c5
 # ╟─80108d80-ee09-11ea-0368-31546eb0d3cc
 # ╠═7fcd6230-ee09-11ea-314f-a542d00d582e
@@ -1874,23 +1828,13 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═2cc745ce-e145-4428-af3b-926fba271b67
 # ╟─d5ffc6ab-156b-4d43-ac3d-1947d0176e7f
 # ╟─f461f5f2-ee18-11ea-3d03-95f57f9bf09e
-# ╟─7c6642a6-ee15-11ea-0526-a1aac4286cdd
+# ╠═7c6642a6-ee15-11ea-0526-a1aac4286cdd
 # ╠═9eeb876c-ee15-11ea-1794-d3ea79f47b75
 # ╠═1a0324de-ee19-11ea-1d4d-db37f4136ad3
 # ╠═1bf94c00-ee19-11ea-0e3c-e12bc68d8e28
-# ╟─1ff6b5cc-ee19-11ea-2ca8-7f00c204f587
-# ╟─0001f782-ee0e-11ea-1fb4-2b5ef3d241e2
-# ╟─8ffe16ce-ee20-11ea-18bd-15640f94b839
-# ╟─5842895a-ee10-11ea-119d-81e4c4c8c53b
+# ╠═1ff6b5cc-ee19-11ea-2ca8-7f00c204f587
 # ╟─2d9f3ae4-9e4c-49ce-aab0-5f87aba85c3e
-# ╟─5516c800-edee-11ea-12cf-3f8c082ef0ef
-# ╟─57360a7a-edee-11ea-0c28-91463ece500d
-# ╟─dcb8324c-edee-11ea-17ff-375ff5078f43
-# ╟─58af703c-edee-11ea-2963-f52e78fc2412
-# ╟─f3d00a9a-edf3-11ea-07b3-1db5c6d0b3cf
-# ╟─5aa9dfb2-edee-11ea-3754-c368fb40637c
-# ╟─74d44e22-edee-11ea-09a0-69aa0aba3281
-# ╟─115ded8c-ee0a-11ea-3493-89487315feb7
+# ╠═5516c800-edee-11ea-12cf-3f8c082ef0ef
 # ╟─dfb7c6be-ee0d-11ea-194e-9758857f7b20
 # ╟─e15ad330-ee0d-11ea-25b6-1b1b3f3d7888
 # ╟─00000000-0000-0000-0000-000000000001
