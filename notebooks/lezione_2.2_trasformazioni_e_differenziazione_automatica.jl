@@ -162,7 +162,7 @@ ForwardDiff.derivative( x->f₃(x,3), 5)
 md"""
 (Notate l'uso di una funzione anonima al fine di fissare il parametro $\alpha=3$; è una tecnica che torna spesso utile). 
 
-Nel caso sia opportuno un ripasso del concetto di derivata, lo richiameremo di seguito illustrandone l'approssimazione col [motodo alle differenze finite(https://it.wikipedia.org/wiki/Metodo_delle_differenze_finite). 
+Nel caso sia opportuno un ripasso del concetto di derivata, lo richiameremo di seguito illustrandone l'approssimazione col [metodo delle differenze finite](https://it.wikipedia.org/wiki/Metodo_delle_differenze_finite). 
 """
 
 # ╔═╡ 632a1f8c-76ae-11eb-2088-15c3e3c0a210

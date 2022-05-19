@@ -46,82 +46,84 @@ Un problema fondamentale per la scienza e l'ingegneria è quello di risolvere [s
 Nelle lezioni precedenti abbiamo lavorato sulla classe più semplice di tali sistemi di sistemi di equazioni, ovvero i [sistemi lineari](https://en.wikipedia.org/wiki/System_of_linear_equations). 
 In tal caso è oggi possibile risolvere sistemi con milioni di equazione, grazie alle tecnologie moderne (sia dal punto di vista delle tecniche algorithmiche che dal punto di vista dell'efficienza dell'hardware).
 
-Tuttavia, se osserviamo attentamente il mondo reale constateremo come esso non manchi mai di supera la nostra fantasia: ogni modello matematico non è che un'approssimazione della realtà. A maggior ragione, ogni sistema lineare non rappresenta che un'approssimazione della Natura, il cui comportamento cambia su scale diverse: [i sistemi reali sono non-lineari](https://en.wikipedia.org/wiki/Nonlinear_system. 
+Tuttavia, se osserviamo attentamente il mondo reale constateremo come esso non manchi mai di supera la nostra fantasia: ogni modello matematico non è che un'approssimazione della realtà. A maggior ragione, ogni sistema lineare non rappresenta che un'approssimazione della Natura, il cui comportamento cambia su scale diverse: [i sistemi reali sono non-lineari](https://en.wikipedia.org/wiki/Nonlinear_system). 
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Complex_systems_organizational_map.jpg/800px-Complex_systems_organizational_map.jpg)
+Chiedetevi per esempio quanto della realtà fisica può essere descritto da un sistema lineare: 
 
+![](https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/map_of_physics.jpg)
 
-If the equations are *non*linear then things are less obvious. The main solution methods we know work by... reducing the nonlinear equations to a sequence of linear equations! They do this by *approximating* the function by a linear function and solving that to get a better solution, then repeating this operation as many times as necessary to get a *sequence* of increasingly better solutions. This is an example of an **iterative algorithm**.
+"""
 
-A well-known and elegant method, which can be used in many different contexts, is the **Newton method**. It does, however, have the disadvantage that it requires derivatives of the function. This can be overcome using **automatic differentiation** techniques.
+# ╔═╡ 828d2325-8573-4e99-99f0-13ab4ccc6847
+md"""
+Come possiamo **risolvere un sistema di equazioni non-lineari**? 
+Utilizzando la [legge dello strumento](https://en.wikipedia.org/wiki/Law_of_the_instrument), ovvero... riconducendoci ad un sistema lineare, perché quest'ultimo, almeno, sappiamo come risolverlo! 🤷
 
-We will illustrate the Newton method using the `ForwardDiff.jl` package to carry out automatic differentiation, but we will also try to understand what's going on "under the hood".
+Ma come possiamo approssimare un sistema non-lineare con uno lineare?
+
+Nella [lezione sulla differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html) abbiamo visto come calcolare [derivate](https://en.wikipedia.org/wiki/Differential_of_a_function) in Julia. Il concetto di derivata nasce proprio come risposta alla domanda precedente: la derivata di una funzione, che spesso viene inizialmente insegnata descrivendola come _la tangente alla funzione_, non è altro che _l'approssimazione lineare_ della funzione. 
+Quest'idea è resa rigorosa quando riscriviamo una funzione come serie di Taylor: 
+
+$f(x + \epsilon) = f(x) + \epsilon f'(x) + o(\epsilon)$
+
+dove $o(\epsilon)$ rappresenta _termini di ordine superiore_, ovvero altre espressioni che  risultano però trascurabili quando $\epsilon$ è molto piccolo. 
+
+Vedremo ora come mettere in pratica l'idea precedente nel modo più naturale, che è appunto noto come metodo di Newton (guardacaso, uno dei padri del concetto matematico di derivata). 
 """
 
 # ╔═╡ 5ea7344c-7ba2-11eb-2cc5-0bbdca218c82
 md"""
-## The Newton method in 1D
+## IL metodo di Newton: dimensione 1
 
-We would like to solve equations like $f(x) = g(x)$. 
-We rewrite that by moving all the terms to one side of the equation so that we can write $h(x) = 0$, with $h(x) := f(x) - g(x)$.
+Supponiamo di voler risolvere l'equazione $f(x) = g(x)$. 
+Come primo passo, esprimiamola nella forma $h(x) = 0$, ovvero portiamo tutti i termini a destra riscrivendola come $0 = f(x) - g(x)$, e definendo dunque $h(x):=f(x)-g(x)$. 
 
-A point $x^*$ such that $h(x^*) = 0$ is called a **root** or **zero** of $h$.
-
-The Newton method finds zeros, and hence solves the original equation.
+Ora, trovare una soluzione $x^\star$ tale che $f(x^\star) = g(x^\star)$ equivale a trovare $x^\star$ tale che $h(x^\star) = 0$. Quest'ultimo problema è anche noto in ingelse come un [_root finding problem_](https://en.wikipedia.org/wiki/Root-finding_algorithms) (in italiano, il calcolo della _radice_ di una funzione, da non confondere col concetto di radice quadrata o simili). 
+Di seguito, ci riferiremo a una soluzione $x^\star$ come a uno **zero della funzione $h$**. 
 """
 
 # ╔═╡ 8c0c412e-7c2f-11eb-1880-4f6c45d77597
 md"""
+Abbiamo già [accennato all'algoritmo di discesa del gradiente](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html), ed a come consista semplicemente nell'idea di _seguire la direzione in cui la funzione decresce_. Il metodo di Newton consiste in una versione leggermente più sofisticata di tale algoritmo. 
 
-
-The idea of the Newton method is to *follow the direction in which the function is pointing*! We do this by building a **tangent line** at the current position and following that instead, until it hits the $x$-axis.
-
-Let's look at that visually first:
-
+Cerchiamo di costruire una visualizzazione per capire meglio l'idea:
 """
 
 # ╔═╡ ce44554e-847f-4129-8841-1a729dfa7a2e
 md"""
-n = $(@bind n2 Slider(0:10, show_value=true, default=0))
-"""
+ $n =$ $(@bind n2 Slider(0:10, show_value=true, default=0))
 
-# ╔═╡ 77ef0cfb-60db-4599-bec2-b65e99e5b246
-md"""
-x₀ = $(@bind x02 Slider(-10:10, show_value=true, default=6))
+ $x_0 =$ $(@bind x02 Slider(-10:10, show_value=true, default=6))
 """
 
 # ╔═╡ 2445da24-7b9d-11eb-02bd-eb99a3d95a2e
 md"""
-n = $(@bind n Slider(0:10, show_value=true, default=0))
-"""
+ $n =$ $(@bind n Slider(0:10, show_value=true, default=0))
 
-# ╔═╡ 9addbcbe-7b9e-11eb-3e8c-fbab3be40e05
-md"""
-x₀ = $(@bind x0 Slider(-10:10, show_value=true, default=6))
+ $x_0 =$ $(@bind x0 Slider(-10:10, show_value=true, default=6))
 """
 
 # ╔═╡ c0b4defe-7c2f-11eb-1913-bdb01d28a4a8
 md"""
-## Using symbolic calculations to understand derivatives and nonlinear maps
+## Calcolo simbolico in Julia
 """
 
-# ╔═╡ 615aff3c-7c30-11eb-2ca8-9d2fdf299017
+# ╔═╡ 66a54ead-7c3a-4f8c-81cd-327298fb4859
 md"""
-We can use Julia's new symbolic capabilities to understand what's going on with a nonlinear (polynomial) function.
-
-Let's see what happens if we perturb a function $f$ around a point $z$ by a small amount $\eta$.
+Julia permette di effettuare calcoli simbolici. 
+Possiamo sfruttare questa funzionalità per capire meglio cosa succede nel caso di funzioni polinomiali, quando applichiamo una piccola perturbazione $\eta$ ad una funzione $f$ attorno ad un punto $z$: 
 """
-
-# ╔═╡ 71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
-@variables z, η
 
 # ╔═╡ a869e6c6-7c31-11eb-13c8-155d08be02eb
 md"""
-m = $(@bind m Slider(1:6, show_value=true))
+ $m =$ $(@bind m Slider(1:6, show_value=true))
 """
 
 # ╔═╡ 6dc89964-7c30-11eb-0a41-8d97b210ed34
 f(x) = x^m - 2;
+
+# ╔═╡ 71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
+@variables z, η
 
 # ╔═╡ d35e0cc8-7c30-11eb-28d3-17c9e221ea62
 f′(x) = ForwardDiff.derivative(f, x);
@@ -134,7 +136,9 @@ f(z + η)
 
 # ╔═╡ 9d778e36-7c30-11eb-1f4b-894af86a8f5d
 md"""
-When $\eta$	is small, $\eta^2$ is *very* small, so we can ignore it. We are left with terms that either don't contain $\eta$ (constants), or multiply $\eta$ (linear). The part that multiplies $\eta$ is the derivative:
+Quanto la perturbazione $\eta$ è piccola, $\eta^2$ è **molto piccola**. 
+Se supponiamo di poter trascurare i termini di ordine superiore ad $\eta$, allora ciò che rimane sono termini che non dipendono da $\eta$ (costanti) oppure termini che moltiplicano $\eta$ stesso (lineari in $\eta$). 
+La parte che multiplica $\eta$ in tal caso è proprio la derivata della funzione $f$.
 """
 
 # ╔═╡ db26375a-7c30-11eb-066e-ab9e8ded3356
@@ -145,6 +149,9 @@ f(z) + η*f′(z)
 
 # ╔═╡ 389e990e-7c40-11eb-37c4-5ba0f59173b3
 md"""
+In altre parole, come abbiamo discusso sopra, constatiamo come la derivata 
+s
+
 The derivative gives the "*linear* part" of the function. `ForwardDiff.jl`, and forward-mode automatic differentiation in general, effectively uses this (although not symbolically in this sense) to just propagate the linear part of each function through a calculation.
 """
 
@@ -369,15 +376,13 @@ end
 
 # ╔═╡ ecb40aea-7b9c-11eb-1476-e54faf32d91c
 let
-	f(x) = x^2 - 2
-
+	f(x) = x^2 - 3	
 	standard_Newton(f, n2, -1:0.01:10, x02, -10, 70)
 end
 
 # ╔═╡ ec6c6328-7b9c-11eb-1c69-dba12ae522ad
 let
 	f(x) = 0.2x^3 - 4x + 1
-	
 	standard_Newton(f, n, -10:0.01:10, x0, -10, 70)
 end
 
@@ -1545,21 +1550,20 @@ version = "0.9.1+5"
 # ╠═f4fda666-7b9c-11eb-0304-716c5e710462
 # ╟─b7768310-899a-4926-9bb4-794ce8cb98da
 # ╟─d82f1eae-7b9c-11eb-24d8-e1dcb2eef71a
-# ╠═e410c1d0-7ba1-11eb-394f-71dac89756b7
+# ╟─e410c1d0-7ba1-11eb-394f-71dac89756b7
+# ╟─828d2325-8573-4e99-99f0-13ab4ccc6847
 # ╟─5ea7344c-7ba2-11eb-2cc5-0bbdca218c82
 # ╟─8c0c412e-7c2f-11eb-1880-4f6c45d77597
 # ╟─ce44554e-847f-4129-8841-1a729dfa7a2e
-# ╟─77ef0cfb-60db-4599-bec2-b65e99e5b246
 # ╠═ecb40aea-7b9c-11eb-1476-e54faf32d91c
 # ╟─2445da24-7b9d-11eb-02bd-eb99a3d95a2e
-# ╟─9addbcbe-7b9e-11eb-3e8c-fbab3be40e05
 # ╠═ec6c6328-7b9c-11eb-1c69-dba12ae522ad
 # ╟─c0b4defe-7c2f-11eb-1913-bdb01d28a4a8
-# ╟─615aff3c-7c30-11eb-2ca8-9d2fdf299017
-# ╠═71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
-# ╠═6dc89964-7c30-11eb-0a41-8d97b210ed34
-# ╠═d35e0cc8-7c30-11eb-28d3-17c9e221ea62
+# ╟─66a54ead-7c3a-4f8c-81cd-327298fb4859
 # ╟─a869e6c6-7c31-11eb-13c8-155d08be02eb
+# ╠═6dc89964-7c30-11eb-0a41-8d97b210ed34
+# ╠═71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
+# ╠═d35e0cc8-7c30-11eb-28d3-17c9e221ea62
 # ╠═63dbf052-7c32-11eb-1062-5b3581d38f70
 # ╠═9371f930-7c30-11eb-1f77-c7f31b97ea26
 # ╠═98158a38-7c30-11eb-0796-2335e97ec6d0
@@ -1567,7 +1571,7 @@ version = "0.9.1+5"
 # ╠═db26375a-7c30-11eb-066e-ab9e8ded3356
 # ╠═ea741018-7c30-11eb-3912-a50475e6ec49
 # ╠═e18f2470-7c31-11eb-2b74-d59d00d20ba4
-# ╟─389e990e-7c40-11eb-37c4-5ba0f59173b3
+# ╠═389e990e-7c40-11eb-37c4-5ba0f59173b3
 # ╟─5123c038-7ba2-11eb-1be2-19f789b02c1f
 # ╟─9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
 # ╟─f153b4b8-7ba0-11eb-37ec-4f1a3dbe20e8
