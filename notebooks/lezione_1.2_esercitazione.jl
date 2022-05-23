@@ -88,7 +88,7 @@ colored_line(random_vect)
 # ╔═╡ 77adb065-bfd4-4680-9c2a-ad4d92689dbf
 md"""
 ### Esercizio 1.2
-👉 Scrivete una funzione `my_sum` che una un ciclo `for`, e che calcola il totale di un vettore di numeri.
+👉 Scrivete usa funzione `my_sum` che una un ciclo `for`, e che calcola il totale di un vettore di numeri.
 """
 
 # ╔═╡ bd907ee1-5253-4cae-b5a5-267dac24362a
@@ -618,7 +618,7 @@ Provate quanto segue:
 
 # ╔═╡ 24090306-7395-4f2f-af31-34f7486f3945
 hint(md"""Consultate questa lezione per un ripasso della sintassi di base in Julia: 
-	[Lezione 0.2. - Introduzione al linguaggio Julia](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.2_-_introduzione_a_julia.jl.html)""")
+	[Lezione 0.2. - Introduzione al linguaggio Julia](https://natema.github.io/ECMJ-it/lectures/lezione_0.2_-_introduzione_a_julia.jl.html)""")
 
 # ╔═╡ aa1ff74a-4e78-4ef1-8b8d-3a60a168cf6d
 hint(md"""
