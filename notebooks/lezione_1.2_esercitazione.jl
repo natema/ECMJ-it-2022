@@ -71,7 +71,7 @@ md"""
 """
 
 # ╔═╡ f51333a6-eded-11ea-34e6-bfbb3a69bcb0
-random_vect = missing # scrivete qui il codice che risolve l'esercizio
+random_vect = rand(10) # scrivete qui il codice che risolve l'esercizio
 
 # ╔═╡ 5da8cbe8-eded-11ea-2e43-c5b7cc71e133
 begin
@@ -93,7 +93,11 @@ md"""
 
 # ╔═╡ bd907ee1-5253-4cae-b5a5-267dac24362a
 function my_sum(xs)
-	return missing # scrivete qui il proprio codice.
+	soluzione = 0
+	for x in xs
+		soluzione += x
+	end
+	return soluzione # scrivete qui il proprio codice.
 end
 
 # ╔═╡ 6640110a-d171-4b32-8d12-26979a36b718
@@ -103,9 +107,17 @@ my_sum([1,2,3])
 md"### Esercizio 1.3
 👉 Usate la vostra funzione `my_sum` per scrivere una funzione `mean`, che calcola la media di un vettore di numeri."
 
+# ╔═╡ 5ee337b1-ddb8-4ba1-9835-a41fbde53761
+
+
 # ╔═╡ 0ffa8354-edee-11ea-2883-9d5bfea4a236
 function mean(xs)
-	return missing # scrivete qui il vostro codice
+	soluzione = 0.
+	for x in xs
+		soluzione += x
+	end
+	soluzione /= length(xs)
+	return soluzione # scrivete qui il vostro codice
 end
 
 # ╔═╡ 1f104ce4-ee0e-11ea-2029-1d9c817175af
@@ -1966,6 +1978,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─e0bfc973-2808-4f84-b065-fb3d05401e30
 # ╟─24090306-7395-4f2f-af31-34f7486f3945
 # ╟─cf738088-eded-11ea-2915-61735c2aa990
+# ╠═5ee337b1-ddb8-4ba1-9835-a41fbde53761
 # ╠═0ffa8354-edee-11ea-2883-9d5bfea4a236
 # ╠═1f104ce4-ee0e-11ea-2029-1d9c817175af
 # ╟─38dc80a0-edef-11ea-10e9-615255a4588c

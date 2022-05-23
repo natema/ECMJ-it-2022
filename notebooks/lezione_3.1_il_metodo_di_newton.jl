@@ -89,6 +89,13 @@ Abbiamo già [accennato all'algoritmo di discesa del gradiente](https://natema.g
 Cerchiamo di costruire una visualizzazione per capire meglio l'idea:
 """
 
+# ╔═╡ 5ee0e1b9-c914-4924-aacf-b82356670d08
+md"""
+$x^2 - 3 = 0$
+
+$x^2 = 3$
+"""
+
 # ╔═╡ ce44554e-847f-4129-8841-1a729dfa7a2e
 md"""
  $n =$ $(@bind n2 Slider(0:10, show_value=true, default=0))
@@ -102,6 +109,44 @@ md"""
 
  $x_0 =$ $(@bind x0 Slider(-10:10, show_value=true, default=6))
 """
+
+# ╔═╡ bb07911a-6141-4143-86dc-95ec7c429452
+md"""
+## funzione "≈"
+"""
+
+# ╔═╡ 5f9cdd63-5628-4c24-a961-f723211bf529
+1. ≈ 1.000000001 # `\approx` + Tab, oppure `isapprox(1., 1.000000001)`
+
+# ╔═╡ d75c8642-2bb6-4d9c-84bf-e6e3155f26fe
+1.
+
+# ╔═╡ e456b6ae-f81e-4bb5-a484-41043bcde56f
+typeof(1.)
+
+# ╔═╡ ff8ccec2-d226-4a9a-aeb5-47cecb25d8f9
+1. + eps(1.) == 1.
+
+# ╔═╡ 25a003d3-f82e-43a7-b9c1-d74299a13660
+1. + eps(1.) ≈ 1.
+
+# ╔═╡ 89a70a73-619a-4259-b33d-3167e9196824
+1. + sqrt(eps(1.)) == 1.
+
+# ╔═╡ 2900c655-c010-4054-8806-909e77f41061
+eps(1.)
+
+# ╔═╡ bc3325c9-5ab4-44ea-af9f-55aa52b0f88f
+1. + 10^(-16) == 1.
+
+# ╔═╡ 9a9375a4-c930-4f91-80ec-4a3a8f41cd1e
+eps((10.)^10)
+
+# ╔═╡ 61072fd0-55e5-42e1-85af-ff9ef94021a7
+1. == 1.000000001
+
+# ╔═╡ 9e7b9379-0ee6-41fb-94ca-8870b88bdef5
+cos(sin(.42)) ≈ (cos ∘ sin)(.42)
 
 # ╔═╡ c0b4defe-7c2f-11eb-1913-bdb01d28a4a8
 md"""
@@ -122,8 +167,20 @@ md"""
 # ╔═╡ 6dc89964-7c30-11eb-0a41-8d97b210ed34
 f(x) = x^m - 2;
 
+# ╔═╡ 0d1cd652-b7db-4fed-9186-5a01916eabca
+@macroexpand @variables z, η
+
 # ╔═╡ 71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
 @variables z, η
+
+# ╔═╡ bc591254-7560-4d3d-ad34-98caa2e1d1d7
+x = 2
+
+# ╔═╡ 570693d6-35ce-495b-87b7-d76f0c3b1cd0
+dump(x > 2 ? 1 : 0)
+
+# ╔═╡ b9c6afa7-a877-45bf-b77c-93d16ed55029
+f(w)
 
 # ╔═╡ d35e0cc8-7c30-11eb-28d3-17c9e221ea62
 f′(x) = ForwardDiff.derivative(f, x);
@@ -150,9 +207,13 @@ f(z) + η*f′(z)
 # ╔═╡ 389e990e-7c40-11eb-37c4-5ba0f59173b3
 md"""
 In altre parole, come abbiamo discusso sopra, constatiamo come la derivata 
-s
+sia la _parte linare_ della funzione. 
+Come abbiamo discusso a lezione, il pacchetto `ForwardDiff.jl`, e la differenziazione automatica in generale, utilizzano il fatto precedente per propagare tale _parte lineare_ (ovvero la derivata), attraverso i calcoli, in un senso diverso da quello del calcolo simbolico. 
+"""
 
-The derivative gives the "*linear* part" of the function. `ForwardDiff.jl`, and forward-mode automatic differentiation in general, effectively uses this (although not symbolically in this sense) to just propagate the linear part of each function through a calculation.
+# ╔═╡ 41fe8a21-50b7-4b1d-9ddf-cb48dc8b7564
+md"""
+# La parte restante delle note è ancora "work in progress"
 """
 
 # ╔═╡ 5123c038-7ba2-11eb-1be2-19f789b02c1f
@@ -212,16 +273,16 @@ md"""
 """
 
 # ╔═╡ d690f83a-7c2e-11eb-14d7-79a250deb473
-function newton1D(f, x0)
+function newton1D(f, x0 = 37.0, n = 10)
 	
 	f′(x) = ForwardDiff.derivative(f, x)   # \prime<TAB>
 	
-	x0 = 37.0  # starting point
-	sequence = [x0]
+	#x0 = 37.0  # starting point
+	#sequence = [x0]
 	
 	x = x0
 	
-	for i in 1:10
+	for i in 1:n
 		x -= f(x) / f′(x)
 	end
 	
@@ -234,6 +295,12 @@ newton1D(x -> x^2 - 2, 37.0)
 
 # ╔═╡ 35791bca-7c2f-11eb-1cfb-8d5ebd0208cb
 sqrt(2)
+
+# ╔═╡ f8102f63-f9ae-4b3d-b866-455e798c3f34
+newton1D(x -> sin(x) - .5, 1.0, 10)
+
+# ╔═╡ 2adcae56-213c-43c0-ac41-535db27198d8
+asin(.5)
 
 # ╔═╡ 1d7dd328-7c2d-11eb-2b35-bdbf5df686f0
 md"""
@@ -300,14 +367,24 @@ md"""
 ## Implementation in 2D
 """
 
+# ╔═╡ 3f16440f-d8fd-4e2e-8864-d8eb78b77631
+let 
+	M = rand(2, 2)
+	vec = rand(2)
+	M, vec, M \ vec # M^-1 * vec
+end
+
+# ╔═╡ 520e8c0e-89a7-4310-a93a-4d207c8e5230
+
+
 # ╔═╡ 1db66b0e-7ba4-11eb-2157-d5a399a73b1f
 function newton2D_step(T, x)
 	
 	J = ForwardDiff.jacobian(T, x)   # should use StaticVectors
 	
-	δ = J \ T(x)   # J^(-1) * T(x)
+	δ = - J \ T(x)   # J^(-1) * T(x)
 	
-	return x - δ
+	return x + δ
 end
 
 # ╔═╡ 923bde64-7ba4-11eb-21e9-a11993aaab2e
@@ -382,18 +459,27 @@ end
 
 # ╔═╡ ec6c6328-7b9c-11eb-1c69-dba12ae522ad
 let
-	f(x) = 0.2x^3 - 4x + 1
+	f(x) = 20*cos(x) - .4x + 1
 	standard_Newton(f, n, -10:0.01:10, x0, -10, 70)
 end
 
 # ╔═╡ 515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
 T(α) = ((x, y),) -> [x + α*y^2, y + α*x^2]
 
+# ╔═╡ 3828b94c-7c2d-11eb-2e01-79038b0f5226
+image = T(p)( [ (a + δ), (b + ϵ) ] )
+
 # ╔═╡ 09b97be8-7c2e-11eb-05fd-65bbd097afb8
 jacobian(T(p), [a, b]) .|> Text
 
 # ╔═╡ 18ce2fac-7c2e-11eb-03d2-b3a674621662
 jacobian(T(p), [a, b]) * [δ, ϵ]
+
+# ╔═╡ ed605b90-7c3e-11eb-34e9-776a05a177dd
+image - T(p)([a, b])
+
+# ╔═╡ 35b5c5c6-7c3f-11eb-2723-4b406a809114
+image - T(p)([a, b]) - jacobian(T(p), [a, b]) * [δ, ϵ]
 
 # ╔═╡ 395fd8e2-7c31-11eb-1933-dd719fa0cd22
 md"""
@@ -402,6 +488,9 @@ md"""
 
 # ╔═╡ 02b1b470-7c31-11eb-28f4-411956f73f12
 T(α)( [0.3, 0.4] )
+
+# ╔═╡ 81dc7ef6-6470-440b-9070-12c85304f476
+inverse(T(α))
 
 # ╔═╡ 07a754da-7c31-11eb-0394-4bef4d79fc30
 inverse(T(α))( [0.3, 0.4] )
@@ -418,19 +507,10 @@ md"""
 expand(ex) = simplify(ex, polynorm=true)
 
 # ╔═╡ 98158a38-7c30-11eb-0796-2335e97ec6d0
-expand( f(z + η) )
+expand( f(z + η) ) # z^2 + 2zη + η^2
 
 # ╔═╡ e18f2470-7c31-11eb-2b74-d59d00d20ba4
 expand( f(z + η) ) - ( f(z) + η*f′(z) )
-
-# ╔═╡ 3828b94c-7c2d-11eb-2e01-79038b0f5226
-image = expand.(T(p)( [ (a + δ), (b + ϵ) ] ))
-
-# ╔═╡ ed605b90-7c3e-11eb-34e9-776a05a177dd
-image - T(p)([a, b])
-
-# ╔═╡ 35b5c5c6-7c3f-11eb-2723-4b406a809114
-simplify.(expand.(image - T(p)([a, b]) - jacobian(T(p), [a, b]) * [δ, ϵ]))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1554,15 +1634,32 @@ version = "0.9.1+5"
 # ╟─828d2325-8573-4e99-99f0-13ab4ccc6847
 # ╟─5ea7344c-7ba2-11eb-2cc5-0bbdca218c82
 # ╟─8c0c412e-7c2f-11eb-1880-4f6c45d77597
+# ╟─5ee0e1b9-c914-4924-aacf-b82356670d08
 # ╟─ce44554e-847f-4129-8841-1a729dfa7a2e
 # ╠═ecb40aea-7b9c-11eb-1476-e54faf32d91c
 # ╟─2445da24-7b9d-11eb-02bd-eb99a3d95a2e
 # ╠═ec6c6328-7b9c-11eb-1c69-dba12ae522ad
+# ╟─bb07911a-6141-4143-86dc-95ec7c429452
+# ╠═5f9cdd63-5628-4c24-a961-f723211bf529
+# ╠═d75c8642-2bb6-4d9c-84bf-e6e3155f26fe
+# ╠═e456b6ae-f81e-4bb5-a484-41043bcde56f
+# ╠═ff8ccec2-d226-4a9a-aeb5-47cecb25d8f9
+# ╠═25a003d3-f82e-43a7-b9c1-d74299a13660
+# ╠═89a70a73-619a-4259-b33d-3167e9196824
+# ╠═2900c655-c010-4054-8806-909e77f41061
+# ╠═bc3325c9-5ab4-44ea-af9f-55aa52b0f88f
+# ╠═9a9375a4-c930-4f91-80ec-4a3a8f41cd1e
+# ╠═61072fd0-55e5-42e1-85af-ff9ef94021a7
+# ╠═9e7b9379-0ee6-41fb-94ca-8870b88bdef5
 # ╟─c0b4defe-7c2f-11eb-1913-bdb01d28a4a8
 # ╟─66a54ead-7c3a-4f8c-81cd-327298fb4859
 # ╟─a869e6c6-7c31-11eb-13c8-155d08be02eb
 # ╠═6dc89964-7c30-11eb-0a41-8d97b210ed34
+# ╠═0d1cd652-b7db-4fed-9186-5a01916eabca
 # ╠═71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
+# ╠═bc591254-7560-4d3d-ad34-98caa2e1d1d7
+# ╠═570693d6-35ce-495b-87b7-d76f0c3b1cd0
+# ╠═b9c6afa7-a877-45bf-b77c-93d16ed55029
 # ╠═d35e0cc8-7c30-11eb-28d3-17c9e221ea62
 # ╠═63dbf052-7c32-11eb-1062-5b3581d38f70
 # ╠═9371f930-7c30-11eb-1f77-c7f31b97ea26
@@ -1571,7 +1668,8 @@ version = "0.9.1+5"
 # ╠═db26375a-7c30-11eb-066e-ab9e8ded3356
 # ╠═ea741018-7c30-11eb-3912-a50475e6ec49
 # ╠═e18f2470-7c31-11eb-2b74-d59d00d20ba4
-# ╠═389e990e-7c40-11eb-37c4-5ba0f59173b3
+# ╟─389e990e-7c40-11eb-37c4-5ba0f59173b3
+# ╟─41fe8a21-50b7-4b1d-9ddf-cb48dc8b7564
 # ╟─5123c038-7ba2-11eb-1be2-19f789b02c1f
 # ╟─9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
 # ╟─f153b4b8-7ba0-11eb-37ec-4f1a3dbe20e8
@@ -1581,6 +1679,8 @@ version = "0.9.1+5"
 # ╠═d690f83a-7c2e-11eb-14d7-79a250deb473
 # ╠═2fb40dc6-7c2f-11eb-2469-8deb4db59b5c
 # ╠═35791bca-7c2f-11eb-1cfb-8d5ebd0208cb
+# ╠═f8102f63-f9ae-4b3d-b866-455e798c3f34
+# ╠═2adcae56-213c-43c0-ac41-535db27198d8
 # ╟─1d7dd328-7c2d-11eb-2b35-bdbf5df686f0
 # ╟─d44c73b4-7c3e-11eb-1302-8ba9039ae789
 # ╟─fe742fec-7c3e-11eb-1f54-55cdf02a1574
@@ -1597,16 +1697,19 @@ version = "0.9.1+5"
 # ╟─b7dc4666-7ba1-11eb-32eb-fd3d720c2960
 # ╟─c519704c-7ba1-11eb-12da-8b9b176daa0d
 # ╟─e1afc6ca-7ba1-11eb-3fb9-ef3a7f82d750
+# ╠═3f16440f-d8fd-4e2e-8864-d8eb78b77631
+# ╠═520e8c0e-89a7-4310-a93a-4d207c8e5230
 # ╠═1db66b0e-7ba4-11eb-2157-d5a399a73b1f
 # ╠═923bde64-7ba4-11eb-21e9-a11993aaab2e
 # ╟─61905ae0-7ba6-11eb-0773-17e9aa4e9991
 # ╠═ff8b6aec-7ba5-11eb-0d83-19803b1bdda7
 # ╠═2e2e5f0e-7c31-11eb-0da7-770b07ee6202
 # ╟─1b77fada-7b9d-11eb-3266-ebb3895cb76a
-# ╠═f25af026-7b9c-11eb-1f11-77a8b06b2d71
+# ╟─f25af026-7b9c-11eb-1f11-77a8b06b2d71
 # ╠═515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
 # ╟─395fd8e2-7c31-11eb-1933-dd719fa0cd22
 # ╠═02b1b470-7c31-11eb-28f4-411956f73f12
+# ╠═81dc7ef6-6470-440b-9070-12c85304f476
 # ╠═07a754da-7c31-11eb-0394-4bef4d79fc30
 # ╠═5faa2784-7c31-11eb-34f1-3f8224dbdbde
 # ╟─ee91563e-7c3e-11eb-3f65-1f336073869a

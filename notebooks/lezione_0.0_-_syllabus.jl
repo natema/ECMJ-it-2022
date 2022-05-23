@@ -65,14 +65,14 @@ md"""
 
 - 2.0. [Trasformazione di immagini](https://natema.github.io/ECMJ-it/lectures/lezione_2.0_trasformazione_di_immagini.jl.html)
 - 2.1. [Trasformazioni lineari](https://natema.github.io/ECMJ-it/lectures/lezione_2.1_trasformazioni_lineari.jl.html)
-- 2.2. [Trasformazioni e differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
-- 2.3. Esercitazione: Coming Soon
 """
 
 # ╔═╡ 22c1247c-678a-4c75-ad55-301f1bf0b4d7
 md"""
-### Lezione 3
+### Lezione 4
 
+- 2.2. [Trasformazioni e differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
+- 2.3. Esercitazione: Coming Soon
 - 3.0 [Altre trasformazioni](https://natema.github.io/ECMJ-it/lectures/lezione_3.0_altre_trasformazioni.jl.html)
 """
 
@@ -310,7 +310,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─754b5737-84ef-4ef2-972c-c4bbe275894a
 # ╟─30549592-8213-4de9-b495-7a705d49c4b3
 # ╟─458e2b2b-55bb-420c-953d-827e379d673a
-# ╟─87386680-49f5-43fc-b573-43b2dd09be10
+# ╠═87386680-49f5-43fc-b573-43b2dd09be10
 # ╟─0ed9194c-47bd-46f8-8881-1a62e90057c5
 # ╟─e828a20d-5d8e-4bde-bfb2-99f8a634182c
 # ╟─22c1247c-678a-4c75-ad55-301f1bf0b4d7
