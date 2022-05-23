@@ -69,7 +69,7 @@ md"""
 
 # ╔═╡ 22c1247c-678a-4c75-ad55-301f1bf0b4d7
 md"""
-### Lezione 4
+### Lezione 3
 
 - 2.2. [Trasformazioni e differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
 - 2.3. Esercitazione: Coming Soon
@@ -77,7 +77,19 @@ md"""
 """
 
 # ╔═╡ 046a0d16-eb6f-48da-936c-cddf015b4f2b
+md"""
+### Lezione 4
 
+- 3.1. [Il metodo di Newton](https://natema.github.io/ECMJ-it/lectures/lezione_3.1_il_metodo_di_newton.jl)
+- 4.0 [Programmazione dinamica](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl)
+"""
+
+# ╔═╡ 20469a84-0122-459e-81f1-8f43c93aea69
+md"""
+### Lezione 5 
+
+- 5.0. [Graph Mining in Julia]() by [Pierluigi Crescenzi](https://en.wikipedia.org/wiki/Pierluigi_Crescenzi)
+"""
 
 # ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
 md"""
@@ -317,7 +329,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─0ed9194c-47bd-46f8-8881-1a62e90057c5
 # ╟─e828a20d-5d8e-4bde-bfb2-99f8a634182c
 # ╟─22c1247c-678a-4c75-ad55-301f1bf0b4d7
-# ╠═046a0d16-eb6f-48da-936c-cddf015b4f2b
+# ╟─046a0d16-eb6f-48da-936c-cddf015b4f2b
+# ╟─20469a84-0122-459e-81f1-8f43c93aea69
 # ╟─56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
