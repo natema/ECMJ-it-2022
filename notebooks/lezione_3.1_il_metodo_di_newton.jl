@@ -91,32 +91,32 @@ Cerchiamo di costruire una visualizzazione per capire meglio l'idea:
 
 # ╔═╡ ce44554e-847f-4129-8841-1a729dfa7a2e
 md"""
- $n =$ $(@bind n2 Slider(0:10, show_value=true, default=0))
+ $n =$ $(@bind n2 Slider(0:10, show_value=true, default=1))
 
  $x_0 =$ $(@bind x02 Slider(-10:10, show_value=true, default=6))
 """
 
 # ╔═╡ 2445da24-7b9d-11eb-02bd-eb99a3d95a2e
 md"""
- $n =$ $(@bind n Slider(0:10, show_value=true, default=0))
+ $n =$ $(@bind n Slider(0:10, show_value=true, default=1))
 
- $x_0 =$ $(@bind x0 Slider(-10:10, show_value=true, default=6))
+ $x_0 =$ $(@bind x0 Slider(-10:.5:10, show_value=true, default=3))
 """
 
 # ╔═╡ c0b4defe-7c2f-11eb-1913-bdb01d28a4a8
 md"""
-## Calcolo simbolico in Julia
+### Calcolo simbolico in Julia
 """
 
 # ╔═╡ 66a54ead-7c3a-4f8c-81cd-327298fb4859
 md"""
-Julia permette di effettuare calcoli simbolici. 
+Julia permette di effettuare calcoli simbolici usando il pacchetto [symbolics.jl](https://symbolics.juliasymbolics.org/stable/). 
 Possiamo sfruttare questa funzionalità per capire meglio cosa succede nel caso di funzioni polinomiali, quando applichiamo una piccola perturbazione $\eta$ ad una funzione $f$ attorno ad un punto $z$: 
 """
 
 # ╔═╡ a869e6c6-7c31-11eb-13c8-155d08be02eb
 md"""
- $m =$ $(@bind m Slider(1:6, show_value=true))
+ $m =$ $(@bind m Slider(1:6, show_value=true, default=2))
 """
 
 # ╔═╡ 6dc89964-7c30-11eb-0a41-8d97b210ed34
@@ -134,6 +134,17 @@ f(z)
 # ╔═╡ 9371f930-7c30-11eb-1f77-c7f31b97ea26
 f(z + η)
 
+# ╔═╡ acd55b35-99e8-4b75-b734-28c8c0cf676e
+md"""
+Definiamo il seguente comando che sostituisce a potenze di binomi $(x+y)^n$ l'espansione del binomio, e funzionalità simili:
+"""
+
+# ╔═╡ 35b9a0d2-b796-458c-9289-25f66d3cb3db
+expand(expression) = simplify(expression; expand=true)
+
+# ╔═╡ 98158a38-7c30-11eb-0796-2335e97ec6d0
+expand( f(z + η) )
+
 # ╔═╡ 9d778e36-7c30-11eb-1f4b-894af86a8f5d
 md"""
 Quanto la perturbazione $\eta$ è piccola, $\eta^2$ è **molto piccola**. 
@@ -147,22 +158,27 @@ f′(z)
 # ╔═╡ ea741018-7c30-11eb-3912-a50475e6ec49
 f(z) + η*f′(z)
 
+# ╔═╡ e18f2470-7c31-11eb-2b74-d59d00d20ba4
+expand( f(z + η) ) - ( f(z) + η*f′(z) )
+
 # ╔═╡ 389e990e-7c40-11eb-37c4-5ba0f59173b3
 md"""
 In altre parole, come abbiamo discusso sopra, constatiamo come la derivata 
-s
+fornisce la _parte lineare_ della funzione: sottraendo nella cella precendente $f(z)+\eta f'(z)$ a $f(z+\eta)$, ciò che rimane sono termini che dipendono da $\eta$ in modo che converge a zero asintoticamente più rapidamente di $\eta$, ovvero
 
-The derivative gives the "*linear* part" of the function. `ForwardDiff.jl`, and forward-mode automatic differentiation in general, effectively uses this (although not symbolically in this sense) to just propagate the linear part of each function through a calculation.
+$\lim_{\eta \rightarrow 0}\frac{f(z+\eta) - (f(z)+\eta f'(z))}{\eta} = 0.$ 
+
+Il fatto precedente è la proprietà fondamentale utilizzata dal pacchetto `ForwardDiff.jl` e dalla _forward-mode automatic differentiation_ in generale per calcolare  efficientemente derivate di funzioni, in particolare per quelle funzioni per cui calcolare la derivata in modo simbolico sarebbe enormemente complicato. 
 """
 
 # ╔═╡ 5123c038-7ba2-11eb-1be2-19f789b02c1f
 md"""
-## Mathematics of the Newton method
+### La teoria (caso 1D)
 """
 
 # ╔═╡ 9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
 md"""
-We can convert the idea of "following the tangent line" into equations as follows.
+Sotto l'assunzione che l'approssimazione lineare non sia spesso poi così male nei grafici sopra abbiamo esplorato l'idea che, , possiamo  seguire la tangente al grafico della funzione in un punto fino a raggiungere $0$,  We can convert the idea of "following the tangent line" into equations as follows.
 (You can also do so by just looking at the geometry in 1D, but that does not help in 2D.)
 """
 
@@ -389,11 +405,20 @@ end
 # ╔═╡ 515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
 T(α) = ((x, y),) -> [x + α*y^2, y + α*x^2]
 
+# ╔═╡ 3828b94c-7c2d-11eb-2e01-79038b0f5226
+image = expand.(T(p)( [ (a + δ), (b + ϵ) ] ))
+
 # ╔═╡ 09b97be8-7c2e-11eb-05fd-65bbd097afb8
 jacobian(T(p), [a, b]) .|> Text
 
 # ╔═╡ 18ce2fac-7c2e-11eb-03d2-b3a674621662
 jacobian(T(p), [a, b]) * [δ, ϵ]
+
+# ╔═╡ ed605b90-7c3e-11eb-34e9-776a05a177dd
+image - T(p)([a, b])
+
+# ╔═╡ 35b5c5c6-7c3f-11eb-2723-4b406a809114
+simplify.(expand.(image - T(p)([a, b]) - jacobian(T(p), [a, b]) * [δ, ϵ]))
 
 # ╔═╡ 395fd8e2-7c31-11eb-1933-dd719fa0cd22
 md"""
@@ -408,29 +433,6 @@ inverse(T(α))( [0.3, 0.4] )
 
 # ╔═╡ 5faa2784-7c31-11eb-34f1-3f8224dbdbde
 ( T(α) ∘ inverse(T(α)) )( [0.3, 0.4] )
-
-# ╔═╡ ee91563e-7c3e-11eb-3f65-1f336073869a
-md"""
-## Appendix
-"""
-
-# ╔═╡ 786f8e78-7c2d-11eb-1bb8-c5cb2e349f45
-expand(ex) = simplify(ex, polynorm=true)
-
-# ╔═╡ 98158a38-7c30-11eb-0796-2335e97ec6d0
-expand( f(z + η) )
-
-# ╔═╡ e18f2470-7c31-11eb-2b74-d59d00d20ba4
-expand( f(z + η) ) - ( f(z) + η*f′(z) )
-
-# ╔═╡ 3828b94c-7c2d-11eb-2e01-79038b0f5226
-image = expand.(T(p)( [ (a + δ), (b + ϵ) ] ))
-
-# ╔═╡ ed605b90-7c3e-11eb-34e9-776a05a177dd
-image - T(p)([a, b])
-
-# ╔═╡ 35b5c5c6-7c3f-11eb-2723-4b406a809114
-simplify.(expand.(image - T(p)([a, b]) - jacobian(T(p), [a, b]) * [δ, ϵ]))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1566,14 +1568,16 @@ version = "0.9.1+5"
 # ╠═d35e0cc8-7c30-11eb-28d3-17c9e221ea62
 # ╠═63dbf052-7c32-11eb-1062-5b3581d38f70
 # ╠═9371f930-7c30-11eb-1f77-c7f31b97ea26
+# ╟─acd55b35-99e8-4b75-b734-28c8c0cf676e
+# ╠═35b9a0d2-b796-458c-9289-25f66d3cb3db
 # ╠═98158a38-7c30-11eb-0796-2335e97ec6d0
 # ╟─9d778e36-7c30-11eb-1f4b-894af86a8f5d
 # ╠═db26375a-7c30-11eb-066e-ab9e8ded3356
 # ╠═ea741018-7c30-11eb-3912-a50475e6ec49
 # ╠═e18f2470-7c31-11eb-2b74-d59d00d20ba4
-# ╠═389e990e-7c40-11eb-37c4-5ba0f59173b3
+# ╟─389e990e-7c40-11eb-37c4-5ba0f59173b3
 # ╟─5123c038-7ba2-11eb-1be2-19f789b02c1f
-# ╟─9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
+# ╠═9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
 # ╟─f153b4b8-7ba0-11eb-37ec-4f1a3dbe20e8
 # ╟─9cfa9062-7ba0-11eb-3a93-197ac0287ab4
 # ╟─1ba1ae44-7ba1-11eb-21ff-558c95446435
@@ -1609,7 +1613,5 @@ version = "0.9.1+5"
 # ╠═02b1b470-7c31-11eb-28f4-411956f73f12
 # ╠═07a754da-7c31-11eb-0394-4bef4d79fc30
 # ╠═5faa2784-7c31-11eb-34f1-3f8224dbdbde
-# ╟─ee91563e-7c3e-11eb-3f65-1f336073869a
-# ╠═786f8e78-7c2d-11eb-1bb8-c5cb2e349f45
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
