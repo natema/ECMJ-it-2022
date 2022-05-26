@@ -88,7 +88,7 @@ md"""
 md"""
 ### Lezione 5 
 
-- 5.0. [Graph Mining in Julia]() by [Pierluigi Crescenzi](https://en.wikipedia.org/wiki/Pierluigi_Crescenzi)
+- 5.0. [Graph Mining in Julia](https://natema.github.io/ECMJ-it/lectures/lezione_4.0.5_graph_mining_by_crescenzi.jl) by [Pierluigi Crescenzi](https://en.wikipedia.org/wiki/Pierluigi_Crescenzi)
 """
 
 # ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
