@@ -123,7 +123,7 @@ md"""
 f(x) = x^m - 2;
 
 # ╔═╡ 71efd6b0-7c30-11eb-0da7-0d4a5ab8f8ff
-@variables z, η
+@variables z, ϵ
 
 # ╔═╡ d35e0cc8-7c30-11eb-28d3-17c9e221ea62
 f′(x) = ForwardDiff.derivative(f, x);
@@ -132,7 +132,7 @@ f′(x) = ForwardDiff.derivative(f, x);
 f(z)
 
 # ╔═╡ 9371f930-7c30-11eb-1f77-c7f31b97ea26
-f(z + η)
+f(z + ϵ)
 
 # ╔═╡ acd55b35-99e8-4b75-b734-28c8c0cf676e
 md"""
@@ -143,7 +143,7 @@ Definiamo il seguente comando che sostituisce a potenze di binomi $(x+y)^n$ l'es
 expand(expression) = simplify(expression; expand=true)
 
 # ╔═╡ 98158a38-7c30-11eb-0796-2335e97ec6d0
-expand( f(z + η) )
+expand( f(z + ϵ) )
 
 # ╔═╡ 9d778e36-7c30-11eb-1f4b-894af86a8f5d
 md"""
@@ -156,17 +156,17 @@ La parte che multiplica $\eta$ in tal caso è proprio la derivata della funzione
 f′(z)
 
 # ╔═╡ ea741018-7c30-11eb-3912-a50475e6ec49
-f(z) + η*f′(z)
+f(z) + ϵ*f′(z)
 
 # ╔═╡ e18f2470-7c31-11eb-2b74-d59d00d20ba4
-expand( f(z + η) ) - ( f(z) + η*f′(z) )
+expand( f(z + ϵ) ) - ( f(z) + ϵ*f′(z) )
 
 # ╔═╡ 389e990e-7c40-11eb-37c4-5ba0f59173b3
 md"""
 In altre parole, come abbiamo discusso sopra, constatiamo come la derivata 
 fornisce la _parte lineare_ della funzione: sottraendo nella cella precendente $f(z)+\eta f'(z)$ a $f(z+\eta)$, ciò che rimane sono termini che dipendono da $\eta$ in modo che converge a zero asintoticamente più rapidamente di $\eta$, ovvero
 
-$\lim_{\eta \rightarrow 0}\frac{f(z+\eta) - (f(z)+\eta f'(z))}{\eta} = 0.$ 
+$\lim_{\eta \rightarrow 0}\frac{f(z+\epsilon) - (f(z)+\epsilon f'(z))}{\epsilon} = 0.$ 
 
 Il fatto precedente è la proprietà fondamentale utilizzata dal pacchetto `ForwardDiff.jl` e dalla _forward-mode automatic differentiation_ in generale per calcolare  efficientemente derivate di funzioni, in particolare per quelle funzioni per cui calcolare la derivata in modo simbolico sarebbe enormemente complicato. 
 """
@@ -178,71 +178,61 @@ md"""
 
 # ╔═╡ 9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
 md"""
-Sotto l'assunzione che l'approssimazione lineare non sia spesso poi così male nei grafici sopra abbiamo esplorato l'idea che, , possiamo  seguire la tangente al grafico della funzione in un punto fino a raggiungere $0$,  We can convert the idea of "following the tangent line" into equations as follows.
-(You can also do so by just looking at the geometry in 1D, but that does not help in 2D.)
+Sotto l'assunzione che l'approssimazione lineare non sia spesso poi così male, nei grafici sopra abbiamo esplorato un possibile algoritmo che consiste nel seguire la tangente al grafico della funzione in un punto fino a raggiungere $0$.
+In questa sezione cercheremo di rendere più formale l'intuizione con qualche semplice calcolo. 
 """
 
 # ╔═╡ f153b4b8-7ba0-11eb-37ec-4f1a3dbe20e8
 md"""
-Suppose we have a guess $x_0$ for the root and we want to find a (hopefully) better guess $x_1$.
+Supponiamo di avere una _guess_ (un _candidato_) $x_0$ per lo _zero_ della funzione $f$ e di voler ottenere una **guess migliore** $x_1$. 
 
-Let's set $x_1 = x_0 + \delta$, where $x_1$ and $\delta$ are still unknown.
+Definiamo la differenza tra la nuova e la vecchia guess $\delta := x_1 + x_0$ (dove "$:=$" è il simbolo matematico che indica un uguaglianza _per definizione_). 
+Ovviamente al momento non conosciamo ancora $x_1$ e $\delta$, ma possiamo già dare un nome a tale quantità e poi ragionare sul loro possibile valore. 
 
-We want $x_1$ to be a root, so
+Siccome vogliamo che $x_1$ sia uno zero della funzione $f$ (ancor più di quanto già non lo fosse $x_0$, dovrebbe valere un'uguaglianza del tipo 
 """
 
 # ╔═╡ 9cfa9062-7ba0-11eb-3a93-197ac0287ab4
 md"""
-$$f(x_1) = f(x_0 + \delta) \simeq 0$$
+$$f(x_1) = f(x_0 + \delta) \approx 0$$
 """
 
 # ╔═╡ 1ba1ae44-7ba1-11eb-21ff-558c95446435
 md"""
-If we are already "quite close" to the root then $\delta$ should be small, so we can approximate $f$ using the tangent line:
+D'altro canto, se $x_0$ è già vicino ad essere uno zero di $f$, allora $\delta$, ovvero quanto lo cambiamo per migliorarlo e ottenere $x_1$, sarà un valore piccolo. 
+Questo vuol dire che possiamo utilizzare l'approssimazione di Taylor, ovvero 
 
-$$f(x_0) + \delta \, f'(x_0) \simeq 0$$
+$$f(x_1) = f(x_0 + \delta) \approx f(x_0) + \delta f'(x_0).$$
 
-and hence
+Combinando le due equazioni precedenti allora otteniamo $f(x_0) + \delta f'(x_0) \approx 0$, ovvero
 
-$$\delta \simeq \frac{-f(x_0)}{f'(x_0)}$$
+$$\delta \approx \frac{-f(x_0)}{f'(x_0)}.$$
 
+Sostituendo la definizione $\delta = x_1 - x_0$ allora ricaviamo la ricorrenza
 so that
 
 $$x_1 = x_0 - \frac{f(x_0)}{f'(x_0)}$$
 
-Now we can repeat so that 
-
-$$x_2 = x_1 - \frac{f(x_1)}{f'(x_1)}$$
-
-and in general
+e lo stesso ragionamento può essere fatto più in generale tra $x_{n+1}$ e $x_n$, ottenenedo la ricorrenza che definisce il metodo di Newton in dimensione 1:  
 
 $$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}.$$
-
-
-This is the Newton method in 1D.
 """
 
 # ╔═╡ ba570c4c-7ba2-11eb-2125-9f23e415a1dc
 md"""
-## Implementation in 1D
+## Implementazione - caso unidimensionale
 """
 
 # ╔═╡ d690f83a-7c2e-11eb-14d7-79a250deb473
 function newton1D(f, x0)
-	
-	f′(x) = ForwardDiff.derivative(f, x)   # \prime<TAB>
-	
-	x0 = 37.0  # starting point
-	sequence = [x0]
+	f′(x) = ForwardDiff.derivative(f, x)   # il simbolo di derivata in apice si ottiene premendo \prime<TAB>
 	
 	x = x0
-	
 	for i in 1:10
 		x -= f(x) / f′(x)
 	end
 	
 	return x
-	
 end
 
 # ╔═╡ 2fb40dc6-7c2f-11eb-2469-8deb4db59b5c
@@ -253,12 +243,13 @@ sqrt(2)
 
 # ╔═╡ 1d7dd328-7c2d-11eb-2b35-bdbf5df686f0
 md"""
-## Symbolic derivative in 2D
-
+## Derivate simboliche - caso bidimensionale
 """
 
 # ╔═╡ d44c73b4-7c3e-11eb-1302-8ba9039ae789
 md"""
+Vediamo adesso cosa succede quando applichiamo piccole perturbazioni $\delta_1$ e $\delta_2$ alla coordinate $x$ e $y$. 
+
 Let's see what happens when we perturb by small amounts $\delta$ in the $x$ direction and $\epsilon$ in the $y$ direction around the point $(a, b)$:
 """
 
@@ -268,7 +259,7 @@ p = $(@bind p Slider(0:0.01:1, show_value=true))
 """
 
 # ╔═╡ 23536420-7c2d-11eb-20b0-9523f7a5f9d7
-@variables a, b, δ, ϵ
+@variables a, b, δ₁, δ₂
 
 # ╔═╡ 4dd2322c-7ba0-11eb-2b3b-af7c6c1d60a0
 md"""
@@ -1577,7 +1568,7 @@ version = "0.9.1+5"
 # ╠═e18f2470-7c31-11eb-2b74-d59d00d20ba4
 # ╟─389e990e-7c40-11eb-37c4-5ba0f59173b3
 # ╟─5123c038-7ba2-11eb-1be2-19f789b02c1f
-# ╠═9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
+# ╟─9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
 # ╟─f153b4b8-7ba0-11eb-37ec-4f1a3dbe20e8
 # ╟─9cfa9062-7ba0-11eb-3a93-197ac0287ab4
 # ╟─1ba1ae44-7ba1-11eb-21ff-558c95446435
@@ -1586,7 +1577,7 @@ version = "0.9.1+5"
 # ╠═2fb40dc6-7c2f-11eb-2469-8deb4db59b5c
 # ╠═35791bca-7c2f-11eb-1cfb-8d5ebd0208cb
 # ╟─1d7dd328-7c2d-11eb-2b35-bdbf5df686f0
-# ╟─d44c73b4-7c3e-11eb-1302-8ba9039ae789
+# ╠═d44c73b4-7c3e-11eb-1302-8ba9039ae789
 # ╟─fe742fec-7c3e-11eb-1f54-55cdf02a1574
 # ╠═23536420-7c2d-11eb-20b0-9523f7a5f9d7
 # ╠═3828b94c-7c2d-11eb-2e01-79038b0f5226

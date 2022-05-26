@@ -10,6 +10,13 @@ begin
 	using Graphs
 end
 
+# ╔═╡ 238f8753-e230-4b66-abb0-555ea0964725
+md"""
+### Guest lecture of the course [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it/)
+
+----
+"""
+
 # ╔═╡ 04cd3776-9487-46eb-989b-ea8d1119fe2c
 md"""
 # [Graph Mining in Julia (2022)](https://natema.github.io/ECMJ-it/)
@@ -835,6 +842,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
+# ╟─238f8753-e230-4b66-abb0-555ea0964725
 # ╟─04cd3776-9487-46eb-989b-ea8d1119fe2c
 # ╠═5c870d0b-e0ea-4452-a296-7ec288b71e1f
 # ╟─54ab2e42-87a8-46ed-8e3d-e21c12e2f847
