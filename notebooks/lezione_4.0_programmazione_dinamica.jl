@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.0
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -7,8 +7,9 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
 end
@@ -20,84 +21,51 @@ begin
 end
 
 # ╔═╡ c09f68a2-887e-11eb-2381-41aca305e8cc
-html"""
-<div style="
-position: absolute;
-width: calc(100% - 30px);
-border: 50vw solid #282936;
-border-top: 500px solid #282936;
-border-bottom: none;
-box-sizing: content-box;
-left: calc(-50vw + 15px);
-top: -500px;
-height: 500px;
-pointer-events: none;
-"></div>
+md"""
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
 
-<div style="
-height: 500px;
-width: 100%;
-background: #282936;
-color: #fff;
-padding-top: 68px;
-">
-<span style="
-font-family: Vollkorn, serif;
-font-weight: 700;
-font-feature-settings: 'lnum', 'pnum';
-"> <p style="
-font-size: 1.5rem;
-opacity: .8;
-"><em>Section 1.7</em></p>
-<p style="text-align: center; font-size: 2rem;">
-<em> Intro to Dynamic Programming </em>
-</p>
+#### 
 
-<p style="
-font-size: 1.5rem;
-text-align: center;
-opacity: .8;
-"><em>Lecture Video</em></p>
-<div style="display: flex; justify-content: center;">
-<div  notthestyle="position: relative; right: 0; top: 0; z-index: 300;">
-<iframe src="https://www.youtube.com/embed/KyBXJV1zFlo" width=400 height=250  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-</div>
-</div>
+[Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
-<style>
-body {
-overflow-x: hidden;
-}
-</style>"""
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+"""
+
+# ╔═╡ 577f6ebf-2df4-4408-a8dd-ba6c4fde7603
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ a84fdba4-80db-11eb-13dc-3f440653b2b9
 md"""
-## Intro to Dynamic Programming 
+# Introduzione alla [programmazione dinamica](https://it.wikipedia.org/wiki/Programmazione_dinamica) 
 """
 
 # ╔═╡ 938107f0-80ee-11eb-18cf-775802c43c2f
 md"""
-What is dynamic progamming? The word "programming" here is a rather archaic word (but still in  use) for an **optimization problem**, as used, for example, in the phrase 
-"linear programming."  Probably the word "programming" should be abandoned in this context, but no doubt it is too late.
+Cos'è la programmazione dinamica? La parola "programmazione" è un termine piuttosto arcaico (ma ancora in uso) per indicare un **problema di ottimizzazione**, come ad esempio nella frase 
+"programmazione lineare".  Probabilmente la parola "programmazione" dovrebbe essere abolita in questo contesto, d'altronde è ormai troppo tardi.
+
+![](https://upload.wikimedia.org/wikipedia/commons/6/60/Tower_of_Hanoi_4.gif)
 """
 
 # ╔═╡ eb043a90-8102-11eb-3b78-d590a23c83f4
 md"""
-### Summing over paths problem
+## Il problema della somma su tutti i cammini
 """
 
 # ╔═╡ 5994117c-8102-11eb-1b05-671b7cf87a7e
 md"""
-Let's start by looking at the following problem. 
-Let's create a random matrix and follow paths on it.
-The paths start at one of the square on the top, and can only go downwards, either South-East, South, or South-West.
+Iniziamo con l'analizzare il seguente problema. 
+Creiamo una matrice di valori casuali e consideriamo dei percorsi su di essa, procedento dall'alto verso il basso.
+I cammini iniziano dunque da uno dei quadrati della prima riga e possono procedere  solo facendo un passo verso sud-est, sud o sud-ovest.
 
-We will *add up* the numbers visited along each path. Our goal is to find the path that has the *smallest* sum. So this is indeed an optimization problem: we want to **minimize** the sum along these particular paths.
+Andiamo a sommare i numeri visitati lungo ogni percorso, con l'obiettivo di trovare il percorso con la somma *più piccola*. Si tratta quindi di un problema di ottimizzazione, in cui vogliamo **minimizzare** la somma lungo i percorsi **ammissibili** rispetto alla descrizione precedente.
 """
 
 # ╔═╡ b4558306-804a-11eb-2719-5fd37c6fa281
 md"""
-n = $(@bind n Slider(2:12, show_value = true, default=8))
+Consideriamo una matrice $M$ di dimensione $n$: 
+
+ $n =$ $(@bind n Slider(2:12, show_value = true, default=8))
 """
 
 # ╔═╡ bc631086-804a-11eb-216e-c955e2115f55
@@ -105,89 +73,95 @@ M = rand( 0:9, n, n)
 
 # ╔═╡ 4e4d333e-8102-11eb-0ba1-0f0183d0d3c2
 md"""
-One way to solve this problem is the naive algorithm where we enumerate *all* the paths, calculate the sum for each, and take the minimum.
-However, as the matrix gets larger the total number of paths grows *exponentially*.
+Un modo per risolvere il problema è usare l'algoritmo *ingenuo* che consiste nell'enumerare *tutti* i possibile percorsi, calcolandone la somma mentre si tiene in considerazione il minimo delle somme finora considerate.
+Tuttavia, considerando matrici man mano più grandi, si osserva immediatamente come il numero di percorsi cresca *esponenzialmente*.
 """
 
 # ╔═╡ 0f0e7456-8104-11eb-1d90-e9f0009e8789
 md"""
-[Possible research problem: Investigate the statistics of the sums over all possible paths.]
+#### Proposta di progetto
+
+Indagare statisticamente le somme dei percorsi possibili.
 """
 
 # ╔═╡ 4f969032-80e9-11eb-1ada-d1aa64960967
 md"""
-## Fixing a single point on a path
+### Mantenere un nodo fisso lungo un cammino
 """
 
 # ╔═╡ 28f18aa2-8104-11eb-0c01-dbd14c760ecf
 md"""
-Let's fix a given point $(i, j)$ and focus only on all those paths that pass through $(i, j)$.
+Fissiamo un'entrata $(i, j)$ della matrice e consideriamo unicamente i cammini che passano per essa.
 """
 
 # ╔═╡ 37ebfa3e-80e5-11eb-166c-4ff3471ab12d
 md"""
-i= $(@bind fixi Scrubbable(1:n))
-j= $(@bind fixj Scrubbable(1:n))
+i= $(@bind fixi Scrubbable(1:n, default = 3))
+j= $(@bind fixj Scrubbable(1:n, default = 4))
 """
 
 # ╔═╡ 4d81a6f4-8104-11eb-1f06-5bb7a56c8406
 md"""
-Suppose we fix the point on the penultimate row (last but one). When we look at the paths below the fixed value, we're doing the same calculation over and over again. It doesn't seem sensible to keep re-doing these calculations. The same holds as we move the fixed point further upwards.
+Sia $\mathcal C_u$ l'insieme dei cammini che passano per il nodo $u$. 
+Ogni cammino in $\mathcal C_u$ può essere diviso in due sotto-cammini: un sotto-cammino superiore che precede il nodo $u$, e un sotto-cammino composto da nodi che si trovano in righe inferiori a quella di $u$. Chiamiamo tali sotto-cammini, in modo naturale, sotto-cammini _inferiori_ e _superiori_ ad $u$. 
 
-So instead of calculating by working "forwards", for each box we look at the minimum below it.
+Ricordiamo che siamo interessati a trovare il cammino di valore minimo. 
+Possiamo prima considerare un problema più _semplice_, o per lo meno con meno _soluzioni ammissibili_: quello di trovare il cammino di valore minimo tra tutti quelli che passano per un nodo fissato $u$. 
+
+Immaginiamo dunque di aver trovato il cammino $p_u$ che passa per $u$ di valore minimo. 
+Non è difficile convincersi che anche i corrispondenti sotto-cammini superiore ed inferiore di $p_u$ avranno valore minimo tra tutti i sotto-cammini superiori ed inferiori ad $u$. 
+
+Supponiamo ora di scegliere, come nodo $u$ fisso, un nodo sulla penultima riga. In tal caso osserviamo come, fissato un qualsiasi sotto-cammino superiore, quando cerchiamo tra i corrispondenti sotto-cammini inferiori quello di valore minimo, ci ritroviamo a dover ripetere lo stesso calcolo più e più volte. 
+Una considerazione simile vale quando il nodo fissato si trova nelle righe precedenti. 
 """
 
 # ╔═╡ d9265982-80ed-11eb-3a5f-27712a23506b
 md"""
-## The idea of *overlapping subproblems*
+## L'idea dei *sottoproblemi sovrapposti*
 """
 
 # ╔═╡ ba4acb08-8104-11eb-1771-15bc5d8076fd
 md"""
-The key point in this problem is that there are *overlapping subproblems*: there are calculations that we don't need to repeat. 
-
-The idea of dynamic programming is to remember the solution of those subproblems to get an exponential speed-up in the calculation speed.
+Il punto fondamentale di questo problema è che vi sono *sottoproblemi sovrapposti*, ovvero **calcoli che non è necessario ripetere**. 
+L'idea della programmazione dinamica è quella di ricordare la soluzione di questi sottoproblemi al fine di aumentare vertiginosamente (spesso, esponenzialmente) la velocità di calcolo.
 """
 
 # ╔═╡ 163bf8fe-80d0-11eb-2066-75439a533513
 begin
 	struct Paths
-	    m::Int
-	    n::Int
+	    rows::Int 
+	    cols::Int
 	end
 	
-	Base.iterate(p::Paths) = fill(1,p.m), fill(1,p.m) #start the iteration with 1's
+	Base.iterate(p::Paths) = fill(1,p.rows), fill(1,p.rows) #iniziare l'iterazione con delgi 1'
 	
 	Base.IteratorSize(::Type{Paths}) = SizeUnknown()
 	
 	function Base.iterate(p::Paths, state)
-		if state ≠ fill(p.n,p.m) # end when each row has an n
-	      newstate = next(state,p.n)
+		if state ≠ fill(p.cols, p.rows) # termina quando ogni righa ha un `cols`
+	      newstate = next(state, p.rows)
 	      return newstate, newstate
 	    end
 	end
 	
-	
-	function next(path,n)
+	function next(path, n)
 	    k = length(path)
-		# start from the end and find the first element that can be updated by adding 1
+		# inizia dalla fine e trova il primo elemento che può essere aggiornato con l'aggiunta di 1
 	    while  k≥2 && ( path[k]==n || path[k]+1 > path[k-1]+1 )
 	        k -= 1
 	    end   
-	    path[k] +=1 #add the one then reset the following elements
+	    path[k] +=1 # aggiungi uno e poi reimposta gli elementi seguenti
 	    for j = k+1 : length(path)
-	        path[j] = max(path[j-1]-1,1)
+	        path[j] = max(path[j-1]-1, 1)
 	    end
 	    return(path)
 	end
 	
-
-	
-	function allpaths(m,n)
+	function allpaths(m, n)
      v=Vector{Int}[]
-	 paths = Paths(m,n)
+	 paths = Paths(m, n)
      for p ∈ paths
-        push!(v,copy(p))
+        push!(v, copy(p))
     end
     v
 	end
@@ -197,23 +171,25 @@ end
 begin
 	paths = allpaths(n,n)
 	numpaths = length(paths)
-	md"There are $numpaths paths to check."
+	md"Esistono $numpaths cammini ammissibili."
 end
 
 # ╔═╡ 5dd22d0e-80d6-11eb-0541-d77668309f6c
 md"""
-Path $( @bind whichpath Slider(1:numpaths, show_value=true) )
+Path $( @bind whichpath Slider(1:numpaths, show_value=true, default=3) )
 """
 
 # ╔═╡ 84bb1f5c-80e5-11eb-0e55-83068948870c
 begin
 	fixedpaths = [p for p∈paths  if p[fixi]==fixj]
 	number_of_fixedpaths = length(fixedpaths)
-	md"Number of fixed paths = $number_of_fixedpaths"
+	md"Numero di cammini che passano per ``(``$(fixi), $(fixj)``)`` = $number_of_fixedpaths"
 end
 
 # ╔═╡ ee2d787c-80e5-11eb-1930-0fcbe253643f
-@bind whichfixedpath Slider(1:number_of_fixedpaths)
+md"""
+numero del cammino: $(@bind whichfixedpath Slider(1:number_of_fixedpaths, show_value=true, default = 3))
+"""
 
 # ╔═╡ e5367534-80e5-11eb-341d-7b3e6ca4f111
 begin
@@ -254,7 +230,7 @@ end
 
 # ╔═╡ 4e8c8052-8102-11eb-3e9f-01494b525ba0
 md"""
-### Summing Paths Demo
+### Demo: Somma dei cammini
 """
 
 # ╔═╡ bfa04a82-80d8-11eb-277a-f74429b09870
@@ -266,8 +242,9 @@ end
 
 # ╔═╡ 7191b674-80dc-11eb-24b3-518de83f465a
 md"""
-Our goal is to add the numbers on a path and find the minimal path.
-The winner is number $winnernum.
+
+Il nostro obiettivo è sommare i numeri presenti lungo un percorso, ed in particolare di trovare il percorso per cui tale somma è minima.
+Il vincitore per la matrice attuale, per esempio, realizza una somma pari a  $winnernum.
 """
 
 # ╔═╡ a7245c08-803f-11eb-0da9-2bed09872035
@@ -277,7 +254,6 @@ let
 	values = [ M[i,path[i]] for i=1:n]
 	nv = length(values)
 	thetitle = join([" $(values[i]) +" for i=1:nv-1 ]) * " $(values[end]) = $(sum(values))";
-	
 	
 	rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
 	plot()
@@ -294,20 +270,45 @@ let
 		plot!([ winner[i+1]+.5, winner[i]+.5  ],[n-i+.5, n-i+1.5], color=RGB(1,.6,.6),  linewidth=4)
 	end
 	
-	
 	for i = 1:n-1
 		plot!([ path[i+1]+.5, path[i]+.5  ],[n-i+.5, n-i+1.5], color=:black,  linewidth=4)
 	end
 	
 	plot!(xlabel="winner total = $winnertotal", xguidefontcolor=RGB(1,.5,.5))
 
-	
 	for i=1:n,j=1:n
 		plot!(rectangle(.4,.4,i+.3,j+.3), opacity=1, color=RGB(0,1,0), linewidth=0,fillcolor=[RGBA(1,.85,.85,.2),:white][1+rem(i+j,2)])
 	end
 	plot!(title=thetitle)
 	plot!(legend=false, aspectratio=1, xlims=(1,n+1), ylims=(1,n+1), axis=nothing)
 end
+
+# ╔═╡ 8656e0ff-0da1-44ae-aba5-575514b9c0e2
+md"""
+## I numeri di Fibonacci
+"""
+
+# ╔═╡ 99ac8b8d-f35b-41b3-b052-cc558efe6d41
+md"""
+La [successione di Fibonacci](https://it.wikipedia.org/wiki/Successione_di_Fibonacci) è una famosissima sequenza di numeri definita come segue: i primi due valori sono $F_0=0$ e $F_1=1$, ed i valori successivi sono definiti in termini dei precedenti dall'equazione di ricorrenza $F_{n+1} = F_n + F_{n-1}$.
+
+Supponiamo dunque di voler calcolare l'$n$-esimo numero di Fibonacci. Un primo programma che risolve ingenuamente tale problema potrebbe essere il seguente: 
+"""
+
+# ╔═╡ 62df0103-0f1e-4a66-9786-29eae5c9ebf4
+function Fibonacci(n::Int)
+	if n == 0 
+		return 0
+	elseif n == 1
+		return 1
+	else
+		fibo_n = Fibonacci(n-1) + Fibonacci(n-2)
+		return fibo_n
+	end
+end
+
+# ╔═╡ e650e1eb-e9b6-4486-a3d6-af4f7c4df3b8
+Fibonacci(10)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -382,9 +383,9 @@ version = "0.4.1"
 
 [[Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f2202b55d816427cd385a9a4f3ffb226bee80f99"
+git-tree-sha1 = "4b859a208b2397a7a623a03449e4636bdb17bcf2"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
-version = "1.16.1+0"
+version = "1.16.1+1"
 
 [[CatIndices]]
 deps = ["CustomUnitRanges", "OffsetArrays"]
@@ -584,9 +585,9 @@ version = "1.0.10+0"
 
 [[GLFW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Pkg", "Xorg_libXcursor_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll"]
-git-tree-sha1 = "dba1e8614e98949abfa60480b13653813d8f0157"
+git-tree-sha1 = "0c603255764a1fa0b61752d2bec14cfbd18f7fe8"
 uuid = "0656b61e-2033-5cc2-a64a-77c0f6c09b89"
-version = "3.3.5+0"
+version = "3.3.5+1"
 
 [[GR]]
 deps = ["Base64", "DelimitedFiles", "GR_jll", "HTTP", "JSON", "Libdl", "LinearAlgebra", "Pkg", "Printf", "Random", "Serialization", "Sockets", "Test", "UUIDs"]
@@ -614,9 +615,9 @@ version = "0.21.0+0"
 
 [[Glib_jll]]
 deps = ["Artifacts", "Gettext_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE_jll", "Pkg", "Zlib_jll"]
-git-tree-sha1 = "7bf67e9a481712b3dbe9cb3dac852dc4b1162e02"
+git-tree-sha1 = "a32d672ac2c967f3deb8a81d828afc739c838a06"
 uuid = "7746bdde-850d-59dc-9ae8-88ece973131d"
-version = "2.68.3+0"
+version = "2.68.3+2"
 
 [[Graphics]]
 deps = ["Colors", "LinearAlgebra", "NaNMath"]
@@ -643,9 +644,9 @@ version = "0.9.14"
 
 [[HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
-git-tree-sha1 = "8a954fed8ac097d5be04921d595f741115c1b2ad"
+git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
-version = "2.8.1+0"
+version = "2.8.1+1"
 
 [[IdentityRanges]]
 deps = ["OffsetArrays"]
@@ -825,6 +826,12 @@ git-tree-sha1 = "f6250b16881adf048549549fba48b1161acdac8c"
 uuid = "c1c5ebd0-6772-5130-a774-d5fcae4a789d"
 version = "3.100.1+0"
 
+[[LERC_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "bf36f528eec6634efc60d7ec062008f171071434"
+uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
+version = "3.0.0+1"
+
 [[LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "e5b909bcf985c5e2605737d2ce278ed791b89be6"
@@ -867,9 +874,9 @@ uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
 [[Libffi_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "761a393aeccd6aa92ec3515e428c26bf99575b3b"
+git-tree-sha1 = "0b4a5d71f3e5200a7dff793393e09dfc2d874290"
 uuid = "e9f186c6-92d2-5b65-8a66-fee21dc1b490"
-version = "3.2.2+0"
+version = "3.2.2+1"
 
 [[Libgcrypt_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgpg_error_jll", "Pkg"]
@@ -902,10 +909,10 @@ uuid = "4b2f31a3-9ecc-558c-b454-b3730dcb73e9"
 version = "2.35.0+0"
 
 [[Libtiff_jll]]
-deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
-git-tree-sha1 = "340e257aada13f95f98ee352d316c3bed37c8ab9"
+deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "LERC_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
+git-tree-sha1 = "c9551dd26e31ab17b86cbd00c2ede019c08758eb"
 uuid = "89763e89-9b03-5906-acba-b20f662cd828"
-version = "4.3.0+0"
+version = "4.3.0+1"
 
 [[Libuuid_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -914,7 +921,7 @@ uuid = "38a345b3-de98-5d2b-a5d3-14cd9215e700"
 version = "2.36.0+0"
 
 [[LinearAlgebra]]
-deps = ["Libdl"]
+deps = ["Libdl", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[LogExpFunctions]]
@@ -928,9 +935,9 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[MKL_jll]]
 deps = ["Artifacts", "IntelOpenMP_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "Pkg"]
-git-tree-sha1 = "c253236b0ed414624b083e6b72bfe891fbd2c7af"
+git-tree-sha1 = "5455aef09b40e5020e1520f551fa3135040d4ed0"
 uuid = "856f044c-d86e-5d09-b602-aeab76dc8ba7"
-version = "2021.1.1+1"
+version = "2021.1.1+2"
 
 [[MacroTools]]
 deps = ["Markdown", "Random"]
@@ -1002,9 +1009,13 @@ version = "1.10.6"
 
 [[Ogg_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "7937eda4681660b4d6aeeecc2f7e1c81c8ee4e2f"
+git-tree-sha1 = "887579a3eb005446d514ab7aeac5d1d027658b8f"
 uuid = "e7412a2a-1a6e-54c0-be00-318e2571c051"
-version = "1.3.5+0"
+version = "1.3.5+1"
+
+[[OpenBLAS_jll]]
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
+uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
 
 [[OpenEXR]]
 deps = ["Colors", "FileIO", "OpenEXR_jll"]
@@ -1129,16 +1140,16 @@ version = "1.7.1"
 
 [[Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "ad368663a5e20dbb8d6dc2fddeefe4dae0781ae8"
+git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+0"
+version = "5.15.3+1"
 
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[Random]]
-deps = ["Serialization"]
+deps = ["SHA", "Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[RangeArrays]]
@@ -1502,6 +1513,10 @@ git-tree-sha1 = "5982a94fcba20f02f42ace44b9894ee2b140fe47"
 uuid = "0ac62f75-1d6f-5e53-bd7c-93b484bb37c0"
 version = "0.15.1+0"
 
+[[libblastrampoline_jll]]
+deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+
 [[libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "daacc84a041563f965be61859a36e17c4e4fcd55"
@@ -1516,9 +1531,9 @@ version = "1.6.38+0"
 
 [[libvorbis_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Ogg_jll", "Pkg"]
-git-tree-sha1 = "c45f4e40e7aafe9d086379e5578947ec8b95a8fb"
+git-tree-sha1 = "b910cb81ef3fe6e78bf6acee440bda86fd6ae00c"
 uuid = "f27f6e37-5d2b-51aa-960f-b287f2bc3b7a"
-version = "1.3.7+0"
+version = "1.3.7+1"
 
 [[nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1550,13 +1565,14 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╟─c09f68a2-887e-11eb-2381-41aca305e8cc
 # ╠═71b53b98-8038-11eb-0ea5-d953294e9f35
+# ╟─577f6ebf-2df4-4408-a8dd-ba6c4fde7603
 # ╟─a84fdba4-80db-11eb-13dc-3f440653b2b9
 # ╟─938107f0-80ee-11eb-18cf-775802c43c2f
 # ╟─eb043a90-8102-11eb-3b78-d590a23c83f4
 # ╟─5994117c-8102-11eb-1b05-671b7cf87a7e
 # ╟─b4558306-804a-11eb-2719-5fd37c6fa281
 # ╟─bc631086-804a-11eb-216e-c955e2115f55
-# ╟─d1c851ee-80d5-11eb-1ce4-357dfb1e638e
+# ╠═d1c851ee-80d5-11eb-1ce4-357dfb1e638e
 # ╟─7191b674-80dc-11eb-24b3-518de83f465a
 # ╟─5dd22d0e-80d6-11eb-0541-d77668309f6c
 # ╟─a7245c08-803f-11eb-0da9-2bed09872035
@@ -1571,8 +1587,12 @@ version = "0.9.1+5"
 # ╟─4d81a6f4-8104-11eb-1f06-5bb7a56c8406
 # ╟─d9265982-80ed-11eb-3a5f-27712a23506b
 # ╟─ba4acb08-8104-11eb-1771-15bc5d8076fd
-# ╟─163bf8fe-80d0-11eb-2066-75439a533513
+# ╠═163bf8fe-80d0-11eb-2066-75439a533513
 # ╟─4e8c8052-8102-11eb-3e9f-01494b525ba0
 # ╠═bfa04a82-80d8-11eb-277a-f74429b09870
+# ╟─8656e0ff-0da1-44ae-aba5-575514b9c0e2
+# ╟─99ac8b8d-f35b-41b3-b052-cc558efe6d41
+# ╠═62df0103-0f1e-4a66-9786-29eae5c9ebf4
+# ╠═e650e1eb-e9b6-4486-a3d6-af4f7c4df3b8
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
