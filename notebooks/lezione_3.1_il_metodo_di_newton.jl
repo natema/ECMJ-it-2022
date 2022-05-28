@@ -73,7 +73,7 @@ Vedremo ora come mettere in pratica l'idea precedente nel modo più naturale, ch
 
 # ╔═╡ 5ea7344c-7ba2-11eb-2cc5-0bbdca218c82
 md"""
-## IL metodo di Newton: dimensione 1
+## Il metodo di Newton: dimensione 1
 
 Supponiamo di voler risolvere l'equazione $f(x) = g(x)$. 
 Come primo passo, esprimiamola nella forma $h(x) = 0$, ovvero portiamo tutti i termini a destra riscrivendola come $0 = f(x) - g(x)$, e definendo dunque $h(x):=f(x)-g(x)$. 
@@ -173,7 +173,7 @@ Il fatto precedente è la proprietà fondamentale utilizzata dal pacchetto `Forw
 
 # ╔═╡ 5123c038-7ba2-11eb-1be2-19f789b02c1f
 md"""
-### La teoria (caso 1D)
+### La teoria - caso unidimensionale
 """
 
 # ╔═╡ 9bfafcc0-7ba2-11eb-1b67-e3a3803ead08
@@ -220,7 +220,7 @@ $$x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}.$$
 
 # ╔═╡ ba570c4c-7ba2-11eb-2125-9f23e415a1dc
 md"""
-## Implementazione - caso unidimensionale
+### Implementazione - caso unidimensionale
 """
 
 # ╔═╡ d690f83a-7c2e-11eb-14d7-79a250deb473
@@ -241,36 +241,82 @@ newton1D(x -> x^2 - 2, 37.0)
 # ╔═╡ 35791bca-7c2f-11eb-1cfb-8d5ebd0208cb
 sqrt(2)
 
+# ╔═╡ 550d2ac6-501d-448d-8743-7b1e1d97751e
+md"""
+## Il metodo di Newton: dimensione 2
+"""
+
 # ╔═╡ 1d7dd328-7c2d-11eb-2b35-bdbf5df686f0
 md"""
-## Derivate simboliche - caso bidimensionale
+### Derivate simboliche - caso bidimensionale
 """
 
 # ╔═╡ d44c73b4-7c3e-11eb-1302-8ba9039ae789
 md"""
-Vediamo adesso cosa succede quando applichiamo piccole perturbazioni $\delta_1$ e $\delta_2$ alla coordinate $x$ e $y$. 
+Vediamo adesso cosa succede al valore di una trasformazione $T$ quando applichiamo piccole perturbazioni $\delta_1$ e $\delta_2$ alla coordinate $x$ e $y$ di un punto $(a,b)$. 
 
-Let's see what happens when we perturb by small amounts $\delta$ in the $x$ direction and $\epsilon$ in the $y$ direction around the point $(a, b)$:
+Nello specifico consideriamo la trasformazione seguente:
 """
+
+# ╔═╡ 515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
+T(p) = ((x, y),) -> [x + p*y^2, y + p*x^2]
 
 # ╔═╡ fe742fec-7c3e-11eb-1f54-55cdf02a1574
 md"""
-p = $(@bind p Slider(0:0.01:1, show_value=true))
+Scegliamo in modo interattivo il valore del parametro $p$ che determina quanto la trasformazione $T$ è vicina ad essere lineare: 
+
+ $p =$ $(@bind p Slider(0:0.1:2, show_value=true, default=1))
+"""
+
+# ╔═╡ 3ca3f2a0-ac50-4469-a189-127e53f370e0
+md"""
+Dichiariamo le variabili simboliche che useremo: 
 """
 
 # ╔═╡ 23536420-7c2d-11eb-20b0-9523f7a5f9d7
 @variables a, b, δ₁, δ₂
 
+# ╔═╡ 1046a7be-e174-4368-b486-273f4f8ddcfa
+md"""
+Calcoliamo di seguito l'immagine del punto $(a+\delta_1, b+\delta_2)$ rispetto alla trasformazione $T$, poi il suo jacobiano ed infine la derivata della transformazione rispetto alla direzione $(\delta_1, \delta_2)$:
+"""
+
+# ╔═╡ 3828b94c-7c2d-11eb-2e01-79038b0f5226
+image = expand.(T(p)( [ (a + δ₁), (b + δ₂) ] ))
+
+# ╔═╡ 09b97be8-7c2e-11eb-05fd-65bbd097afb8
+jacobian(T(p), [a, b]) 
+
+# ╔═╡ 18ce2fac-7c2e-11eb-03d2-b3a674621662
+jacobian(T(p), [a, b]) * [δ₁, δ₂]
+
+# ╔═╡ d0198be7-38db-4016-90c7-eb4089b33313
+md"""
+Quanto differisce, rispetto a $T_p$, l'immagine del punto $(a + \delta_1, b + \delta_2)$ da quella del punto $(a, b)$?
+"""
+
+# ╔═╡ ed605b90-7c3e-11eb-34e9-776a05a177dd
+image - T(p)([a, b])
+
+# ╔═╡ 67df5c35-cd46-4b03-8d04-974a176bd0c9
+md"""
+Se alla differenza precedente sottraiamo la derivata di $T$ in $(a,b)$ rispetto la direzione $(\delta_1, \delta_2)$, quali fattori restano "fuori" da tale approssimazione?
+"""
+
+# ╔═╡ 35b5c5c6-7c3f-11eb-2723-4b406a809114
+expand.(image - T(p)([a, b]) - jacobian(T(p), [a, b])*[δ₁, δ₂])
+
 # ╔═╡ 4dd2322c-7ba0-11eb-2b3b-af7c6c1d60a0
 md"""
-## Newton for transformations in 2 dimensions
-
-$$T: \mathbb{R}^2 \to \mathbb{R}^2$$
-
+### La teoria - caso bidimensionale
 """
 
 # ╔═╡ 5c9edb2c-7ba0-11eb-14f6-3d5e52123bc7
 md"""
+Data la funzione $T: \mathbb{R}^2 \to \mathbb{R}^2$
+
+# todo 
+
 We want to find the inverse $T^{-1}(y)$, i.e. to solve the equation $T(x) = y$ for $x$.
 
 We use the same idea as in 1D, but now in 2D:
@@ -304,7 +350,7 @@ In 2D we have an explicit formula for the inverse of the matrix.
 
 # ╔═╡ e1afc6ca-7ba1-11eb-3fb9-ef3a7f82d750
 md"""
-## Implementation in 2D
+### Implementazione - caso bidimensionale
 """
 
 # ╔═╡ 1db66b0e-7ba4-11eb-2157-d5a399a73b1f
@@ -393,37 +439,28 @@ let
 	standard_Newton(f, n, -10:0.01:10, x0, -10, 70)
 end
 
-# ╔═╡ 515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
-T(α) = ((x, y),) -> [x + α*y^2, y + α*x^2]
-
-# ╔═╡ 3828b94c-7c2d-11eb-2e01-79038b0f5226
-image = expand.(T(p)( [ (a + δ), (b + ϵ) ] ))
-
-# ╔═╡ 09b97be8-7c2e-11eb-05fd-65bbd097afb8
-jacobian(T(p), [a, b]) .|> Text
-
-# ╔═╡ 18ce2fac-7c2e-11eb-03d2-b3a674621662
-jacobian(T(p), [a, b]) * [δ, ϵ]
-
-# ╔═╡ ed605b90-7c3e-11eb-34e9-776a05a177dd
-image - T(p)([a, b])
-
-# ╔═╡ 35b5c5c6-7c3f-11eb-2723-4b406a809114
-simplify.(expand.(image - T(p)([a, b]) - jacobian(T(p), [a, b]) * [δ, ϵ]))
+# ╔═╡ 7c855075-0e31-4596-beaa-e53686cc08ec
+md"""
+Verifichiamo infine che i conti tornano: 
+"""
 
 # ╔═╡ 395fd8e2-7c31-11eb-1933-dd719fa0cd22
 md"""
-α = $(@bind α Slider(0.0:0.01:1.0, show_value=true))
+ $\alpha =$ $(@bind α Slider(0.0:0.01:1.0, show_value=true, default=.42))
+
+ $x_1 =$ $(@bind x₁ Slider(0.0:0.01:1.0, show_value=true, default=.3))
+
+ $x_2 =$ $(@bind x₂ Slider(0.0:0.01:1.0, show_value=true, default=.4))
 """
 
 # ╔═╡ 02b1b470-7c31-11eb-28f4-411956f73f12
-T(α)( [0.3, 0.4] )
+T(α)( [x₁, x₂] )
 
 # ╔═╡ 07a754da-7c31-11eb-0394-4bef4d79fc30
-inverse(T(α))( [0.3, 0.4] )
+inverse(T(α))( [x₁, x₂] )
 
 # ╔═╡ 5faa2784-7c31-11eb-34f1-3f8224dbdbde
-( T(α) ∘ inverse(T(α)) )( [0.3, 0.4] )
+( T(α) ∘ inverse(T(α)) )( [x₁, x₂] )
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1576,17 +1613,23 @@ version = "0.9.1+5"
 # ╠═d690f83a-7c2e-11eb-14d7-79a250deb473
 # ╠═2fb40dc6-7c2f-11eb-2469-8deb4db59b5c
 # ╠═35791bca-7c2f-11eb-1cfb-8d5ebd0208cb
+# ╟─550d2ac6-501d-448d-8743-7b1e1d97751e
 # ╟─1d7dd328-7c2d-11eb-2b35-bdbf5df686f0
-# ╠═d44c73b4-7c3e-11eb-1302-8ba9039ae789
+# ╟─d44c73b4-7c3e-11eb-1302-8ba9039ae789
+# ╠═515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
 # ╟─fe742fec-7c3e-11eb-1f54-55cdf02a1574
+# ╟─3ca3f2a0-ac50-4469-a189-127e53f370e0
 # ╠═23536420-7c2d-11eb-20b0-9523f7a5f9d7
+# ╟─1046a7be-e174-4368-b486-273f4f8ddcfa
 # ╠═3828b94c-7c2d-11eb-2e01-79038b0f5226
 # ╠═09b97be8-7c2e-11eb-05fd-65bbd097afb8
 # ╠═18ce2fac-7c2e-11eb-03d2-b3a674621662
+# ╟─d0198be7-38db-4016-90c7-eb4089b33313
 # ╠═ed605b90-7c3e-11eb-34e9-776a05a177dd
+# ╟─67df5c35-cd46-4b03-8d04-974a176bd0c9
 # ╠═35b5c5c6-7c3f-11eb-2723-4b406a809114
 # ╟─4dd2322c-7ba0-11eb-2b3b-af7c6c1d60a0
-# ╟─5c9edb2c-7ba0-11eb-14f6-3d5e52123bc7
+# ╠═5c9edb2c-7ba0-11eb-14f6-3d5e52123bc7
 # ╟─80917990-7ba0-11eb-029a-dba981c52b58
 # ╟─af887dea-7ba1-11eb-3b0d-6925756382a7
 # ╟─b7dc4666-7ba1-11eb-32eb-fd3d720c2960
@@ -1599,7 +1642,7 @@ version = "0.9.1+5"
 # ╠═2e2e5f0e-7c31-11eb-0da7-770b07ee6202
 # ╟─1b77fada-7b9d-11eb-3266-ebb3895cb76a
 # ╠═f25af026-7b9c-11eb-1f11-77a8b06b2d71
-# ╠═515c23b6-7c2d-11eb-28c9-1b1d92eb4ba0
+# ╟─7c855075-0e31-4596-beaa-e53686cc08ec
 # ╟─395fd8e2-7c31-11eb-1933-dd719fa0cd22
 # ╠═02b1b470-7c31-11eb-28f4-411956f73f12
 # ╠═07a754da-7c31-11eb-0394-4bef4d79fc30
