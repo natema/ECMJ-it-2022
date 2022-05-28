@@ -20,6 +20,9 @@ begin
 	using Plots, PlutoUI, Colors, Images
 end
 
+# ╔═╡ 10f8e5d4-7c29-4194-a673-4f156b46d5a7
+using BenchmarkTools
+
 # ╔═╡ c09f68a2-887e-11eb-2381-41aca305e8cc
 md"""
 ## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
@@ -310,9 +313,57 @@ end
 # ╔═╡ e650e1eb-e9b6-4486-a3d6-af4f7c4df3b8
 Fibonacci(10)
 
+# ╔═╡ 4de80a09-d925-4a46-9e62-b87625a36226
+md"""
+Indaghiamo il tempo di calcolo: 
+"""
+
+# ╔═╡ fda096cb-d767-4daa-83a0-72ce674f794b
+@btime Fibonacci(10)
+
+# ╔═╡ 5f69f533-4b0e-48f0-b48f-f15cccfab095
+@btime Fibonacci(42)
+
+# ╔═╡ 81d4623e-bac5-418c-9437-57df627a6638
+md"""
+Sfruttiamo ora l'idea dei sottoproblemi sovrapposti: 
+"""
+
+# ╔═╡ 77bb2251-f421-48e8-b714-5e7293f2bc90
+begin
+	struct Fibo
+		n::Vector{Int}
+		
+		function Fibo() 
+			F = new(fill(-1, 100))
+			F.n[1] = 0
+			F.n[2] = 1
+			F
+		end
+	end
+
+	function (F::Fibo)(n::Int)
+		if n == 0 || n == 1 
+			return F.n[n+1]
+		else
+			F.n[n] == -1 && (F.n[n] = F(n-1))
+			F.n[n-1] == -1 && (F.n[n-1] = F(n-2))
+			F.n[n+1] = F.n[n] + F.n[n-1]
+			return F.n[n+1]
+		end
+	end
+end
+
+# ╔═╡ 6c8c65bc-8e6d-4875-80a4-1fc4568754c8
+F = Fibo()
+
+# ╔═╡ d719af46-f5ec-4052-9c20-fa68edae52a0
+@btime F(42)
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
@@ -320,6 +371,7 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
+BenchmarkTools = "~1.3.1"
 Colors = "~0.12.8"
 ImageIO = "~0.5.8"
 Images = "~0.24.1"
@@ -369,6 +421,12 @@ version = "0.4.4"
 
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[BenchmarkTools]]
+deps = ["JSON", "Logging", "Printf", "Profile", "Statistics", "UUIDs"]
+git-tree-sha1 = "4c10eee4af024676200bc7752e536f858c6b8f93"
+uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+version = "1.3.1"
 
 [[Bzip2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1132,6 +1190,10 @@ version = "1.2.2"
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
+[[Profile]]
+deps = ["Printf"]
+uuid = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
+
 [[ProgressMeter]]
 deps = ["Distributed", "Printf"]
 git-tree-sha1 = "afadeba63d90ff223a6a48d2009434ecee2ec9e8"
@@ -1594,5 +1656,13 @@ version = "0.9.1+5"
 # ╟─99ac8b8d-f35b-41b3-b052-cc558efe6d41
 # ╠═62df0103-0f1e-4a66-9786-29eae5c9ebf4
 # ╠═e650e1eb-e9b6-4486-a3d6-af4f7c4df3b8
+# ╟─4de80a09-d925-4a46-9e62-b87625a36226
+# ╠═10f8e5d4-7c29-4194-a673-4f156b46d5a7
+# ╠═fda096cb-d767-4daa-83a0-72ce674f794b
+# ╠═5f69f533-4b0e-48f0-b48f-f15cccfab095
+# ╟─81d4623e-bac5-418c-9437-57df627a6638
+# ╠═77bb2251-f421-48e8-b714-5e7293f2bc90
+# ╠═6c8c65bc-8e6d-4875-80a4-1fc4568754c8
+# ╠═d719af46-f5ec-4052-9c20-fa68edae52a0
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
