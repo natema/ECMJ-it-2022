@@ -313,39 +313,27 @@ md"""
 
 # ╔═╡ 5c9edb2c-7ba0-11eb-14f6-3d5e52123bc7
 md"""
-Data la funzione $T: \mathbb{R}^2 \to \mathbb{R}^2$
+Data la funzione $T: \mathbb{R}^2 \to \mathbb{R}^2$, vogliamo calcolarne l'inverso $T^{-1}(y)$ rispetto al valore $y$, ovvero risolvere l'equazione $T(x) = y$ per $x$.
 
-# todo 
-
-We want to find the inverse $T^{-1}(y)$, i.e. to solve the equation $T(x) = y$ for $x$.
-
-We use the same idea as in 1D, but now in 2D:
+Per farlo, procediamo come nel caso unidimensionale, [_mutatis mutandis_](https://it.wikipedia.org/wiki/Mutatis_mutandis): 
 """
 
 # ╔═╡ 80917990-7ba0-11eb-029a-dba981c52b58
 md"""
-$$T(x_0 + \delta) \simeq 0$$
+$$T(x_0 + \delta) \approx 0,$$ quindi
 
-$$T(x_0) + J \cdot \delta \simeq 0,$$
+$$T(x_0) + J \cdot \delta \approx 0,$$
 
-where $J := DT_{x_0}$ is the Jacobian matrix of $T$ at $x_0$, i.e. the best linear approximation of $T$ near to $x_0$.
+dove $J := J_T({x_0})$ è la matrice Jacobiana di $T$ in $x_0$, ovvero la miglior approssimazione lineare di $T$ attorno tale punto.
 """
 
 # ╔═╡ af887dea-7ba1-11eb-3b0d-6925756382a7
 md"""
-Hence $\delta$ is the solution of the system of linear equations
-"""
+Ne segue che $\delta$ è la soluzione del sistema di equazioni lineari
+$J \cdot \delta = -T(x_0)$. 
+Inoltre, come nel caso unidimensionale, possiamo utilizzare quest'ultimo fatto per costruire una nuova approssimazione $x_1 := x_0 + \delta$.
 
-# ╔═╡ b7dc4666-7ba1-11eb-32eb-fd3d720c2960
-md"""
-$$J \cdot \delta = -T(x_0)$$
-
-Then we again construct the new approximation $x_1$ as $x_1 := x_0 + \delta$.
-"""
-
-# ╔═╡ c519704c-7ba1-11eb-12da-8b9b176daa0d
-md"""
-In 2D we have an explicit formula for the inverse of the matrix.
+Un fatto interessante da notare è come nel caso bidimensionale vi sia una formula esplicita per esprimere l'inverso di una matrice. 
 """
 
 # ╔═╡ e1afc6ca-7ba1-11eb-3fb9-ef3a7f82d750
@@ -355,20 +343,25 @@ md"""
 
 # ╔═╡ 1db66b0e-7ba4-11eb-2157-d5a399a73b1f
 function newton2D_step(T, x)
+	J = ForwardDiff.jacobian(T, x)   
 	
-	J = ForwardDiff.jacobian(T, x)   # should use StaticVectors
-	
-	δ = J \ T(x)   # J^(-1) * T(x)
+	δ = J \ T(x)   # il backslash `\` offre una notazione alternativa per $J^(-1) T(x)$
 	
 	return x - δ
 end
 
+# ╔═╡ 83c93eaf-3173-4670-9c01-2d77a9b2bd14
+md"""
+Prima del corpo di una funzione possiamo aggiungere una [docstring](https://docs.julialang.org/en/v1/manual/documentation/), ovvero un blocco di testo che documenta la funzione (e che in Pluto viene automaticamente mostrato nella finestra _Live docs_). 
+"""
+
 # ╔═╡ 923bde64-7ba4-11eb-21e9-a11993aaab2e
-"Looks for x such that T(x) = 0"
+"""
+Trova il valore ``x`` tale che ``T(x) = 0``.
+""" 
 function newton2D(T, x0, n=10)
 	
 	x = x0
-
 	for i in 1:n
 		x = newton2D_step(T, x)
 	end
@@ -378,12 +371,11 @@ end
 
 # ╔═╡ 61905ae0-7ba6-11eb-0773-17e9aa4e9991
 md"""
-Remember that Newton is designed to look for *roots*, i.e. places where $T(x) = 0$.
-We want $T(x) = y$, so we need another layer:
+Osserviamo come il metodo di Newton sia concepito per risolvere equazioni del tipo $T(x) = 0$, ovvero per trovare gli _zeri_ di una funzione $T$.
+Nel nostro caso tuttavia vogliamo risolvere il problema più generale di trovare l'$x$ tale che $T(x) = y$, ed è dunque necessario qualche passo in più per fornire una diretta soluzione al problema generale:
 """
 
-# ╔═╡ ff8b6aec-7ba5-11eb-0d83-19803b1bdda7
-"Looks for x such that f(x) = y, i.e. f(x) - y = 0"
+# ╔═╡ 48b314c0-c90e-4aea-b1e6-6e8063d29c0f
 function inverse(f, y, x0=[0, 0])
 	return newton2D(x -> f(x) - y, x0)
 end
@@ -391,56 +383,10 @@ end
 # ╔═╡ 2e2e5f0e-7c31-11eb-0da7-770b07ee6202
 inverse(f) = y -> inverse(f, y)
 
-# ╔═╡ 1b77fada-7b9d-11eb-3266-ebb3895cb76a
-straight(x0, y0, x, m) = y0 + m * (x - x0)
-
-# ╔═╡ f25af026-7b9c-11eb-1f11-77a8b06b2d71
-function standard_Newton(f, n, x_range, x0, ymin=-10, ymax=10)
-    
-    f′ = x -> ForwardDiff.derivative(f, x)
-
-
-	p = plot(f, x_range, lw=3, ylim=(ymin, ymax), legend=:false, size=(400, 300))
-
-	hline!([0.0], c="magenta", lw=3, ls=:dash)
-	scatter!([x0], [0], c="green", ann=(x0, -5, L"x_0", 10))
-
-	for i in 1:n
-
-		plot!([x0, x0], [0, f(x0)], c=:gray, alpha=0.5)
-		scatter!([x0], [f(x0)], c=:red)
-		m = f′(x0)
-
-		plot!(x_range, [straight(x0, f(x0), x, m) for x in x_range], 
-			  c=:blue, alpha=0.5, ls=:dash, lw=2)
-
-		x1 = x0 - f(x0) / m
-
-		scatter!([x1], [0], c="green", ann=(x1, -5, L"x_%$i", 10))
-		
-		x0 = x1
-
-	end
-
-	p |> as_svg
-
-
-end
-
-# ╔═╡ ecb40aea-7b9c-11eb-1476-e54faf32d91c
-let
-	f(x) = x^2 - 3	
-	standard_Newton(f, n2, -1:0.01:10, x02, -10, 70)
-end
-
-# ╔═╡ ec6c6328-7b9c-11eb-1c69-dba12ae522ad
-let
-	f(x) = 0.2x^3 - 4x + 1
-	standard_Newton(f, n, -10:0.01:10, x0, -10, 70)
-end
-
 # ╔═╡ 7c855075-0e31-4596-beaa-e53686cc08ec
 md"""
+----
+
 Verifichiamo infine che i conti tornano: 
 """
 
@@ -461,6 +407,55 @@ inverse(T(α))( [x₁, x₂] )
 
 # ╔═╡ 5faa2784-7c31-11eb-34f1-3f8224dbdbde
 ( T(α) ∘ inverse(T(α)) )( [x₁, x₂] )
+
+# ╔═╡ 56fd0994-6127-4483-820b-6205551d4921
+md"""
+## Appendice
+"""
+
+# ╔═╡ 416bd48f-27d5-4fb7-85fd-47f478c0be27
+md"""
+Di seguito riportiamo la funzione utilizzata per visualizzare le tangenti al grafico all'inizio di questa lezione. 
+"""
+
+# ╔═╡ 1b77fada-7b9d-11eb-3266-ebb3895cb76a
+straightline(x0, y0, x, m) = y0 + m*(x - x0)
+
+# ╔═╡ f25af026-7b9c-11eb-1f11-77a8b06b2d71
+function standard_Newton(f, n, x_range, x0, ymin=-10, ymax=10) 
+    f′ = x -> ForwardDiff.derivative(f, x)
+
+	p = plot(f, x_range, lw=3, ylim=(ymin, ymax), legend=:false, size=(400, 300))
+	hline!([0.0], c="magenta", lw=3, ls=:dash)
+	scatter!([x0], [0], c="green", ann=(x0, -5, L"x_0", 10))
+
+	for i in 1:n
+		plot!([x0, x0], [0, f(x0)], c=:gray, alpha=0.5)
+		scatter!([x0], [f(x0)], c=:red)
+	
+		m = f′(x0)
+		plot!(x_range, [straightline(x0, f(x0), x, m) for x in x_range], 
+			  c=:blue, alpha=0.5, ls=:dash, lw=2)
+		x1 = x0 - f(x0) / m
+		scatter!([x1], [0], c="green", ann=(x1, -5, L"x_%$i", 10))
+		
+		x0 = x1
+	end
+
+	p |> as_svg
+end
+
+# ╔═╡ ecb40aea-7b9c-11eb-1476-e54faf32d91c
+let
+	f(x) = x^2 - 3	
+	standard_Newton(f, n2, -1:0.01:10, x02, -10, 70)
+end
+
+# ╔═╡ ec6c6328-7b9c-11eb-1c69-dba12ae522ad
+let
+	f(x) = 0.2x^3 - 4x + 1
+	standard_Newton(f, n, -10:0.01:10, x0, -10, 70)
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1629,23 +1624,24 @@ version = "0.9.1+5"
 # ╟─67df5c35-cd46-4b03-8d04-974a176bd0c9
 # ╠═35b5c5c6-7c3f-11eb-2723-4b406a809114
 # ╟─4dd2322c-7ba0-11eb-2b3b-af7c6c1d60a0
-# ╠═5c9edb2c-7ba0-11eb-14f6-3d5e52123bc7
+# ╟─5c9edb2c-7ba0-11eb-14f6-3d5e52123bc7
 # ╟─80917990-7ba0-11eb-029a-dba981c52b58
 # ╟─af887dea-7ba1-11eb-3b0d-6925756382a7
-# ╟─b7dc4666-7ba1-11eb-32eb-fd3d720c2960
-# ╟─c519704c-7ba1-11eb-12da-8b9b176daa0d
 # ╟─e1afc6ca-7ba1-11eb-3fb9-ef3a7f82d750
 # ╠═1db66b0e-7ba4-11eb-2157-d5a399a73b1f
+# ╟─83c93eaf-3173-4670-9c01-2d77a9b2bd14
 # ╠═923bde64-7ba4-11eb-21e9-a11993aaab2e
 # ╟─61905ae0-7ba6-11eb-0773-17e9aa4e9991
-# ╠═ff8b6aec-7ba5-11eb-0d83-19803b1bdda7
+# ╠═48b314c0-c90e-4aea-b1e6-6e8063d29c0f
 # ╠═2e2e5f0e-7c31-11eb-0da7-770b07ee6202
-# ╟─1b77fada-7b9d-11eb-3266-ebb3895cb76a
-# ╠═f25af026-7b9c-11eb-1f11-77a8b06b2d71
 # ╟─7c855075-0e31-4596-beaa-e53686cc08ec
 # ╟─395fd8e2-7c31-11eb-1933-dd719fa0cd22
 # ╠═02b1b470-7c31-11eb-28f4-411956f73f12
 # ╠═07a754da-7c31-11eb-0394-4bef4d79fc30
 # ╠═5faa2784-7c31-11eb-34f1-3f8224dbdbde
+# ╟─56fd0994-6127-4483-820b-6205551d4921
+# ╟─416bd48f-27d5-4fb7-85fd-47f478c0be27
+# ╠═1b77fada-7b9d-11eb-3266-ebb3895cb76a
+# ╠═f25af026-7b9c-11eb-1f11-77a8b06b2d71
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
