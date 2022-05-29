@@ -49,17 +49,12 @@ Supponiamo di voler _schiacciare_ un'immagine orizzontalmente, e di volerlo fare
 
 L'idea dell'algoritmo di **seam carving** è di _schiacciare_ l'immagine rimuovendo _parti poco interessanti_. Ovviamente l'originalità dell'algoritmo sta nel formalizzare quest'ultima nozione. 
 
-Scroll through the images in this notebook. The idea of **seam carving** is to shrink an image by removing the "least interesting" parts of the image, but *without* resizing the objects within the image. We want to remove the "dead space" within the image.
-
-We try to find a "seam", i.e. a connected path of pixels from top to bottom of the image, which consists of the "least important" pixels, by some measure. 
-We then remove the pixels in that seam to give an image that is one pixel narrower.
-	
-In order to do this, we need to decide how to measure which pixels are "important".
+Il **seam carving** cerca delle _cammini_ (_seam_, in inglese), ovvero dei **cammini connessi dall'alto verso il basso, di pixel poco importanti**. Tali pixel vengono rimossi, risultando in un'immagine che è un pixel più stretta dell'immagine precedente. Tuttavia, dobbiamo ancora definire come stimare l'importanza di un pixel. 
 """
 
 # ╔═╡ cb335074-eef7-11ea-24e8-c39a325166a1
 md"""
-## The seam carving algorithm
+## Trovare le cuciture
 
 We need to specify a notion of **importance** of pixels. The seam will then sum up the importance of pixels over the seam and pick the seam which minimizes this total importance.
 
@@ -1623,8 +1618,8 @@ version = "0.9.1+5"
 # ╠═405a4f82-8116-11eb-1b35-2563b06b02a7
 # ╟─8c7ef773-04e8-41cf-af95-6dbcd09505a1
 # ╟─e7a77e52-8104-11eb-1b51-a9f8312e9d95
-# ╠═fb6b8564-8104-11eb-2e10-1f28be9a6ce7
-# ╟─cb335074-eef7-11ea-24e8-c39a325166a1
+# ╟─fb6b8564-8104-11eb-2e10-1f28be9a6ce7
+# ╠═cb335074-eef7-11ea-24e8-c39a325166a1
 # ╟─7b0cee56-8106-11eb-0979-e7fead945a6f
 # ╟─3721e7f9-83fa-48cd-a1f5-e72e07b0f7a2
 # ╠═90f44be8-f35c-11ea-2fc6-c361fd4966af
