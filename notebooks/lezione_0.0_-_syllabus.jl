@@ -95,6 +95,7 @@ md"""
 
 - 4.0 [Programmazione dinamica](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl)
 - 4.1 [Seam carving](https://natema.github.io/ECMJ-it/lectures/lezione_4.1_seam_carving.jl)
+- 4.2 [Strutture](https://natema.github.io/ECMJ-it/lectures/lezione_4.2_strutture.jl)
 """
 
 # ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
