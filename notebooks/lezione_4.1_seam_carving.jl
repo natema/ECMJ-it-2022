@@ -43,6 +43,24 @@ md"""
 # L'algoritmo [seam carving](https://en.wikipedia.org/wiki/Seam_carving)
 """
 
+# ╔═╡ 172c7612-efee-11ea-077a-5d5c6e2505a4
+"""
+Comprime l'immagine effettuando una media di insiemi di pixel adiacenti.
+"""
+function shrink_image(image, ratio=5)
+	height, width = size(image)
+	new_width = width ÷ ratio - 1
+	list = [
+		mean(image[
+			i,
+			ratio * j:ratio * (j + 1),
+		])
+		for j in 1:new_width
+		for i in 1:height
+	]
+	reshape(list, height, new_width)
+end
+
 # ╔═╡ fb6b8564-8104-11eb-2e10-1f28be9a6ce7
 md"""
 Supponiamo di voler _schiacciare_ un'immagine orizzontalmente, e di volerlo fare perdendo meno informazione possibile rispetto agli oggetti presenti nell'immagine originale. 
@@ -54,98 +72,57 @@ Il **seam carving** cerca delle _cammini_ (_seam_, in inglese), ovvero dei **cam
 
 # ╔═╡ cb335074-eef7-11ea-24e8-c39a325166a1
 md"""
-## Trovare le cuciture
+## Trovare i cammini
 
-We need to specify a notion of **importance** of pixels. The seam will then sum up the importance of pixels over the seam and pick the seam which minimizes this total importance.
+Una volta che avremo deciso come stimare l'importanza di un pixel, potremo assegnare un valore di importanza ad un cammino semplicemente sommando l'importanza di ciascun pixel che lo compone. 
+Sceglieremo allora di rimuovere il cammino di importanza minima. Tale problema dovrebbe ricordarci quello visto nella [precedente lezione sulla programmazione dinamica](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl).
 
-We will assign importance as "the extent to which a pixel sits inside an edge".
-So we need to calculate the "edgeness" of each pixel.
-"""
-
-# ╔═╡ 7b0cee56-8106-11eb-0979-e7fead945a6f
-md"""
-
-1. We will use convolution with **Sobel filters** for edge detection.
-2. Then we will use that to write an algorithm that removes "uninteresting"
-   bits of an image in order to shrink it.
+Per stimare l'importanza di un pixel, vogliamo far leva sull'intuizione che la gran parte dell'informazione contenuta in un immagine risiede nei _bordi tra gli oggetti_. In tal senso, un pixel sarà importante se si trova su un bordo. 
+Ci serve, allora, un modo per [_identificare i bordi_](https://en.wikipedia.org/wiki/Edge_detection): faremo uso di una convoluzione con un [**filtro di Sobel**](https://en.wikipedia.org/wiki/Sobel_operator#Formulation).
 """
 
 # ╔═╡ 3721e7f9-83fa-48cd-a1f5-e72e07b0f7a2
-image_urls = [
-"https://wisetoast.com/wp-content/uploads/2015/10/The-Persistence-of-Memory-salvador-deli-painting.jpg",
-
-"https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg/1014px-Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg",
-
-"https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg/1014px-Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg",
-
-"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg/480px-Grant_Wood_-_American_Gothic_-_Google_Art_Project.jpg",
-		"https://wisetoast.com/wp-content/uploads/2015/10/The-Persistence-of-Memory-salvador-deli-painting.jpg",
-
-"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg/640px-A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg",
-
-"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/758px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
-		"https://web.mit.edu/facilities/photos/construction/Projects/stata/1_large.jpg",
-	]
+begin
+	armadillo_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/armadillo_zerocalcare.png"
+	personaggi_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_characters.png"
+	zero_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/zerocalcare_miniature.png"
+end
 
 # ╔═╡ 90f44be8-f35c-11ea-2fc6-c361fd4966af
-image_url = image_urls[1]
+image_url = personaggi_url
 
 # ╔═╡ d2ae6dd2-eef9-11ea-02df-255ec3b46a36
 img = load(download(image_url))
 
-# ╔═╡ 0b6010a8-eef6-11ea-3ad6-c1f10e30a413
-# arbitrarily choose the brightness of a pixel as mean of rgb
-# brightness(c::AbstractRGB) = mean((c.r, c.g, c.b))
+# ╔═╡ db56f469-a638-4895-9e6e-d6aab5bb825b
+shrink_image(img)
 
-# Use a weighted sum of rgb giving more weight to colors we perceive as 'brighter'
-# Based on https://www.tutorialspoint.com/dip/grayscale_to_rgb_conversion.htm
+# ╔═╡ 75a640a7-f6d9-4ade-9d36-17b75d5d0057
+md"""
+Anzitutto, convertiamo la nostra immagine in bianco e nero. 
+Per farlo, potremmo scegliere arbitrariamente di misurare la _luminosità_ di un pixel come la media RGB dei tre canali di colore: 
+```
+brightness(c::AbstractRGB) = mean((c.r, c.g, c.b))
+```
+
+Un approccio leggermente più sofisticato consiste nel dare un peso disomogeneo ai diversi canali, in accordo a [quali colori percepiamo naturalmente come più _brillanti_](https://www.tutorialspoint.com/dip/grayscale_to_rgb_conversion.htm):
+"""
+
+# ╔═╡ 0b6010a8-eef6-11ea-3ad6-c1f10e30a413
 brightness(c::AbstractRGB) = 0.3 * c.r + 0.59 * c.g + 0.11 * c.b
+
+# ╔═╡ 9b8112fa-2ae9-4957-8dcc-399673ea0fa9
+md"""
+Diamo un'occhiata al risultato usando la funzione `Gray` che restituisce un oggetto di tipo `Gray`, ovvero un pixel in scala di grigio:
+"""
 
 # ╔═╡ fc1c43cc-eef6-11ea-0fc4-a90ac4336964
 Gray.(brightness.(img))
 
-# ╔═╡ 82c0d0c8-efec-11ea-1bb9-83134ecb877e
+# ╔═╡ 12b2fc54-cbc3-43e4-a560-2b54f144af05
 md"""
-# Edge detection filter
-
-(Spoiler alert!) We use the Sobel edge detection filter we created in our Homework.
-
-```math
-\begin{align}
-
-G_x &= \begin{bmatrix}
-1 & 0 & -1 \\
-2 & 0 & -2 \\
-1 & 0 & -1 \\
-\end{bmatrix} \star A\\[10pt]
-G_y &= \begin{bmatrix}
-1 & 2 & 1 \\
-0 & 0 & 0 \\
--1 & -2 & -1 \\
-\end{bmatrix} \star A
-\end{align}
-```
-
-Here, $\star$ denotes convolution.
-
-Here $A$ is the array corresponding to your image.
-We can think of $G_x$ and $G_y$ as calculating (discretized) **derivatives** in the $x$ and $y$ directions.
-
-Then we combine them by finding the magnitude of the (discretized) **gradient**, in the sense of multivariate calculus, by defining
-
-$$G_\text{total} = \sqrt{G_x^2 + G_y^2}.$$
+Visualizziamo la luminosità dell'immagine tramite un grafico: 
 """
-
-# ╔═╡ ffc9ede2-8106-11eb-2218-79307d6b4515
-md"""
-Here are the Sobel kernels for the derivatives in each direction:
-"""
-
-# ╔═╡ da726954-eff0-11ea-21d4-a7f4ae4a6b09
-Sy, Sx = Kernel.sobel()
-
-# ╔═╡ abf6944e-f066-11ea-18e2-0b92606dab85
-(collect(Int.(8 .* Sx)), collect(Int.(8 .* Sy)))
 
 # ╔═╡ 42f2105a-810b-11eb-0e47-2dbb5ea2f566
 plotly()
@@ -153,30 +130,51 @@ plotly()
 # ╔═╡ 406a65c0-810a-11eb-3c57-6d5be524ee3f
 surface(brightness.(img))
 
-# ╔═╡ ac8d6902-f069-11ea-0f1d-9b0fa706d769
+# ╔═╡ 82c0d0c8-efec-11ea-1bb9-83134ecb877e
 md"""
-- blue shows positive values
-- red shows negative values
- $G_x \hspace{180pt} G_y$
+## Filtro per _edge detection_
+
+Useremo i filtri di Sobel: 
+```math
+\begin{align}
+
+G_x &= \begin{bmatrix}
+1 & 0 & -1 \\
+2 & 0 & -2 \\
+1 & 0 & -1 \\
+\end{bmatrix} \star A,\\[10pt]
+G_y &= \begin{bmatrix}
+1 & 2 & 1 \\
+0 & 0 & 0 \\
+-1 & -2 & -1 \\
+\end{bmatrix} \star A,
+\end{align}
+```
+dove l'operatore $\star$ denota l'operazione di convoluzione e la matrice $A$ è l'array che codifica l'immagine. 
+
+I filtri $G_x$ e $G_y$ possono essere visti come una versione discreta della derivata nelle direzioni $x$ e $y$, come accennato nella [lezione sulla trasformazione di immagini](https://natema.github.io/ECMJ-it/lectures/lezione_2.0_trasformazione_di_immagini.jl.html).
+Possiamo combinarli per stimare la grandezza di una versione discretizzata del gradiente, definendo 
+
+$$G_\text{total} = \sqrt{G_x^2 + G_y^2}.$$
 """
 
-# ╔═╡ 172c7612-efee-11ea-077a-5d5c6e2505a4
-function shrink_image(image, ratio=5)
-	(height, width) = size(image)
-	new_height = height ÷ ratio - 1
-	new_width = width ÷ ratio - 1
-	list = [
-		mean(image[
-			ratio * i:ratio * (i + 1),
-			ratio * j:ratio * (j + 1),
-		])
-		for j in 1:new_width
-		for i in 1:new_height
-	]
-	reshape(list, new_height, new_width)
-end
+# ╔═╡ ffc9ede2-8106-11eb-2218-79307d6b4515
+md"""
+Possiamo richiamare i filtri di Sobel col modulo `Kernel` fornito dal pacchetto `ImageFiltering`:  
+"""
+
+# ╔═╡ da726954-eff0-11ea-21d4-a7f4ae4a6b09
+Sy, Sx = Kernel.sobel()
+
+# ╔═╡ 7b82fe0e-3189-445b-bbc4-bc5609ec0f28
+md"""
+La funzione `hbox` definita in appendice ci permette di visualizzare tali filtri: 
+"""
 
 # ╔═╡ fcf46120-efec-11ea-06b9-45f470899cb2
+"""
+Implementazione dell'operazione di convoluzione.
+"""
 function convolve(M, kernel)
     height, width = size(kernel)
     
@@ -185,23 +183,23 @@ function convolve(M, kernel)
     
     new_image = similar(M)
 	
-    # (i, j) loop over the original image
+    # (i, j) itera sull'immagine originale
 	m, n = size(M)
     @inbounds for i in 1:m
         for j in 1:n
-            # (k, l) loop over the neighbouring pixels
+            # (k, l) itera su pixel vicini
 			accumulator = 0 * M[1, 1]
 			for k in -half_height:-half_height + height - 1
 				for l in -half_width:-half_width + width - 1
 					Mi = i - k
 					Mj = j - l
-					# First index into M
+					# forza il primo indice in M
 					if Mi < 1
 						Mi = 1
 					elseif Mi > m
 						Mi = m
 					end
-					# Second index into M
+					# forza il secondo indice in M
 					if Mj < 1
 						Mj = 1
 					elseif Mj > n
@@ -218,7 +216,33 @@ function convolve(M, kernel)
     return new_image
 end
 
+# ╔═╡ dec62538-efee-11ea-1e03-0b801e61e91c
+"""
+Visualizza i valori positivi come pixel blu, quelli negativi come pixel rossi. 
+"""
+function show_colored_array(array)
+	pos_color = RGB(0.36, 0.82, 0.8)
+	neg_color = RGB(0.99, 0.18, 0.13)
+	to_rgb(x) = max(x, 0) * pos_color + max(-x, 0) * neg_color
+	to_rgb.(array) / maximum(abs.(array))
+end
+
+# ╔═╡ a479f476-2bd8-4167-a26b-e3f2c4440ca2
+md"""
+Visualizziamo ora le _derivate_ orizzontali e verticali dell'immagine tramite la funzione `convolve` che abbiamo appena implementato:
+"""
+
+# ╔═╡ ac8d6902-f069-11ea-0f1d-9b0fa706d769
+md"""
+Da notare come la funzione `show_colored_array` mostri in blu i valori positivi, in rosso quelli negativi: 
+
+ $G_x \hspace{180pt} G_y$
+"""
+
 # ╔═╡ 6f7bd064-eff4-11ea-0260-f71aa7f4f0e5
+"""
+Combina le convoluzioni dei filtri di Sobel orizzontale e verticali in un'approssimazione discreta del gradiente usata come _edge detection_.
+"""
 function edgeness(img)
 	Sy, Sx = Kernel.sobel()
 	b = brightness.(img)
@@ -229,62 +253,44 @@ function edgeness(img)
 	sqrt.(∇x.^2 + ∇y.^2)
 end
 
-# ╔═╡ dec62538-efee-11ea-1e03-0b801e61e91c
-	function show_colored_array(array)
-		pos_color = RGB(0.36, 0.82, 0.8)
-		neg_color = RGB(0.99, 0.18, 0.13)
-		to_rgb(x) = max(x, 0) * pos_color + max(-x, 0) * neg_color
-		to_rgb.(array) / maximum(abs.(array))
-	end
-
 # ╔═╡ f8283a0e-eff4-11ea-23d3-9f1ced1bafb4
 md"""
 
-## Seam carving idea
+## Seam carving: l'idea
 
-The idea of seam carving is to find a path from the top of the image to the bottom of the image where the path minimizes the edgness. 
-In other words, this path **minimizes the number of edges in the image that it crosses**.
-
-We will call the edgeness the **energy**.
-
+Come abbiamo accennato, l'idea fondamentale dell'algoritmo **seam carving** è quella di trovare cammini che minimizzano il numero di bordi dell'immagine che esso attraversa. 
 """
 
 # ╔═╡ 025e2c94-eefb-11ea-12cb-f56f34886334
 md"""
+I cammini che consideriamo hanno la forma seguente: dato il nodo che stiamo attualmente considerando (ovvero un pixel dell'immagine), il prossimo nodo può consistere nel nodo che si trova immediatamente al di sotto, o in basso a sinistra oppure in basso a destra. 
 
-At every step in going down, the path is allowed to go south-west, south or south-east. We want to find a connected path, or **seam**, with the minimum possible sum of "energies" along the path.
-
-We start by writing a `least_edgy` function which takes a matrix of energies and returns
-a new matrix. The new matrix has entries $M_{i, j}$ which gives the minimum possible energy when starting from the pixel $(i, j)$ and going from there down to a pixel in the bottom row.
+Di seguito implementiamo la funzione `least_edgy` che restituisce una matrice $M$ tale che $M_{i, j}$ è il valore minimo di tutti i cammini che iniziano dall'entrata con indici $(i, j)$ e proseguono verso il basso fino all'ultima riga.
 """
 
 # ╔═╡ acc1ee8c-eef9-11ea-01ac-9b9e9c4167b3
 #            e[x,y] 
-#          ↙   ↓   ↘       <-- pick the next path which gives the least overall energy
+#      ??? ↙   ↓   ↘ ???
 #  e[x-1,y+1] e[x,y+1]  e[x+1,y+1]     
 #
-# Basic calculation:   e[x,y] += min( e[x-1,y+1], e[x,y], e[x+1,y] )
-#               `dirs` records which direction we take from (-1==SW, 0==S, 1==SE)
+# e[x,y] += min( e[x-1,y+1], e[x,y], e[x+1,y] )
+#
+# `dirs` registra l'azione intrapresa: -1==SW, 0==S, 1==SE.
 
 function least_edgy(E)
 	least_E = zeros(size(E))
 	dirs = zeros(Int, size(E))
 	
-	least_E[end, :] .= E[end, :] # the minimum energy on the last row is the energy
-	                             # itself
+	least_E[end, :] .= E[end, :] 
 
 	m, n = size(E)
-	# Go from the last row up, finding the minimum energy
-	
 	for i in m-1:-1:1
 		for j in 1:n
-			
 			j1, j2 = max(1, j-1), min(j+1, n)
 			e, dir = findmin(least_E[i+1, j1:j2])
 			least_E[i,j] += e
 			least_E[i,j] += E[i,j]
 			dirs[i, j] = (-1, 0, 1)[dir + (j==1)]
-			
 		end
 	end
 	
@@ -292,8 +298,6 @@ function least_edgy(E)
 end
 
 # ╔═╡ 8b204a2a-eff6-11ea-25b0-13f230037ee1
-# The bright areas are screaming "AVOID ME!"
-
 least_e, dirs = least_edgy(edgeness(img))
 
 # ╔═╡ 84d3afe4-eefe-11ea-1e31-bf3b2af4aecd
@@ -301,20 +305,19 @@ show_colored_array(least_e)
 
 # ╔═╡ dd71c2a4-8108-11eb-18ce-838c53eac3ef
 md"""
-Here are the directions that we should take at each step:
+Nel nostro caso specifico, possiamo visualizzare le direzioni che dovremmo prendere ad ongi passo:
 """
 
 # ╔═╡ b507480a-ef01-11ea-21c4-63d19fac19ab
-# direction the path should take at every pixel.
 reduce( (x, y) -> x*y*"\n",
 	reduce(*, getindex.(([" ", "↙", "↓", "↘"],), dirs[1:25, 1:60].+3), dims=2, 	init=""), init="") |> Text
 
 # ╔═╡ 7d8b20a2-ef03-11ea-1c9e-fdf49a397619
-md"## Remove seams"
+md"## Rimuovere i cammini"
 
 # ╔═╡ f690b06a-ef31-11ea-003b-4f2b2f82a9c3
 md"""
-We now compress an image horizontally by successively removing a number of seams of lowest energy.
+Possiamo finalmente _schiacciare_ l'immagine rimuovendo iterativamente cammini di valore minimo:
 """
 
 # ╔═╡ 977b6b98-ef03-11ea-0176-551fc29729ab
@@ -331,6 +334,7 @@ function get_seam_at(dirs, j)
 end
 
 # ╔═╡ 9abbb158-ef03-11ea-39df-a3e8aa792c50
+# esempio
 get_seam_at(dirs, 2)
 
 # ╔═╡ 14f72976-ef05-11ea-2ad5-9f0914f9cf58
@@ -339,30 +343,27 @@ function mark_path(img, path)
 	m = size(img, 2)
 	
 	for (i, j) in path
-		# To make it easier to see, we'll color not just
-		# the pixels of the seam, but also those adjacent to it
-		
+		# Per rendere un cammino più visibile, coloriamo anche i pixel adiacenti
 		for j′ in j-1:j+1
 			img′[i, clamp(j′, 1, m)] = RGB(1,0,1)
 		end
-		
 	end
 	
 	return img′
 end
 
-# ╔═╡ 22c851c4-8109-11eb-3950-35a75857c3c3
-md"""
-In the visualization below, the slider specifies which column we start with at the top. The pink seam is the best (least total energy) that will be snipped out.
-"""
-
 # ╔═╡ cf9a9124-ef04-11ea-14a4-abf930edc7cc
-@bind start_column Slider(1:size(img, 2), show_value=true)
+md"""
+Colonna iniziale `start_column`: $(@bind start_column Slider(1:size(img, 2), show_value=true, default=1))
+"""
 
 # ╔═╡ 772a4d68-ef04-11ea-366a-f7ae9e1634f6
 path = get_seam_at(dirs, start_column)
 
 # ╔═╡ 081a98cc-f06e-11ea-3664-7ba51d4fd153
+"""
+Normalizza e poi inverte i singoli canali.
+"""
 function pencil(X)
 	f(x) = RGB(1-x,1-x,1-x)
 	map(f, X ./ maximum(X))
@@ -371,17 +372,28 @@ end
 # ╔═╡ 237647e8-f06d-11ea-3c7e-2da57e08bebc
 e = edgeness(img);
 
+# ╔═╡ 0152ab51-a5af-4484-b48d-843f4310d5ad
+md"""
+Visualizziamo il cammino di pixel `e` applicando gli effetti implementati: 
+"""
+
 # ╔═╡ 4f23bc54-ef0f-11ea-06a9-35ca3ece421e
+"""
+Rimuove dall'immagine il cammino di pixel indicato.
+"""
 function rm_path(img, path)
-	img′ = img[:, 1:end-1] # one less column
+	img′ = img[:, 1:end-1] # una colonna in meno
 	for (i, j) in path
-		img′[i, 1:j-1] .= img[i, 1:j-1]
-		img′[i, j:end] .= img[i, j+1:end]
+		img′[i, 1:j-1] .= img[i, 1:j-1] # arriva fino alla colonna $j-1$
+		img′[i, j:end] .= img[i, j+1:end] # continua dalla colonna $j+1$
 	end
 	img′
 end
 
 # ╔═╡ b401f398-ef0f-11ea-38fe-012b7bc8a4fa
+"""
+Ripete la procedura di rimozione dei cammini di pixel per ``n`` passi. 
+"""
 function shrink_n(img, n)
 	imgs = []
 	marked_imgs = []
@@ -392,12 +404,11 @@ function shrink_n(img, n)
 		_, min_j = findmin(@view least_E[1, :])
 		seam = get_seam_at(dirs, min_j)
 		img = rm_path(img, seam)
-		# Recompute the energy for the new image
-		# Note, this currently involves rerunning the convolution
-		# on the whole image, but in principle the only values that
-		# need recomputation are those adjacent to the seam, so there
-		# is room for a meanintful speedup here.
-#		e = edgeness(img)
+		# Ricalcola il valore dei cammini per la nuova immagine. 
+		# Attualmente questo passo richiede di effettuare una nuova convoluzione
+		# sull'intera immagine, anche se gli unici valori che devono 
+		# essere ricalcolati sono quelli adiacenti al cammino rimosso; 
+		# c'è dunque spazio per rendere l'algoritmo significativamente più efficiente.  
 		e = rm_path(e, seam)
 
  		push!(imgs, img)
@@ -406,29 +417,42 @@ function shrink_n(img, n)
 	imgs, marked_imgs
 end
 
+# ╔═╡ 2ef84ca6-655c-4761-8238-5d00c8dcfe76
+md"""
+Numero di iterazioni calcolate:
+"""
+
 # ╔═╡ b1b6b7fc-f153-11ea-224a-2578e8298775
-n_examples = min(200, size(img, 2))
+n_examples = min(400, size(img, 2))
 
 # ╔═╡ 2eb459d4-ef36-11ea-1f74-b53ffec7a1ed
-# returns two vectors of n successively smaller images
-# The second images have markings where the seam is cut out
+# Restituisce due vettori di $n$ immagini successivamente più schiacciate.
+# Le seconde immagini evidenziano il cammino di pixel che viene rimosso. 
 carved, marked_carved = shrink_n(img, n_examples);
 
 # ╔═╡ 5d6c1d74-8109-11eb-3529-bf2f23554b02
 md"""
-### Seam carving in action
+### Seam carving in azione
 """
 
 # ╔═╡ 48593d7c-8109-11eb-1b8b-6f15155d6ec9
 md"""
-Here is the algorithm in action. Now the slider tells us on which step of the algorithm we are, having removed each least-energy seam at each step:
+Vediamo finalmente l'algoritmo in azione. 
+Lo _slider_ che segue seleziona il passo dell'algoritmo del quale stiamo mostrando il cammino di pixel da rimuovere. 
 """
 
 # ╔═╡ 7038abe4-ef36-11ea-11a5-75e57ab51032
-@bind n Slider(1:length(carved))
+md"""
+Iterazione dell'algoritmo: $(@bind n Slider(1:length(carved), show_value=true, default=1))
+"""
 
 # ╔═╡ 2d6c6820-ef2d-11ea-1704-49bb5188cfcc
-md"shrunk by $n:"
+md"Vediamo l'immagine schiacciata di $n pixel:"
+
+# ╔═╡ 4e870e1a-2318-456e-9575-ab6803377e8d
+md"""
+## Appendice
+"""
 
 # ╔═╡ 1fd26a60-f089-11ea-1f56-bb6eba7d9651
 function hbox(x, y, gap=16; sy=size(y), sx=size(x))
@@ -442,7 +466,7 @@ function hbox(x, y, gap=16; sy=size(y), sx=size(x))
 end
 
 # ╔═╡ a21a886e-80eb-11eb-35ab-3dd3fb0a8a2c
-hbox(show_colored_array(Sx).parent, show_colored_array(Sy).parent ,10)
+hbox(show_colored_array(Sx).parent, show_colored_array(Sy).parent, 5)
 
 # ╔═╡ 44192a40-eff2-11ea-0ec7-05cdadb0c29a
 begin
@@ -469,7 +493,7 @@ end
 
 # ╔═╡ ca4a87e8-eff8-11ea-3d57-01dfa34ff723
 let
-	# least energy path of them all:
+	# cammino di importanza minima:
 	_, k = findmin(least_e[1, :])
 	path = get_seam_at(dirs, k)
 	hbox(
@@ -486,17 +510,15 @@ vbox(x,y, gap=16) = hbox(x', y')'
 
 # ╔═╡ ddac52ea-f148-11ea-2860-21cff4c867e6
 let
+	max_row, max_col = size(img)
+	rows, cols = 300:max_row, 1:300
 	∇y = convolve(brightness.(img), Sy)
 	∇x = convolve(brightness.(img), Sx)
-	# zoom in on the clock
 	vbox(
-		hbox(img[300:end, 1:300], img[300:end, 1:300]), 
-	 	hbox(show_colored_array.((∇x[300:end,  1:300], ∇y[300:end, 1:300]))...)
+		hbox(img[rows, cols], img[rows, cols]), 
+	 	hbox(show_colored_array.((∇x[rows, cols], ∇y[rows, cols]))...)
 	)
 end
-
-# ╔═╡ 15d1e5dc-ef2f-11ea-093a-417108bcd495
-[size(img) size(carved[n])]
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1618,29 +1640,33 @@ version = "0.9.1+5"
 # ╠═405a4f82-8116-11eb-1b35-2563b06b02a7
 # ╟─8c7ef773-04e8-41cf-af95-6dbcd09505a1
 # ╟─e7a77e52-8104-11eb-1b51-a9f8312e9d95
+# ╠═172c7612-efee-11ea-077a-5d5c6e2505a4
+# ╠═db56f469-a638-4895-9e6e-d6aab5bb825b
 # ╟─fb6b8564-8104-11eb-2e10-1f28be9a6ce7
-# ╠═cb335074-eef7-11ea-24e8-c39a325166a1
-# ╟─7b0cee56-8106-11eb-0979-e7fead945a6f
-# ╟─3721e7f9-83fa-48cd-a1f5-e72e07b0f7a2
+# ╟─cb335074-eef7-11ea-24e8-c39a325166a1
+# ╠═3721e7f9-83fa-48cd-a1f5-e72e07b0f7a2
 # ╠═90f44be8-f35c-11ea-2fc6-c361fd4966af
-# ╟─d2ae6dd2-eef9-11ea-02df-255ec3b46a36
-# ╟─0b6010a8-eef6-11ea-3ad6-c1f10e30a413
+# ╠═d2ae6dd2-eef9-11ea-02df-255ec3b46a36
+# ╟─75a640a7-f6d9-4ade-9d36-17b75d5d0057
+# ╠═0b6010a8-eef6-11ea-3ad6-c1f10e30a413
+# ╟─9b8112fa-2ae9-4957-8dcc-399673ea0fa9
 # ╠═fc1c43cc-eef6-11ea-0fc4-a90ac4336964
+# ╟─12b2fc54-cbc3-43e4-a560-2b54f144af05
+# ╠═42f2105a-810b-11eb-0e47-2dbb5ea2f566
+# ╠═406a65c0-810a-11eb-3c57-6d5be524ee3f
 # ╟─82c0d0c8-efec-11ea-1bb9-83134ecb877e
 # ╟─ffc9ede2-8106-11eb-2218-79307d6b4515
 # ╠═da726954-eff0-11ea-21d4-a7f4ae4a6b09
+# ╟─7b82fe0e-3189-445b-bbc4-bc5609ec0f28
 # ╠═a21a886e-80eb-11eb-35ab-3dd3fb0a8a2c
-# ╠═abf6944e-f066-11ea-18e2-0b92606dab85
+# ╠═fcf46120-efec-11ea-06b9-45f470899cb2
+# ╠═dec62538-efee-11ea-1e03-0b801e61e91c
+# ╟─a479f476-2bd8-4167-a26b-e3f2c4440ca2
 # ╠═44192a40-eff2-11ea-0ec7-05cdadb0c29a
-# ╠═42f2105a-810b-11eb-0e47-2dbb5ea2f566
-# ╠═406a65c0-810a-11eb-3c57-6d5be524ee3f
 # ╟─ac8d6902-f069-11ea-0f1d-9b0fa706d769
-# ╟─ddac52ea-f148-11ea-2860-21cff4c867e6
+# ╠═ddac52ea-f148-11ea-2860-21cff4c867e6
 # ╠═6f7bd064-eff4-11ea-0260-f71aa7f4f0e5
 # ╟─d6a268c0-eff4-11ea-2c9e-bfef19c7f540
-# ╟─172c7612-efee-11ea-077a-5d5c6e2505a4
-# ╟─fcf46120-efec-11ea-06b9-45f470899cb2
-# ╟─dec62538-efee-11ea-1e03-0b801e61e91c
 # ╟─f8283a0e-eff4-11ea-23d3-9f1ced1bafb4
 # ╟─025e2c94-eefb-11ea-12cb-f56f34886334
 # ╠═acc1ee8c-eef9-11ea-01ac-9b9e9c4167b3
@@ -1652,26 +1678,27 @@ version = "0.9.1+5"
 # ╟─f690b06a-ef31-11ea-003b-4f2b2f82a9c3
 # ╠═977b6b98-ef03-11ea-0176-551fc29729ab
 # ╠═9abbb158-ef03-11ea-39df-a3e8aa792c50
+# ╠═14f72976-ef05-11ea-2ad5-9f0914f9cf58
+# ╟─cf9a9124-ef04-11ea-14a4-abf930edc7cc
 # ╠═772a4d68-ef04-11ea-366a-f7ae9e1634f6
-# ╟─14f72976-ef05-11ea-2ad5-9f0914f9cf58
-# ╟─22c851c4-8109-11eb-3950-35a75857c3c3
-# ╠═cf9a9124-ef04-11ea-14a4-abf930edc7cc
 # ╠═552fb92e-ef05-11ea-0a79-dd7a6760089a
 # ╠═081a98cc-f06e-11ea-3664-7ba51d4fd153
 # ╠═237647e8-f06d-11ea-3c7e-2da57e08bebc
+# ╟─0152ab51-a5af-4484-b48d-843f4310d5ad
 # ╠═dfd03c4e-f06c-11ea-1e2a-89233a675138
 # ╠═ca4a87e8-eff8-11ea-3d57-01dfa34ff723
 # ╠═4f23bc54-ef0f-11ea-06a9-35ca3ece421e
 # ╠═b401f398-ef0f-11ea-38fe-012b7bc8a4fa
+# ╟─2ef84ca6-655c-4761-8238-5d00c8dcfe76
 # ╠═b1b6b7fc-f153-11ea-224a-2578e8298775
 # ╠═2eb459d4-ef36-11ea-1f74-b53ffec7a1ed
 # ╟─5d6c1d74-8109-11eb-3529-bf2f23554b02
 # ╟─48593d7c-8109-11eb-1b8b-6f15155d6ec9
-# ╠═7038abe4-ef36-11ea-11a5-75e57ab51032
+# ╟─7038abe4-ef36-11ea-11a5-75e57ab51032
 # ╟─2d6c6820-ef2d-11ea-1704-49bb5188cfcc
 # ╠═fa6a2152-ef0f-11ea-0e67-0d1a6599e779
-# ╟─71b16dbe-f08b-11ea-2343-5f1583074029
-# ╟─1fd26a60-f089-11ea-1f56-bb6eba7d9651
-# ╟─15d1e5dc-ef2f-11ea-093a-417108bcd495
+# ╟─4e870e1a-2318-456e-9575-ab6803377e8d
+# ╠═71b16dbe-f08b-11ea-2343-5f1583074029
+# ╠═1fd26a60-f089-11ea-1f56-bb6eba7d9651
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

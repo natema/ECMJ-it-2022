@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.0
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -7,8 +7,9 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
 end
@@ -17,6 +18,17 @@ end
 begin
     using Plots, PlutoUI, StatsBase, Statistics
 end
+
+# ╔═╡ 2c343416-2b20-4aa1-ac7b-2fada1606a38
+md"""
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+
+#### 
+
+[Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
+
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+"""
 
 # ╔═╡ fb6cdc08-8b44-11eb-09f5-43c167aa53fd
 PlutoUI.TableOfContents(aside=true)
@@ -96,25 +108,6 @@ md"""
 ## Visualizing component failure
 """
 
-# ╔═╡ 178631ec-8cac-11eb-1117-5d872ba7f66e
-function simulate(N, p)
-	v = fill(0, N, N)
-	t = 0 
-	
-	while any( v .== 0 ) && t < 100
-		t += 1
-		
-		for i= 1:N, j=1:N
-			if rand() < p && v[i,j]==0
-				v[i,j] = t
-			end					    
-		end
-		
-	end
-	
-	return v
-end
-
 # ╔═╡ 179a4db2-8cac-11eb-374f-0f24dc81ebeb
 md"""
 M= $(@bind M Slider(2:20, show_value=true, default=8))
@@ -127,9 +120,6 @@ p= $(@bind prob Slider(0.01:.01:1, show_value=true, default=.1))
 t = $(@bind tt Slider(1:100, show_value=true, default=1))
 """
 
-# ╔═╡ 17bbf532-8cac-11eb-1e3f-c54072021208
-simulation = simulate(M, prob)
-
 # ╔═╡ a38fe2b2-8cae-11eb-19e8-d563e82855d3
 gr()
 
@@ -139,47 +129,6 @@ begin
 	
 	circle(r, x, y) = (θ = range(0, 2π, length=30); (x .+ r .* cos.(θ), y .+ r .* sin.(θ)))
 end
-
-# ╔═╡ 17e0d142-8cac-11eb-2d6a-fdf175f5d419
-begin
-	w = .9
-	h = .9
-	c = [RGB(0,1,0), RGB(1,0,0), :purple][1 .+ (simulation .< tt) .+ (simulation .<  (tt.-1))] 
-	
-	plot(ratio=1, legend=false, axis=false, ticks=false)
-	
-	for i=1:M, j=1:M
-		plot!(rectangle(w, h, i, j), c=:black, fill=true, alpha=0.5)
-		plot!(circle(0.3, i+0.45, j+0.45), c = c[i, j], fill=true, alpha=0.5)
-	end
-	
-	for i=1:M, j=1:M
-		if simulation[i,j] < tt
-	       annotate!(i+0.45, j+0.5, text("$(simulation[i, j])", 7, :white))
-		end
-	end
-    
-	
-	plot!(lims=(0.5, M+1.1), title="time = $(tt-1);  failed count: $(sum(simulation.<tt))")
-	
-end
-
-# ╔═╡ 17fe87a0-8cac-11eb-2938-2d9cd19ecc0f
-begin
-	
-	plot(size=(500, 300))
-	cdf= [ count(simulation .≤ i) for i=0:100] 
-	bar!(cdf, c=:purple, legend=false, xlim=(0,tt),alpha=0.8)
-end
-
-# ╔═╡ 1829091c-8cac-11eb-1b77-c5ed7dd1261b
-begin
-	newcdf = [ count(simulation .> i) for i=0:100] 
-	bar!( newcdf, c=RGB(0,1,0), legend=false, xlim=(0,tt),alpha=0.8)
-end
-
-# ╔═╡ 1851dd6a-8cac-11eb-18e4-87dbe1714be0
-bar(countmap(simulation[:]), c=:red, legend=false, xlim=(0, tt+.5), size=(500, 300))
 
 # ╔═╡ a9447530-8cb6-11eb-38f7-ff69a640e3c4
 md"""
@@ -241,12 +190,6 @@ md"""
 Recall that a **Bernoulli random variable** models a weighted coin: it takes the value 1, with probability $p$, and 0, with probability $q = (1 - p)$:
 """
 
-# ╔═╡ ba7ffe78-0845-11eb-2847-851a407dd2ec
-bernoulli(p) = rand() < p
-
-# ╔═╡ 45bb6df0-8cc7-11eb-100f-37c2a76df464
-bernoulli(0.25)
-
 # ╔═╡ dcd279b0-8bf3-11eb-0cb9-95f351626ed1
 md"""
 Note that `rand() < p` returns a `Bool` (true or false). We are converting to `Int` to get a value 1 or 0.
@@ -257,9 +200,6 @@ md"""
 Let's generate (sample) some Bernoulli random variates:
 """
 
-# ╔═╡ b6786ec8-8bf3-11eb-1347-61f231fd3b4c
-flips = [Int(bernoulli(0.25)) for i in 1:100]
-
 # ╔═╡ ac98f5da-8bf3-11eb-076f-597ce4455e76
 md"""
 It is natural to ask what the **mean**, or **expected value**, is:
@@ -267,9 +207,6 @@ It is natural to ask what the **mean**, or **expected value**, is:
 
 # ╔═╡ 0e7a04a4-8bf4-11eb-2e9d-fb48c23b8d8c
 sample_mean(data) = sum(data) / length(data)
-
-# ╔═╡ 093275e4-8cc8-11eb-136f-3ffe522c4125
-sample_mean(flips)
 
 # ╔═╡ 111eccd2-8bf4-11eb-097c-7582f811d146
 md"""
@@ -322,18 +259,12 @@ methods(Bernoulli)
 # ╔═╡ d25dc130-8cc8-11eb-177f-63a1792494c0
 Bernoulli(1//4)
 
-# ╔═╡ e2f45234-8cc8-11eb-2be9-598eb590592a
-rand(B)
-
 # ╔═╡ 3ef23da4-8cb4-11eb-0d5f-d5ee8fc56227
 md"""
 The object `B` really represents "a Bernoulli random variable with probability of success $p$". Since all such random variables are the same, this represents *any* Bernoulli random variable with that probability.
 
 We should use this type any time we need a Bernoulli random variable. If you need this in another notebook you will either need to copy and paste the definition or, better, make your own mini-library. However, note that types like this are already available in the `Distributions.jl` package and the new `MeasureTheory.jl` package.
 """
-
-# ╔═╡ bc5d6fae-8cad-11eb-3351-a734d2366557
-rand(B)
 
 # ╔═╡ 2d9c560e-8bf9-11eb-1ac5-f77f7caf776f
 Statistics.mean(X::Bernoulli) = X.p
@@ -351,18 +282,6 @@ md"""
 Let's take the simulation and run it a few times.
 """
 
-# ╔═╡ e2d764d0-0845-11eb-0031-e74d2f5acaf9
-function step!(infectious, p)
-	for i in 1:length(infectious)
-		
-		if infectious[i] && bernoulli(p)
-			infectious[i] = false
-		end
-	end
-	
-	return infectious
-end
-
 # ╔═╡ 9282eca0-08db-11eb-2e36-d761594b427c
 T = 100
 
@@ -375,70 +294,8 @@ p = $(@bind ppp Slider(0:0.01:1, show_value=true, default=0.25))
 t = $(@bind t Slider(1:T, show_value=true))
 """
 
-# ╔═╡ 58d8542c-08db-11eb-193a-398ce01b8635
-begin
-	infected = [true for i in 1:N]
-		
-	results = [copy(step!(infected, ppp)) for i in 1:T]
-	pushfirst!(results, trues(N))
-end
-
-# ╔═╡ 33f9fc36-0846-11eb-18c2-77f92fca3176
-function simulate_recovery(p, T)
-	infectious = trues(N)
-	num_infectious = [N]
-	
-	for t in 1:T
-		step!(infectious, p)
-		push!(num_infectious, count(infectious))
-	end
-	
-	return num_infectious
-end
-
 # ╔═╡ 39a69c2a-0846-11eb-35c1-53c68a9f71e5
 p = 0.1
-
-# ╔═╡ cb278624-08dd-11eb-3375-276bfe8d7b3a
-begin
-	pp = 0.05
-	
-	plot(simulate_recovery(pp, T), label="run 1", alpha=0.5, lw=2, m=:o)
-	plot!(simulate_recovery(pp, T), label="run 2", alpha=0.5, lw=2, m=:o)
-	
-	xlabel!("time t")
-	ylabel!("number of light bulbs that are alive")
-end
-
-# ╔═╡ f3c85814-0846-11eb-1266-63f31f351a51
-all_data = [simulate_recovery(pp, T) for i in 1:30];
-
-# ╔═╡ 01dbe272-0847-11eb-1331-4360a575ff14
-begin
-	plot(all_data, alpha=0.1, leg=false, m=:o, ms=1,
-		size=(500, 400), label="")
-	xlabel!("time t")
-	ylabel!("number still functioning")
-end
-
-# ╔═╡ be8e4ac2-08dd-11eb-2f72-a9da5a750d32
-plot!(mean(all_data), leg=true, label="mean",
-		lw=3, c=:red, m=:o, alpha=0.5, 
-		size=(500, 400))
-
-# ╔═╡ 8bc52d58-0848-11eb-3487-ef0d06061042
-begin
-	plot(replace.(all_data, 0.0 => NaN), 
-		yscale=:log10, alpha=0.3, leg=false, m=:o, ms=1,
-		size=(500, 400))
-	
-	plot!(mean(all_data), yscale=:log10, lw=3, c=:red, m=:o, label="mean", alpha=0.5)
-	
-	xlabel!("time t")
-	ylabel!("number still functioning")
-end
-
-
 
 # ╔═╡ caa3faa2-08e5-11eb-33fe-cbbc00cfd459
 md"""
@@ -484,20 +341,6 @@ md"""
 Let's compare the exact and numerical results:
 """
 
-# ╔═╡ 6a545268-0846-11eb-3861-c3d5f52c061b
-exact = [N * (1-pp)^t for t in 0:T]
-
-# ╔═╡ 4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
-begin
-	plot(mean(all_data), m=:o, alpha=0.5, label="mean of stochastic simulations",
-		size=(500, 400))
-	plot!(exact, lw=3, alpha=0.8, label="deterministic model", leg=:right)
-	title!("Experiment vs. theory")
-	xlabel!("time")
-	ylabel!("""number of "greens" """)
-end
-	
-
 # ╔═╡ 3cd1ad48-08ed-11eb-294c-f96b0e7c33bb
 md"""
 They agree well, as they should. The agreement is expected to be better (i.e. the fluctuations smaller) for a larger population.
@@ -539,6 +382,175 @@ Note that does not require (or even allow) methods at first, as some other langu
 
 # ╔═╡ 511892e0-8cb1-11eb-3814-b98e8e0bbe5c
 Base.rand(X::Binomial) = sum(rand(Bernoulli(X.p)) for i in 1:X.N)
+
+# ╔═╡ 178631ec-8cac-11eb-1117-5d872ba7f66e
+function simulate(N, p)
+	v = fill(0, N, N)
+	t = 0 
+	
+	while any( v .== 0 ) && t < 100
+		t += 1
+		
+		for i= 1:N, j=1:N
+			if rand() < p && v[i,j]==0
+				v[i,j] = t
+			end					    
+		end
+		
+	end
+	
+	return v
+end
+
+# ╔═╡ 17bbf532-8cac-11eb-1e3f-c54072021208
+simulation = simulate(M, prob)
+
+# ╔═╡ 17e0d142-8cac-11eb-2d6a-fdf175f5d419
+begin
+	w = .9
+	h = .9
+	c = [RGB(0,1,0), RGB(1,0,0), :purple][1 .+ (simulation .< tt) .+ (simulation .<  (tt.-1))] 
+	
+	plot(ratio=1, legend=false, axis=false, ticks=false)
+	
+	for i=1:M, j=1:M
+		plot!(rectangle(w, h, i, j), c=:black, fill=true, alpha=0.5)
+		plot!(circle(0.3, i+0.45, j+0.45), c = c[i, j], fill=true, alpha=0.5)
+	end
+	
+	for i=1:M, j=1:M
+		if simulation[i,j] < tt
+	       annotate!(i+0.45, j+0.5, text("$(simulation[i, j])", 7, :white))
+		end
+	end
+    
+	
+	plot!(lims=(0.5, M+1.1), title="time = $(tt-1);  failed count: $(sum(simulation.<tt))")
+	
+end
+
+# ╔═╡ 17fe87a0-8cac-11eb-2938-2d9cd19ecc0f
+begin
+	
+	plot(size=(500, 300))
+	cdf= [ count(simulation .≤ i) for i=0:100] 
+	bar!(cdf, c=:purple, legend=false, xlim=(0,tt),alpha=0.8)
+end
+
+# ╔═╡ 1829091c-8cac-11eb-1b77-c5ed7dd1261b
+begin
+	newcdf = [ count(simulation .> i) for i=0:100] 
+	bar!( newcdf, c=RGB(0,1,0), legend=false, xlim=(0,tt),alpha=0.8)
+end
+
+# ╔═╡ 1851dd6a-8cac-11eb-18e4-87dbe1714be0
+bar(countmap(simulation[:]), c=:red, legend=false, xlim=(0, tt+.5), size=(500, 300))
+
+# ╔═╡ ba7ffe78-0845-11eb-2847-851a407dd2ec
+bernoulli(p) = rand() < p
+
+# ╔═╡ 45bb6df0-8cc7-11eb-100f-37c2a76df464
+bernoulli(0.25)
+
+# ╔═╡ b6786ec8-8bf3-11eb-1347-61f231fd3b4c
+flips = [Int(bernoulli(0.25)) for i in 1:100]
+
+# ╔═╡ 093275e4-8cc8-11eb-136f-3ffe522c4125
+sample_mean(flips)
+
+# ╔═╡ e2d764d0-0845-11eb-0031-e74d2f5acaf9
+function step!(infectious, p)
+	for i in 1:length(infectious)
+		
+		if infectious[i] && bernoulli(p)
+			infectious[i] = false
+		end
+	end
+	
+	return infectious
+end
+
+# ╔═╡ 58d8542c-08db-11eb-193a-398ce01b8635
+begin
+	infected = [true for i in 1:N]
+		
+	results = [copy(step!(infected, ppp)) for i in 1:T]
+	pushfirst!(results, trues(N))
+end
+
+# ╔═╡ 33f9fc36-0846-11eb-18c2-77f92fca3176
+function simulate_recovery(p, T)
+	infectious = trues(N)
+	num_infectious = [N]
+	
+	for t in 1:T
+		step!(infectious, p)
+		push!(num_infectious, count(infectious))
+	end
+	
+	return num_infectious
+end
+
+# ╔═╡ cb278624-08dd-11eb-3375-276bfe8d7b3a
+begin
+	pp = 0.05
+	
+	plot(simulate_recovery(pp, T), label="run 1", alpha=0.5, lw=2, m=:o)
+	plot!(simulate_recovery(pp, T), label="run 2", alpha=0.5, lw=2, m=:o)
+	
+	xlabel!("time t")
+	ylabel!("number of light bulbs that are alive")
+end
+
+# ╔═╡ 6a545268-0846-11eb-3861-c3d5f52c061b
+exact = [N * (1-pp)^t for t in 0:T]
+
+# ╔═╡ f3c85814-0846-11eb-1266-63f31f351a51
+all_data = [simulate_recovery(pp, T) for i in 1:30];
+
+# ╔═╡ 01dbe272-0847-11eb-1331-4360a575ff14
+begin
+	plot(all_data, alpha=0.1, leg=false, m=:o, ms=1,
+		size=(500, 400), label="")
+	xlabel!("time t")
+	ylabel!("number still functioning")
+end
+
+# ╔═╡ be8e4ac2-08dd-11eb-2f72-a9da5a750d32
+plot!(mean(all_data), leg=true, label="mean",
+		lw=3, c=:red, m=:o, alpha=0.5, 
+		size=(500, 400))
+
+# ╔═╡ 8bc52d58-0848-11eb-3487-ef0d06061042
+begin
+	plot(replace.(all_data, 0.0 => NaN), 
+		yscale=:log10, alpha=0.3, leg=false, m=:o, ms=1,
+		size=(500, 400))
+	
+	plot!(mean(all_data), yscale=:log10, lw=3, c=:red, m=:o, label="mean", alpha=0.5)
+	
+	xlabel!("time t")
+	ylabel!("number still functioning")
+end
+
+
+
+# ╔═╡ 4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
+begin
+	plot(mean(all_data), m=:o, alpha=0.5, label="mean of stochastic simulations",
+		size=(500, 400))
+	plot!(exact, lw=3, alpha=0.8, label="deterministic model", leg=:right)
+	title!("Experiment vs. theory")
+	xlabel!("time")
+	ylabel!("""number of "greens" """)
+end
+	
+
+# ╔═╡ e2f45234-8cc8-11eb-2be9-598eb590592a
+rand(B)
+
+# ╔═╡ bc5d6fae-8cad-11eb-3351-a734d2366557
+rand(B)
 
 # ╔═╡ 1173ebbe-8cb1-11eb-0a21-7d40a2c8a855
 rand(Binomial(10, 0.25))
@@ -870,9 +882,9 @@ version = "1.0.8+0"
 
 [[Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f2202b55d816427cd385a9a4f3ffb226bee80f99"
+git-tree-sha1 = "4b859a208b2397a7a623a03449e4636bdb17bcf2"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
-version = "1.16.1+0"
+version = "1.16.1+1"
 
 [[ColorSchemes]]
 deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random"]
@@ -996,9 +1008,9 @@ version = "1.0.10+0"
 
 [[GLFW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Pkg", "Xorg_libXcursor_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll"]
-git-tree-sha1 = "dba1e8614e98949abfa60480b13653813d8f0157"
+git-tree-sha1 = "0c603255764a1fa0b61752d2bec14cfbd18f7fe8"
 uuid = "0656b61e-2033-5cc2-a64a-77c0f6c09b89"
-version = "3.3.5+0"
+version = "3.3.5+1"
 
 [[GR]]
 deps = ["Base64", "DelimitedFiles", "GR_jll", "HTTP", "JSON", "Libdl", "LinearAlgebra", "Pkg", "Printf", "Random", "Serialization", "Sockets", "Test", "UUIDs"]
@@ -1026,9 +1038,9 @@ version = "0.21.0+0"
 
 [[Glib_jll]]
 deps = ["Artifacts", "Gettext_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE_jll", "Pkg", "Zlib_jll"]
-git-tree-sha1 = "7bf67e9a481712b3dbe9cb3dac852dc4b1162e02"
+git-tree-sha1 = "a32d672ac2c967f3deb8a81d828afc739c838a06"
 uuid = "7746bdde-850d-59dc-9ae8-88ece973131d"
-version = "2.68.3+0"
+version = "2.68.3+2"
 
 [[Graphite2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1049,9 +1061,9 @@ version = "0.9.14"
 
 [[HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
-git-tree-sha1 = "8a954fed8ac097d5be04921d595f741115c1b2ad"
+git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
-version = "2.8.1+0"
+version = "2.8.1+1"
 
 [[IniFile]]
 deps = ["Test"]
@@ -1097,6 +1109,12 @@ git-tree-sha1 = "f6250b16881adf048549549fba48b1161acdac8c"
 uuid = "c1c5ebd0-6772-5130-a774-d5fcae4a789d"
 version = "3.100.1+0"
 
+[[LERC_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "bf36f528eec6634efc60d7ec062008f171071434"
+uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
+version = "3.0.0+1"
+
 [[LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "e5b909bcf985c5e2605737d2ce278ed791b89be6"
@@ -1135,9 +1153,9 @@ uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
 [[Libffi_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "761a393aeccd6aa92ec3515e428c26bf99575b3b"
+git-tree-sha1 = "0b4a5d71f3e5200a7dff793393e09dfc2d874290"
 uuid = "e9f186c6-92d2-5b65-8a66-fee21dc1b490"
-version = "3.2.2+0"
+version = "3.2.2+1"
 
 [[Libgcrypt_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgpg_error_jll", "Pkg"]
@@ -1170,10 +1188,10 @@ uuid = "4b2f31a3-9ecc-558c-b454-b3730dcb73e9"
 version = "2.35.0+0"
 
 [[Libtiff_jll]]
-deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
-git-tree-sha1 = "340e257aada13f95f98ee352d316c3bed37c8ab9"
+deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "LERC_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
+git-tree-sha1 = "c9551dd26e31ab17b86cbd00c2ede019c08758eb"
 uuid = "89763e89-9b03-5906-acba-b20f662cd828"
-version = "4.3.0+0"
+version = "4.3.0+1"
 
 [[Libuuid_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1182,7 +1200,7 @@ uuid = "38a345b3-de98-5d2b-a5d3-14cd9215e700"
 version = "2.36.0+0"
 
 [[LinearAlgebra]]
-deps = ["Libdl"]
+deps = ["Libdl", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[Logging]]
@@ -1235,9 +1253,13 @@ uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 
 [[Ogg_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "7937eda4681660b4d6aeeecc2f7e1c81c8ee4e2f"
+git-tree-sha1 = "887579a3eb005446d514ab7aeac5d1d027658b8f"
 uuid = "e7412a2a-1a6e-54c0-be00-318e2571c051"
-version = "1.3.5+0"
+version = "1.3.5+1"
+
+[[OpenBLAS_jll]]
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
+uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
 
 [[OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1314,16 +1336,16 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "ad368663a5e20dbb8d6dc2fddeefe4dae0781ae8"
+git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+0"
+version = "5.15.3+1"
 
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[Random]]
-deps = ["Serialization"]
+deps = ["SHA", "Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[RecipesBase]]
@@ -1617,6 +1639,10 @@ git-tree-sha1 = "5982a94fcba20f02f42ace44b9894ee2b140fe47"
 uuid = "0ac62f75-1d6f-5e53-bd7c-93b484bb37c0"
 version = "0.15.1+0"
 
+[[libblastrampoline_jll]]
+deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+
 [[libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "daacc84a041563f965be61859a36e17c4e4fcd55"
@@ -1631,9 +1657,9 @@ version = "1.6.38+0"
 
 [[libvorbis_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Ogg_jll", "Pkg"]
-git-tree-sha1 = "c45f4e40e7aafe9d086379e5578947ec8b95a8fb"
+git-tree-sha1 = "b910cb81ef3fe6e78bf6acee440bda86fd6ae00c"
 uuid = "f27f6e37-5d2b-51aa-960f-b287f2bc3b7a"
-version = "1.3.7+0"
+version = "1.3.7+1"
 
 [[nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1663,8 +1689,9 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
+# ╟─2c343416-2b20-4aa1-ac7b-2fada1606a38
 # ╠═9a0cec14-08db-11eb-3cfa-4d1c327c63f1
-# ╠═fb6cdc08-8b44-11eb-09f5-43c167aa53fd
+# ╟─fb6cdc08-8b44-11eb-09f5-43c167aa53fd
 # ╟─f3aad4f0-8cc2-11eb-1a25-535297327c65
 # ╟─b6b055b6-8cae-11eb-29e5-b507c1a2b9bf
 # ╟─bcfaedfa-8cae-11eb-10a1-cb7be7dc2e6b
