@@ -34,14 +34,26 @@ myonehatvector = [0, 1, 0, 0, 0, 0]
 # also one "cold"
 1 .- myonehatvector
 
+# ╔═╡ ffa71052-2e18-4cec-8675-92369413716f
+supertypes(Int)
+
 # ╔═╡ 4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
 struct OneHot <: AbstractVector{Int}
 	n::Int
 	k::Int
 end
 
+# ╔═╡ 6876916d-ee41-4f99-b1ef-604c3748abc8
+vettore = OneHot(10, 3)
+
 # ╔═╡ 397ac764-f5fe-11ea-20cc-8d7cab19d410
 Base.size(x::OneHot) = (x.n,)
+
+# ╔═╡ 1340e0e5-7d33-4356-affa-60882536b358
+size(zeros(10, 20))
+
+# ╔═╡ f8920eeb-39b3-4dc3-ba8e-e4a77c560937
+size(vettore)
 
 # ╔═╡ 82c7046c-f5d3-11ea-04e2-ef7c0f4db5da
 Base.getindex(x::OneHot, i::Int) = Int(x.k == i)
@@ -72,6 +84,11 @@ md"""
 Un vettore [one-hot](https://it.wikipedia.org/wiki/One-hot) consiste in un vettore le cui entrate sono tutte 0 eccetto una, che è uguale a 1. Per esempio: 
 """
 
+# ╔═╡ b1b6ed98-de2f-4164-9653-38335e844cb4
+md"""
+# The following is still a draft!
+"""
+
 # ╔═╡ 8d2c6910-f5d4-11ea-1928-1baf09815687
 md"""How much "information" (numbers) do you need to represent a one-hot vector? Is it $n$ or is it two?
 """
@@ -100,6 +117,12 @@ We need to specify how long the vector is:
 md"""
 and how to extract the $i$th component:
 """
+
+# ╔═╡ d8e5df97-520d-4405-ad32-58eecef2d6f1
+Int(vettore.k == 3)
+
+# ╔═╡ c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
+vettore[4]
 
 # ╔═╡ b024c318-81cc-11eb-018c-e1f7830ff51b
 md"""
@@ -455,6 +478,9 @@ cs = distinguishable_colors(100)
 # ╔═╡ 2668e100-f5df-11ea-12b0-073a578a5edb
 cs[flag]
 
+# ╔═╡ 483e0a1f-9890-4c3d-8165-15497db43c7f
+flag + flag'
+
 # ╔═╡ e8d727f2-f5de-11ea-1456-f72602e81e0d
 cs[flag + flag']
 
@@ -470,10 +496,10 @@ md"""
 """
 
 # ╔═╡ b6478e1a-f5f6-11ea-3b92-6d4f067285f4
-tree_url = "https://user-images.githubusercontent.com/6933510/110924885-d7f1b200-8322-11eb-9df7-7abf29c8db7d.png"
+armadillo_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/armadillo_zerocalcare.png"
 
 # ╔═╡ f2c11f88-f5f8-11ea-3e02-c1d4fa22031e
-image = load(download(tree_url))
+image = load(download(armadillo_url))
 
 # ╔═╡ 29062f7a-f5f9-11ea-2682-1374e7694e32
 picture = Float64.(channelview(image));
@@ -1079,16 +1105,23 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─261c4df2-f5d2-11ea-2c72-7d4b09c46098
 # ╟─3cada3a0-81cc-11eb-04c8-bde26d36a84e
 # ╠═fe2028ba-f6dc-11ea-0228-938a81a91ace
+# ╟─b1b6ed98-de2f-4164-9653-38335e844cb4
 # ╟─8d2c6910-f5d4-11ea-1928-1baf09815687
 # ╟─54649792-81cc-11eb-1038-9161a4037acf
 # ╠═0a902426-f6dd-11ea-0ae4-fb0c47863fe7
 # ╟─4794e860-81b7-11eb-2c91-8561c20f308a
+# ╠═ffa71052-2e18-4cec-8675-92369413716f
 # ╟─67827da8-81cc-11eb-300e-278104d2d958
 # ╠═4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
 # ╟─9bdabef8-81cc-11eb-14a1-67a9a7d968c0
+# ╠═1340e0e5-7d33-4356-affa-60882536b358
+# ╠═6876916d-ee41-4f99-b1ef-604c3748abc8
+# ╠═f8920eeb-39b3-4dc3-ba8e-e4a77c560937
 # ╠═397ac764-f5fe-11ea-20cc-8d7cab19d410
 # ╟─a22dcd2c-81cc-11eb-1252-13ace134192d
 # ╠═82c7046c-f5d3-11ea-04e2-ef7c0f4db5da
+# ╠═d8e5df97-520d-4405-ad32-58eecef2d6f1
+# ╠═c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
 # ╟─b024c318-81cc-11eb-018c-e1f7830ff51b
 # ╠═93bfe3ac-f756-11ea-20fb-8f7d586b42f3
 # ╠═175039aa-f758-11ea-251a-5db57d7c4b32
@@ -1178,6 +1211,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═a5d637ea-f5de-11ea-3b70-877e876bc9c9
 # ╠═21bbb60a-f5df-11ea-2c1b-dd716a657df8
 # ╠═2668e100-f5df-11ea-12b0-073a578a5edb
+# ╠═483e0a1f-9890-4c3d-8165-15497db43c7f
 # ╠═e8d727f2-f5de-11ea-1456-f72602e81e0d
 # ╠═f5fcdeea-f75c-11ea-1fc3-731f0ef1ad14
 # ╠═0373fbf6-f75d-11ea-2a9e-cbb714d69cf4
@@ -1195,6 +1229,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─0edd7cca-834f-11eb-0232-ff0850027f76
 # ╟─69be8194-81b7-11eb-0452-0bc8b9f22286
 # ╠═1c462f68-834f-11eb-1447-85848814769b
-# ╟─5813e1b2-f5ff-11ea-2849-a1def74fc065
+# ╠═5813e1b2-f5ff-11ea-2849-a1def74fc065
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

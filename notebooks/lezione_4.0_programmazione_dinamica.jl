@@ -318,6 +318,12 @@ md"""
 Indaghiamo il tempo di calcolo: 
 """
 
+# ╔═╡ 4e269ac5-98a0-474f-ab56-98be1cbcb27f
+@time Fibonacci(10)
+
+# ╔═╡ de4652b6-a2cf-4a40-878b-4acaf8b4d450
+@benchmark Fibonacci(10)
+
 # ╔═╡ fda096cb-d767-4daa-83a0-72ce674f794b
 @btime Fibonacci(10)
 
@@ -328,6 +334,9 @@ Indaghiamo il tempo di calcolo:
 md"""
 Sfruttiamo ora l'idea dei sottoproblemi sovrapposti: 
 """
+
+# ╔═╡ bac71400-b3cc-490e-9bc3-6312e1a99c53
+fill(-1, 100)
 
 # ╔═╡ 77bb2251-f421-48e8-b714-5e7293f2bc90
 begin
@@ -348,7 +357,7 @@ begin
 		else
 			F.n[n] == -1 && (F.n[n] = F(n-1))
 			F.n[n-1] == -1 && (F.n[n-1] = F(n-2))
-			F.n[n+1] = F.n[n] + F.n[n-1]
+			F.n[n+1] == -1 && (F.n[n+1] = F.n[n] + F.n[n-1])
 			return F.n[n+1]
 		end
 	end
@@ -357,8 +366,20 @@ end
 # ╔═╡ 6c8c65bc-8e6d-4875-80a4-1fc4568754c8
 F = Fibo()
 
+# ╔═╡ 14751f78-539a-40fa-82b1-b1de625c7687
+G = Fibo()
+
+# ╔═╡ 4b913c93-78dc-46e1-9819-d38d3f645a07
+G(10)
+
 # ╔═╡ d719af46-f5ec-4052-9c20-fa68edae52a0
 @btime F(42)
+
+# ╔═╡ 9aa079bb-cba8-4fd9-a0f5-106842c04e5d
+typeof((1,))
+
+# ╔═╡ 63334367-29c7-46f5-8b1c-f242bc81a270
+typeof((1,2))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1633,7 +1654,7 @@ version = "0.9.1+5"
 # ╟─eb043a90-8102-11eb-3b78-d590a23c83f4
 # ╟─5994117c-8102-11eb-1b05-671b7cf87a7e
 # ╟─b4558306-804a-11eb-2719-5fd37c6fa281
-# ╟─bc631086-804a-11eb-216e-c955e2115f55
+# ╠═bc631086-804a-11eb-216e-c955e2115f55
 # ╠═d1c851ee-80d5-11eb-1ce4-357dfb1e638e
 # ╟─7191b674-80dc-11eb-24b3-518de83f465a
 # ╟─5dd22d0e-80d6-11eb-0541-d77668309f6c
@@ -1657,12 +1678,19 @@ version = "0.9.1+5"
 # ╠═62df0103-0f1e-4a66-9786-29eae5c9ebf4
 # ╠═e650e1eb-e9b6-4486-a3d6-af4f7c4df3b8
 # ╟─4de80a09-d925-4a46-9e62-b87625a36226
+# ╠═4e269ac5-98a0-474f-ab56-98be1cbcb27f
 # ╠═10f8e5d4-7c29-4194-a673-4f156b46d5a7
+# ╠═de4652b6-a2cf-4a40-878b-4acaf8b4d450
 # ╠═fda096cb-d767-4daa-83a0-72ce674f794b
 # ╠═5f69f533-4b0e-48f0-b48f-f15cccfab095
 # ╟─81d4623e-bac5-418c-9437-57df627a6638
+# ╠═bac71400-b3cc-490e-9bc3-6312e1a99c53
 # ╠═77bb2251-f421-48e8-b714-5e7293f2bc90
 # ╠═6c8c65bc-8e6d-4875-80a4-1fc4568754c8
+# ╠═14751f78-539a-40fa-82b1-b1de625c7687
+# ╠═4b913c93-78dc-46e1-9819-d38d3f645a07
 # ╠═d719af46-f5ec-4052-9c20-fa68edae52a0
+# ╠═9aa079bb-cba8-4fd9-a0f5-106842c04e5d
+# ╠═63334367-29c7-46f5-8b1c-f242bc81a270
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

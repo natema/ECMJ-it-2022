@@ -53,7 +53,7 @@ function shrink_image(image, ratio=5)
 	list = [
 		mean(image[
 			i,
-			ratio * j:ratio * (j + 1),
+			(ratio * j):(ratio * (j + 1)),
 		])
 		for j in 1:new_width
 		for i in 1:height
@@ -94,6 +94,12 @@ image_url = personaggi_url
 # ╔═╡ d2ae6dd2-eef9-11ea-02df-255ec3b46a36
 img = load(download(image_url))
 
+# ╔═╡ dd0b89c9-323b-4ba0-83c5-7c7286b39bd5
+img
+
+# ╔═╡ 7923f940-685a-4180-85ee-d6bdb2ca36a8
+img[:, 1:5:end]
+
 # ╔═╡ db56f469-a638-4895-9e6e-d6aab5bb825b
 shrink_image(img)
 
@@ -110,11 +116,18 @@ Un approccio leggermente più sofisticato consiste nel dare un peso disomogeneo 
 
 # ╔═╡ 0b6010a8-eef6-11ea-3ad6-c1f10e30a413
 brightness(c::AbstractRGB) = 0.3 * c.r + 0.59 * c.g + 0.11 * c.b
+#brightness(c::AbstractRGB) = c.r + c.g + c.b
 
 # ╔═╡ 9b8112fa-2ae9-4957-8dcc-399673ea0fa9
 md"""
 Diamo un'occhiata al risultato usando la funzione `Gray` che restituisce un oggetto di tipo `Gray`, ovvero un pixel in scala di grigio:
 """
+
+# ╔═╡ 31b6a4f9-652a-4ce9-9b70-d2623c9bd0ca
+brightness.(img)
+
+# ╔═╡ eca80032-8cdb-4546-a32d-c6126fcbba74
+Gray(.7)
 
 # ╔═╡ fc1c43cc-eef6-11ea-0fc4-a90ac4336964
 Gray.(brightness.(img))
@@ -252,6 +265,12 @@ function edgeness(img)
 
 	sqrt.(∇x.^2 + ∇y.^2)
 end
+
+# ╔═╡ 769f1436-9c5d-4067-9a11-b364b367074d
+edgeness(img)
+
+# ╔═╡ afe9c2d4-a7d9-4f1f-9935-3b92f16e0d47
+Gray.(edgeness(img))
 
 # ╔═╡ f8283a0e-eff4-11ea-23d3-9f1ced1bafb4
 md"""
@@ -416,6 +435,9 @@ function shrink_n(img, n)
 	end
 	imgs, marked_imgs
 end
+
+# ╔═╡ 8765192e-341e-4b10-8744-cffc91208950
+size(img)
 
 # ╔═╡ 2ef84ca6-655c-4761-8238-5d00c8dcfe76
 md"""
@@ -1640,6 +1662,8 @@ version = "0.9.1+5"
 # ╠═405a4f82-8116-11eb-1b35-2563b06b02a7
 # ╟─8c7ef773-04e8-41cf-af95-6dbcd09505a1
 # ╟─e7a77e52-8104-11eb-1b51-a9f8312e9d95
+# ╠═dd0b89c9-323b-4ba0-83c5-7c7286b39bd5
+# ╠═7923f940-685a-4180-85ee-d6bdb2ca36a8
 # ╠═172c7612-efee-11ea-077a-5d5c6e2505a4
 # ╠═db56f469-a638-4895-9e6e-d6aab5bb825b
 # ╟─fb6b8564-8104-11eb-2e10-1f28be9a6ce7
@@ -1650,6 +1674,8 @@ version = "0.9.1+5"
 # ╟─75a640a7-f6d9-4ade-9d36-17b75d5d0057
 # ╠═0b6010a8-eef6-11ea-3ad6-c1f10e30a413
 # ╟─9b8112fa-2ae9-4957-8dcc-399673ea0fa9
+# ╠═31b6a4f9-652a-4ce9-9b70-d2623c9bd0ca
+# ╠═eca80032-8cdb-4546-a32d-c6126fcbba74
 # ╠═fc1c43cc-eef6-11ea-0fc4-a90ac4336964
 # ╟─12b2fc54-cbc3-43e4-a560-2b54f144af05
 # ╠═42f2105a-810b-11eb-0e47-2dbb5ea2f566
@@ -1667,13 +1693,15 @@ version = "0.9.1+5"
 # ╠═ddac52ea-f148-11ea-2860-21cff4c867e6
 # ╠═6f7bd064-eff4-11ea-0260-f71aa7f4f0e5
 # ╟─d6a268c0-eff4-11ea-2c9e-bfef19c7f540
+# ╠═769f1436-9c5d-4067-9a11-b364b367074d
+# ╠═afe9c2d4-a7d9-4f1f-9935-3b92f16e0d47
 # ╟─f8283a0e-eff4-11ea-23d3-9f1ced1bafb4
 # ╟─025e2c94-eefb-11ea-12cb-f56f34886334
 # ╠═acc1ee8c-eef9-11ea-01ac-9b9e9c4167b3
 # ╠═8b204a2a-eff6-11ea-25b0-13f230037ee1
 # ╠═84d3afe4-eefe-11ea-1e31-bf3b2af4aecd
 # ╟─dd71c2a4-8108-11eb-18ce-838c53eac3ef
-# ╟─b507480a-ef01-11ea-21c4-63d19fac19ab
+# ╠═b507480a-ef01-11ea-21c4-63d19fac19ab
 # ╟─7d8b20a2-ef03-11ea-1c9e-fdf49a397619
 # ╟─f690b06a-ef31-11ea-003b-4f2b2f82a9c3
 # ╠═977b6b98-ef03-11ea-0176-551fc29729ab
@@ -1689,6 +1717,7 @@ version = "0.9.1+5"
 # ╠═ca4a87e8-eff8-11ea-3d57-01dfa34ff723
 # ╠═4f23bc54-ef0f-11ea-06a9-35ca3ece421e
 # ╠═b401f398-ef0f-11ea-38fe-012b7bc8a4fa
+# ╠═8765192e-341e-4b10-8744-cffc91208950
 # ╟─2ef84ca6-655c-4761-8238-5d00c8dcfe76
 # ╠═b1b6b7fc-f153-11ea-224a-2578e8298775
 # ╠═2eb459d4-ef36-11ea-1f74-b53ffec7a1ed

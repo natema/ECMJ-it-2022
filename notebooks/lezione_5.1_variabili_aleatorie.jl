@@ -36,6 +36,11 @@ Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ 
 # ╔═╡ 0a70bca4-8723-11eb-1bcf-e9abb9b1ab75
 PlutoUI.TableOfContents(aside=true)
 
+# ╔═╡ dcf04b79-32dd-4d67-8d0f-9d6923935460
+md"""
+# This notebook is still a draft
+"""
+
 # ╔═╡ 472a41d2-8724-11eb-31b3-0b81612f0083
 md"""
 ## Julia: Useful tidbits 
@@ -325,10 +330,22 @@ md"""
 Let's roll a (fair) die 1000 times:
 """
 
+# ╔═╡ 02d03642-86b4-11eb-365a-63ff61ddd3b5
+rolls = rand(1:6, 100000)   # try modifying 100 by adding more zeros
+
 # ╔═╡ 371838f8-86b4-11eb-1633-8d282e42a085
 md"""
 An obvious way to find the counts would be to run through the data looking for 1s, then run through again looking for 2s, etc.:
 """
+
+# ╔═╡ 94688c1a-8747-11eb-13a3-eb36f731674c
+rolls .== 1
+
+# ╔═╡ ad701cdc-8747-11eb-3804-63a0fc881547
+count(rolls .== 1)
+
+# ╔═╡ 2405eb68-86b4-11eb-31b0-dff8e355d88e
+counts = [count(rolls .== i) for i in 1:6]
 
 # ╔═╡ 9e9d3556-86b5-11eb-3dfb-916e625da235
 md"""
@@ -339,18 +356,6 @@ Note that this is *not* the most efficient algorithm!
 md"""
 We can plot **categorical data** using a **bar chart**, `bar` in Plots.jl. This counts each discrete item.
 """
-
-# ╔═╡ 02d03642-86b4-11eb-365a-63ff61ddd3b5
-rolls = rand(1:6, 100000)   # try modifying 100 by adding more zeros
-
-# ╔═╡ 94688c1a-8747-11eb-13a3-eb36f731674c
-rolls .== 1
-
-# ╔═╡ ad701cdc-8747-11eb-3804-63a0fc881547
-count(rolls .== 1)
-
-# ╔═╡ 2405eb68-86b4-11eb-31b0-dff8e355d88e
-counts = [count(rolls .== i) for i in 1:6]
 
 # ╔═╡ 2d71fa88-86b5-11eb-0e55-35566c2246d7
 begin
@@ -1821,6 +1826,7 @@ version = "0.9.1+5"
 # ╟─3a4957ec-8723-11eb-22a0-8b35322596e2
 # ╠═06d2666a-8723-11eb-1395-0febdf3dc2a4
 # ╟─0a70bca4-8723-11eb-1bcf-e9abb9b1ab75
+# ╟─dcf04b79-32dd-4d67-8d0f-9d6923935460
 # ╟─472a41d2-8724-11eb-31b3-0b81612f0083
 # ╟─aeb99f72-8725-11eb-2efd-d3e44686be03
 # ╟─4f9bd326-8724-11eb-2c9b-db1ac9464f1e
@@ -1881,13 +1887,13 @@ version = "0.9.1+5"
 # ╟─ed94eae8-86b3-11eb-3f1b-15c7a54903f5
 # ╟─f20504de-86b3-11eb-3125-3140e0e060b0
 # ╟─7f1a3766-86b4-11eb-353f-b13acaf1503e
+# ╠═02d03642-86b4-11eb-365a-63ff61ddd3b5
 # ╟─371838f8-86b4-11eb-1633-8d282e42a085
 # ╠═94688c1a-8747-11eb-13a3-eb36f731674c
 # ╠═ad701cdc-8747-11eb-3804-63a0fc881547
 # ╠═2405eb68-86b4-11eb-31b0-dff8e355d88e
 # ╟─9e9d3556-86b5-11eb-3dfb-916e625da235
 # ╟─90844738-8738-11eb-0604-3d23662152d9
-# ╠═02d03642-86b4-11eb-365a-63ff61ddd3b5
 # ╠═2d71fa88-86b5-11eb-0e55-35566c2246d7
 # ╟─cb8a9762-86b1-11eb-0484-6b6cc8b1b14c
 # ╠═d0c9814e-86b1-11eb-2f29-1d041bccc649
