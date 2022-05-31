@@ -31,8 +31,11 @@ PlutoUI.TableOfContents(aside = true)
 myonehatvector = [0, 1, 0, 0, 0, 0]
 
 # ╔═╡ 0a902426-f6dd-11ea-0ae4-fb0c47863fe7
-# also one "cold"
+# da notare che esiste anche l'encoding _one-cold_
 1 .- myonehatvector
+
+# ╔═╡ ffa71052-2e18-4cec-8675-92369413716f
+supertypes(Int)
 
 # ╔═╡ 4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
 struct OneHot <: AbstractVector{Int}
@@ -40,8 +43,17 @@ struct OneHot <: AbstractVector{Int}
 	k::Int
 end
 
+# ╔═╡ 6876916d-ee41-4f99-b1ef-604c3748abc8
+vettore = OneHot(10, 3)
+
 # ╔═╡ 397ac764-f5fe-11ea-20cc-8d7cab19d410
 Base.size(x::OneHot) = (x.n,)
+
+# ╔═╡ 1340e0e5-7d33-4356-affa-60882536b358
+size(zeros(10, 20))
+
+# ╔═╡ f8920eeb-39b3-4dc3-ba8e-e4a77c560937
+size(vettore)
 
 # ╔═╡ 82c7046c-f5d3-11ea-04e2-ef7c0f4db5da
 Base.getindex(x::OneHot, i::Int) = Int(x.k == i)
@@ -73,17 +85,13 @@ Un vettore [one-hot](https://it.wikipedia.org/wiki/One-hot) consiste in un vetto
 """
 
 # ╔═╡ 8d2c6910-f5d4-11ea-1928-1baf09815687
-md"""How much "information" (numbers) do you need to represent a one-hot vector? Is it $n$ or is it two?
-"""
-
-# ╔═╡ 54649792-81cc-11eb-1038-9161a4037acf
 md"""
-(There are also "1-cold" vectors:)
+Quanta _informazione_ (ovvero numero di bit) è necessaria per rappresentare un vettore one-hot?
 """
 
 # ╔═╡ 4794e860-81b7-11eb-2c91-8561c20f308a
 md"""
-## Julia: `structs` (creating a new type in Julia)
+## Le `struct` in Julia - creare nuovi tipi
 """
 
 # ╔═╡ 67827da8-81cc-11eb-300e-278104d2d958
@@ -100,6 +108,12 @@ We need to specify how long the vector is:
 md"""
 and how to extract the $i$th component:
 """
+
+# ╔═╡ d8e5df97-520d-4405-ad32-58eecef2d6f1
+Int(vettore.k == 3)
+
+# ╔═╡ c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
+vettore[4]
 
 # ╔═╡ b024c318-81cc-11eb-018c-e1f7830ff51b
 md"""
@@ -123,7 +137,7 @@ This is an example of taking advantage of structure.
 
 # ╔═╡ e2e354a8-81b7-11eb-311a-35151063c2a7
 md"""
-## Julia: dump and Dump
+## La funzione `dump`
 """
 
 # ╔═╡ dc5a96ba-81cc-11eb-3189-25920df48afa
@@ -149,24 +163,24 @@ myonehotvector
 
 # ╔═╡ fe70d104-81b7-11eb-14d0-eb5237d8ea6c
 md"""
-### Visualizing a one-hot vector
+### Visualizzare i vettori _one-hot_
 """
 
 # ╔═╡ ef8f44b2-f5fc-11ea-1e4d-bd873cd39d6c
 md"""
-n=$(@bind nn Slider(1:20, show_value=true))
+Dimensione $n=$ $(@bind n′ Slider(1:20, show_value=true, default=3))
 """
 
 # ╔═╡ fd9211c0-f5fc-11ea-1745-7f2dae88af9e
 md"""
-k=$(@bind kk Slider(1:nn, default=1, show_value=true))
+Entrata positiva $k=$ $(@bind k′ Slider(1:n′, default=1, show_value=true))
 """
 
 # ╔═╡ f1154df8-f693-11ea-3b16-f32835fcc470
-x = OneHot(nn, kk)
+x = OneHot(n′, k′)
 
 # ╔═╡ 81c35324-f5d4-11ea-2338-9f982d38732c
-md"# Diagonal matrices"
+md"## Matrici diagonali"
 
 # ╔═╡ 2cfda0dc-f5d5-11ea-16c4-b5a33b90e37f
 md"Another example is diagonal matrices. Here's how you might see them in high school:"
@@ -210,7 +224,7 @@ We see that `Diagonal` stores only the diagonal entries, not the zeros!
 md"""We should always look for *structure* where it exists!"""
 
 # ╔═╡ 19775c3c-f5d6-11ea-15c2-89618e654a1e
-md"# Sparse matrices"
+md"## Matrici sparse"
 
 # ╔═╡ 653792a8-f695-11ea-1ae0-43761c502583
 md"A *sparse* matrix is a matrix that has many zeros, and is hence worth storing in a *sparse* representation:"
@@ -272,7 +286,7 @@ Dump(sparse(M4))
 sparse(M4)
 
 # ╔═╡ 62a6ec62-f5d9-11ea-071e-ed33c5dea0cd
-md"""# Random vectors
+md"""## Vettori aleatori
 """
 
 # ╔═╡ 7f63daf6-f695-11ea-0b80-8702a83103a4
@@ -328,7 +342,7 @@ std(v)
 md"Sometimes the summary statistics are all you want. (But sometimes not.)"
 
 # ╔═╡ 0c2b6408-f5d9-11ea-2b7f-7fece2eecc1f
-md"# Multiplication tables"
+md"## [Tavole pitagoriche](https://it.wikipedia.org/wiki/Tavola_pitagorica)"
 
 # ╔═╡ 5d767290-f5dd-11ea-2189-81198fd216ce
 outer(v, w) = [x * y for x ∈ v, y ∈ w]  # just a multiplication table
@@ -372,9 +386,9 @@ md"We can factor out a multiplication table, if it's there:"
 
 # ╔═╡ a0611eaa-81bc-11eb-1d23-c12ab14138b1
 md"""
-### Julia: Exceptions are thrown (generated) using `error`
+### Lanciare eccezioni in Julia: `error`
 
-An exception is anything that can interrupt a program, e.g. invalid input data.
+Un'eccezione è qualsiasi cosa che può interrompere un programma, ad esempio dati di input non validi.
 """
 
 # ╔═╡ a4728944-f74b-11ea-03c3-9123908c1f8e
@@ -455,6 +469,9 @@ cs = distinguishable_colors(100)
 # ╔═╡ 2668e100-f5df-11ea-12b0-073a578a5edb
 cs[flag]
 
+# ╔═╡ 483e0a1f-9890-4c3d-8165-15497db43c7f
+flag + flag'
+
 # ╔═╡ e8d727f2-f5de-11ea-1456-f72602e81e0d
 cs[flag + flag']
 
@@ -470,10 +487,10 @@ md"""
 """
 
 # ╔═╡ b6478e1a-f5f6-11ea-3b92-6d4f067285f4
-tree_url = "https://user-images.githubusercontent.com/6933510/110924885-d7f1b200-8322-11eb-9df7-7abf29c8db7d.png"
+armadillo_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/armadillo_zerocalcare.png"
 
 # ╔═╡ f2c11f88-f5f8-11ea-3e02-c1d4fa22031e
-image = load(download(tree_url))
+image = load(download(armadillo_url))
 
 # ╔═╡ 29062f7a-f5f9-11ea-2682-1374e7694e32
 picture = Float64.(channelview(image));
@@ -1080,15 +1097,20 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─3cada3a0-81cc-11eb-04c8-bde26d36a84e
 # ╠═fe2028ba-f6dc-11ea-0228-938a81a91ace
 # ╟─8d2c6910-f5d4-11ea-1928-1baf09815687
-# ╟─54649792-81cc-11eb-1038-9161a4037acf
 # ╠═0a902426-f6dd-11ea-0ae4-fb0c47863fe7
-# ╟─4794e860-81b7-11eb-2c91-8561c20f308a
+# ╠═4794e860-81b7-11eb-2c91-8561c20f308a
+# ╠═ffa71052-2e18-4cec-8675-92369413716f
 # ╟─67827da8-81cc-11eb-300e-278104d2d958
 # ╠═4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
 # ╟─9bdabef8-81cc-11eb-14a1-67a9a7d968c0
+# ╠═1340e0e5-7d33-4356-affa-60882536b358
+# ╠═6876916d-ee41-4f99-b1ef-604c3748abc8
+# ╠═f8920eeb-39b3-4dc3-ba8e-e4a77c560937
 # ╠═397ac764-f5fe-11ea-20cc-8d7cab19d410
 # ╟─a22dcd2c-81cc-11eb-1252-13ace134192d
 # ╠═82c7046c-f5d3-11ea-04e2-ef7c0f4db5da
+# ╠═d8e5df97-520d-4405-ad32-58eecef2d6f1
+# ╠═c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
 # ╟─b024c318-81cc-11eb-018c-e1f7830ff51b
 # ╠═93bfe3ac-f756-11ea-20fb-8f7d586b42f3
 # ╠═175039aa-f758-11ea-251a-5db57d7c4b32
@@ -1178,6 +1200,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═a5d637ea-f5de-11ea-3b70-877e876bc9c9
 # ╠═21bbb60a-f5df-11ea-2c1b-dd716a657df8
 # ╠═2668e100-f5df-11ea-12b0-073a578a5edb
+# ╠═483e0a1f-9890-4c3d-8165-15497db43c7f
 # ╠═e8d727f2-f5de-11ea-1456-f72602e81e0d
 # ╠═f5fcdeea-f75c-11ea-1fc3-731f0ef1ad14
 # ╠═0373fbf6-f75d-11ea-2a9e-cbb714d69cf4
@@ -1195,6 +1218,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─0edd7cca-834f-11eb-0232-ff0850027f76
 # ╟─69be8194-81b7-11eb-0452-0bc8b9f22286
 # ╠═1c462f68-834f-11eb-1447-85848814769b
-# ╟─5813e1b2-f5ff-11ea-2849-a1def74fc065
+# ╠═5813e1b2-f5ff-11ea-2849-a1def74fc065
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
