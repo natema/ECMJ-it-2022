@@ -27,36 +27,48 @@ end
 # ╔═╡ ca1a1072-81b6-11eb-1fee-e7df687cc314
 PlutoUI.TableOfContents(aside = true)
 
-# ╔═╡ fe2028ba-f6dc-11ea-0228-938a81a91ace
-myonehatvector = [0, 1, 0, 0, 0, 0]
-
-# ╔═╡ 0a902426-f6dd-11ea-0ae4-fb0c47863fe7
-# da notare che esiste anche l'encoding _one-cold_
-1 .- myonehatvector
-
 # ╔═╡ ffa71052-2e18-4cec-8675-92369413716f
 supertypes(Int)
 
+# ╔═╡ 5bbf07a0-8833-470d-8603-11563cae6b2c
+Int == Int64
+
+# ╔═╡ 59cdf85e-705c-4d0a-bd67-08a30d1f732d
+Int <: Signed
+
+# ╔═╡ 799e705e-b560-4d21-822e-10a6726b3c5e
+Signed <: Int
+
+# ╔═╡ 62c29c56-313a-44d9-8626-5d181a824c3d
+typejoin(Int, Rational)
+
+# ╔═╡ fe2028ba-f6dc-11ea-0228-938a81a91ace
+onehot_esplicito = [0, 1, 0, 0, 0, 0]
+
+# ╔═╡ 0a902426-f6dd-11ea-0ae4-fb0c47863fe7
+# da notare che esiste anche l'encoding _one-cold_
+1 .- onehot_esplicito
+
 # ╔═╡ 4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
-struct OneHot <: AbstractVector{Int}
+struct OneHotImplicito <: AbstractVector{Int}
 	n::Int
 	k::Int
 end
 
-# ╔═╡ 6876916d-ee41-4f99-b1ef-604c3748abc8
-vettore = OneHot(10, 3)
-
 # ╔═╡ 397ac764-f5fe-11ea-20cc-8d7cab19d410
-Base.size(x::OneHot) = (x.n,)
+Base.size(x::OneHotImplicito) = (x.n,)
 
 # ╔═╡ 1340e0e5-7d33-4356-affa-60882536b358
 size(zeros(10, 20))
 
-# ╔═╡ f8920eeb-39b3-4dc3-ba8e-e4a77c560937
-size(vettore)
+# ╔═╡ 94ca00b6-8f94-4786-a27c-eff7b2ad7ae3
+onehot_implicito = OneHotImplicito(10, 3)
+
+# ╔═╡ 0d28115a-b97e-4ac7-a4b1-555fcd6beefd
+size(onehot_implicito)
 
 # ╔═╡ 82c7046c-f5d3-11ea-04e2-ef7c0f4db5da
-Base.getindex(x::OneHot, i::Int) = Int(x.k == i)
+Base.getindex(x::OneHotImplicito, i::Int) = Int(x.k == i)
 
 # ╔═╡ 0db6ee04-81b7-11eb-330c-11b578b72c90
 md"""
@@ -72,9 +84,28 @@ Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ 
 # ╔═╡ b0ba5b8c-f5d1-11ea-1304-3f0e47f935fe
 md"# Esempi di strutture"
 
+# ╔═╡ 4419ebba-58ca-454e-b024-380fd364c99b
+md"""
+## Il sistema di tipi di Julia
+"""
+
+# ╔═╡ 2bb8a710-cc5d-4e4b-b861-ecb99470ef47
+md"""
+Julia è un linguaggio [multiple dispatch](https://en.wikipedia.org/wiki/Multiple_dispatch), ovvero provvisto di un sistema di tipi con [polimorfismo parametrico](https://en.wikipedia.org/wiki/Parametric_polymorphism). 
+Al di là di termini che possono suonare misteriosi, in pratica ogni oggetto nel linguaggio è associato a un _tipo_ che ne indica il significato.
+
+Possiamo esplorare il [sistema di tipi](https://docs.julialang.org/en/v1/manual/types/) in Julia con qualche semplice comando. 
+Per esempio possiamo sapere quali tipi sono un _supertipo_ del tipo `Int` (in altre parole, lo _contengono_): 
+"""
+
+# ╔═╡ eb6521e8-4f2e-4319-9c35-384981b321b4
+md"""
+Per sapere quale tipo è un supertipo sia di `Int` che di `Rational`:
+"""
+
 # ╔═╡ 261c4df2-f5d2-11ea-2c72-7d4b09c46098
 md"""
-## Vettori _one-hot_
+### Vettori _one-hot_
 
 L'esempio seguente è importante in machine learning. 
 """
@@ -96,70 +127,62 @@ md"""
 
 # ╔═╡ 67827da8-81cc-11eb-300e-278104d2d958
 md"""
-We can create our own new types in Julia. Let's create a new type to represent one-hot vectors. It will be a subtype of `AbstractVector`, meaning that it *behaves like* a vector.
+Una caratteristica centrale del linguaggio Julia è la facilità con cui possiamo  creare nuovi [tipi](https://en.wikipedia.org/wiki/Type_system). Si tratta di un meccanismo fondamentale per la flessibilità del linguaggio stesso: i tipi conferiscono _struttura_ al programma, fornendo informazioni al compilatore sul _significato_ delle diverse operazioni, e permettendogli dunque di _ottimizzare_ il codice che viene fatto girare. 
+
+Creiamo un nuovo tipo per rappresentare vettori one-hot, come _sottotipo_ di `AbstractVector`, con l'intenzione di farlo comportare a tutti gli effetti come un vettore (in particolare, di poter usare la sintassi `vettore[i]`):
 """
 
 # ╔═╡ 9bdabef8-81cc-11eb-14a1-67a9a7d968c0
 md"""
-We need to specify how long the vector is:
+Specifichiamo ora cosa succede quando una variabile di tipo `OneHot` viene data in pasto alla funzione `size`: 
 """
 
 # ╔═╡ a22dcd2c-81cc-11eb-1252-13ace134192d
 md"""
-and how to extract the $i$th component:
+Per far sì che `OneHot` possa compotersi come un vettore, dobbiamo anche specificare cosa deve succedere quando utilizziamo la sintassi per accedere alle entrate di un vettore: 
 """
-
-# ╔═╡ d8e5df97-520d-4405-ad32-58eecef2d6f1
-Int(vettore.k == 3)
-
-# ╔═╡ c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
-vettore[4]
 
 # ╔═╡ b024c318-81cc-11eb-018c-e1f7830ff51b
 md"""
-(Note that `x.k == i` returns a Boolean value, `true` or `false`, which we are then converting to an `Int`.)
+Notare che `x.k == i` restituisce un valore di tipo booleano, `true` oppure `false`, che viene poi convertito nel corrispondente valore di tipo  `Int`: 
 """
 
-# ╔═╡ 93bfe3ac-f756-11ea-20fb-8f7d586b42f3
-myonehotvector = OneHot(6,2)
+# ╔═╡ 3f0d5036-b09e-4953-bafe-afb1cd9e6b7b
+Int(true), Int(false)
 
-# ╔═╡ 175039aa-f758-11ea-251a-5db57d7c4b32
-myonehotvector[3]
-
-# ╔═╡ c2a4b0a2-81cc-11eb-37a7-db601a6ddfdf
-myonehotvector[2]
+# ╔═╡ c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
+[onehot_implicito[i] for i in 1:10]
 
 # ╔═╡ c5ed7d3e-81cc-11eb-3386-15b72db8155d
 md"""
-This behaves as if it were the original vector, but we are storing only 2 integers.
-This is an example of taking advantage of structure.
+Il nostro vettore di tipo `OneHot` si comporta come un vettore di 10 entrate, nonostante richieda al computer solo la memoria necessaria per 2 interi!
 """
 
 # ╔═╡ e2e354a8-81b7-11eb-311a-35151063c2a7
 md"""
-## La funzione `dump`
+### La funzione `dump`
 """
 
 # ╔═╡ dc5a96ba-81cc-11eb-3189-25920df48afa
 md"""
-`dump` shows the internal data stored inside a given object:
+La funzione `dump` mostra i dati che sono internamente memorizzati da un oggetto in Julia:
 """
 
 # ╔═╡ af0d3c22-f756-11ea-37d6-11b630d2314a
 with_terminal() do
-	dump(myonehotvector)
+	dump(onehot_implicito)
 end
 
 # ╔═╡ 06e3a842-26b8-4417-9cf5-8a083ccdb264
 md"""
-Since `dump` writes to a terminal, you can't use it directly inside Pluto, which is why we wrap it inside a `with_terminal` block. You can also use the function `Dump` from `PlutoUI`:
+Poiché `dump` scrive su terminale, non è possibile utilizzarlo direttamente all'interno di Pluto, ed è invece necessario racchiuderlo in un blocco `with_terminal`. In alternativa, si può utilizzare la funzione `Dump` del pacchetto `PlutoUI`:
 """
 
 # ╔═╡ 91172a3e-81b7-11eb-0953-9f5e0207f863
-Dump(myonehotvector)
+Dump(onehot_implicito)
 
-# ╔═╡ 4bbf3f58-f788-11ea-0d24-6b0fb070829e
-myonehotvector
+# ╔═╡ e1b4a55f-d474-4f13-b9f3-276464c268db
+onehot_implicito
 
 # ╔═╡ fe70d104-81b7-11eb-14d0-eb5237d8ea6c
 md"""
@@ -483,7 +506,7 @@ cs[outer([1,1,1,2,2,2,1,1,1], [1,1,1,1,1,1,1,1,1]) + outer([1,1,1,1,1,1,1,1,1], 
 
 # ╔═╡ ebd72fb8-f5e0-11ea-0630-573337dff753
 md"""
-# Singular Value Decomposition (SVD): A tool to find structure
+## Singular Value Decomposition (SVD): A tool to find structure
 """
 
 # ╔═╡ b6478e1a-f5f6-11ea-3b92-6d4f067285f4
@@ -519,22 +542,20 @@ RGB.(sum(outer(Ur[:,i], Vr[:,i]) .* Σr[i] for i in 1:n),
 	 sum(outer(Ug[:,i], Vg[:,i]) .* Σg[i] for i in 1:n),
 	 sum(outer(Ub[:,i], Vb[:,i]) .* Σb[i] for i in 1:n))
 
-# ╔═╡ 8df84fcc-f5d5-11ea-312f-bf2a3b3ce2ce
-md"# Appendix"
-
 # ╔═╡ 0edd7cca-834f-11eb-0232-ff0850027f76
-md"## Syntax Learned"
+md"## Nuova sintassi introdotta"
 
 # ╔═╡ 69be8194-81b7-11eb-0452-0bc8b9f22286
 md"""
-Syntax to be learned:
-
-* A `struct` is a great way to embody structure.
+* Le `struct` sono un ottimo modo per rappresentare la struttura .
 * `dump` and `Dump`: to see what's inside a data structure.
 * `Diagonal`, `sparse`
 * `error` (throws an exception)
 * `svd` (Singular Value Decomposition)
 """
+
+# ╔═╡ 8df84fcc-f5d5-11ea-312f-bf2a3b3ce2ce
+md"# Appendix"
 
 # ╔═╡ 1c462f68-834f-11eb-1447-85848814769b
 [ dump, Diagonal, error, svd]
@@ -1093,35 +1114,39 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═864e1180-f693-11ea-080e-a7d5aabc9ca5
 # ╟─ca1a1072-81b6-11eb-1fee-e7df687cc314
 # ╟─b0ba5b8c-f5d1-11ea-1304-3f0e47f935fe
+# ╟─4419ebba-58ca-454e-b024-380fd364c99b
+# ╟─2bb8a710-cc5d-4e4b-b861-ecb99470ef47
+# ╠═ffa71052-2e18-4cec-8675-92369413716f
+# ╠═5bbf07a0-8833-470d-8603-11563cae6b2c
+# ╠═59cdf85e-705c-4d0a-bd67-08a30d1f732d
+# ╠═799e705e-b560-4d21-822e-10a6726b3c5e
+# ╟─eb6521e8-4f2e-4319-9c35-384981b321b4
+# ╠═62c29c56-313a-44d9-8626-5d181a824c3d
 # ╟─261c4df2-f5d2-11ea-2c72-7d4b09c46098
 # ╟─3cada3a0-81cc-11eb-04c8-bde26d36a84e
 # ╠═fe2028ba-f6dc-11ea-0228-938a81a91ace
-# ╟─8d2c6910-f5d4-11ea-1928-1baf09815687
 # ╠═0a902426-f6dd-11ea-0ae4-fb0c47863fe7
-# ╠═4794e860-81b7-11eb-2c91-8561c20f308a
-# ╠═ffa71052-2e18-4cec-8675-92369413716f
+# ╟─8d2c6910-f5d4-11ea-1928-1baf09815687
+# ╟─4794e860-81b7-11eb-2c91-8561c20f308a
 # ╟─67827da8-81cc-11eb-300e-278104d2d958
 # ╠═4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
 # ╟─9bdabef8-81cc-11eb-14a1-67a9a7d968c0
 # ╠═1340e0e5-7d33-4356-affa-60882536b358
-# ╠═6876916d-ee41-4f99-b1ef-604c3748abc8
-# ╠═f8920eeb-39b3-4dc3-ba8e-e4a77c560937
 # ╠═397ac764-f5fe-11ea-20cc-8d7cab19d410
+# ╠═94ca00b6-8f94-4786-a27c-eff7b2ad7ae3
+# ╠═0d28115a-b97e-4ac7-a4b1-555fcd6beefd
 # ╟─a22dcd2c-81cc-11eb-1252-13ace134192d
 # ╠═82c7046c-f5d3-11ea-04e2-ef7c0f4db5da
-# ╠═d8e5df97-520d-4405-ad32-58eecef2d6f1
-# ╠═c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
 # ╟─b024c318-81cc-11eb-018c-e1f7830ff51b
-# ╠═93bfe3ac-f756-11ea-20fb-8f7d586b42f3
-# ╠═175039aa-f758-11ea-251a-5db57d7c4b32
-# ╠═c2a4b0a2-81cc-11eb-37a7-db601a6ddfdf
+# ╠═3f0d5036-b09e-4953-bafe-afb1cd9e6b7b
+# ╠═c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
 # ╟─c5ed7d3e-81cc-11eb-3386-15b72db8155d
 # ╟─e2e354a8-81b7-11eb-311a-35151063c2a7
 # ╟─dc5a96ba-81cc-11eb-3189-25920df48afa
 # ╠═af0d3c22-f756-11ea-37d6-11b630d2314a
 # ╟─06e3a842-26b8-4417-9cf5-8a083ccdb264
 # ╠═91172a3e-81b7-11eb-0953-9f5e0207f863
-# ╠═4bbf3f58-f788-11ea-0d24-6b0fb070829e
+# ╠═e1b4a55f-d474-4f13-b9f3-276464c268db
 # ╟─fe70d104-81b7-11eb-14d0-eb5237d8ea6c
 # ╟─ef8f44b2-f5fc-11ea-1e4d-bd873cd39d6c
 # ╟─fd9211c0-f5fc-11ea-1745-7f2dae88af9e
@@ -1214,9 +1239,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═0c0ee362-f5f9-11ea-0f75-2d2810c88d65
 # ╠═b95ce51a-f632-11ea-3a64-f7c218b9b3c9
 # ╠═7ba6e6a6-f5fa-11ea-2bcd-616d5a3c898b
-# ╟─8df84fcc-f5d5-11ea-312f-bf2a3b3ce2ce
 # ╟─0edd7cca-834f-11eb-0232-ff0850027f76
-# ╟─69be8194-81b7-11eb-0452-0bc8b9f22286
+# ╠═69be8194-81b7-11eb-0452-0bc8b9f22286
+# ╟─8df84fcc-f5d5-11ea-312f-bf2a3b3ce2ce
 # ╠═1c462f68-834f-11eb-1447-85848814769b
 # ╠═5813e1b2-f5ff-11ea-2849-a1def74fc065
 # ╟─00000000-0000-0000-0000-000000000001
