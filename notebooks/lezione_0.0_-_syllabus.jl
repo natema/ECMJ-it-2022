@@ -95,7 +95,13 @@ md"""
 
 - 4.0 [Programmazione dinamica](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl)
 - 4.1 [Seam carving](https://natema.github.io/ECMJ-it/lectures/lezione_4.1_seam_carving.jl)
+"""
+
+# ╔═╡ 0badf048-88a1-45f3-b5ad-b964bca9d1c0
+md"""
+### Lezione 7
 - 4.2 [Strutture](https://natema.github.io/ECMJ-it/lectures/lezione_4.2_strutture.jl)
+- 5.1 [Variabili aleatorie](https://natema.github.io/ECMJ-it/lectures/lezione_5.1_variabili_aleatorie.jl)
 """
 
 # ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
@@ -339,6 +345,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─046a0d16-eb6f-48da-936c-cddf015b4f2b
 # ╟─20469a84-0122-459e-81f1-8f43c93aea69
 # ╟─25c62482-13e0-4a0c-b84c-cf70bace1bb9
+# ╟─0badf048-88a1-45f3-b5ad-b964bca9d1c0
 # ╟─56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

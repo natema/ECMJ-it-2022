@@ -191,39 +191,64 @@ md"""
 
 # ╔═╡ ef8f44b2-f5fc-11ea-1e4d-bd873cd39d6c
 md"""
-Dimensione $n=$ $(@bind n′ Slider(1:20, show_value=true, default=3))
+Dimensione del vettore: $n=$ $(@bind n′ Slider(1:20, show_value=true, default=3))
 """
 
 # ╔═╡ fd9211c0-f5fc-11ea-1745-7f2dae88af9e
 md"""
-Entrata positiva $k=$ $(@bind k′ Slider(1:n′, default=1, show_value=true))
+Coordinata uguale ad $1$: $k=$ $(@bind k′ Slider(1:n′, default=1, show_value=true))
 """
 
 # ╔═╡ f1154df8-f693-11ea-3b16-f32835fcc470
-x = OneHot(n′, k′)
+x = OneHotImplicito(n′, k′)
+
+# ╔═╡ 1158fcba-1e84-4401-a1d6-a40401a93f05
+md"""
+La precedente funzione `show_image` è simile a funzioni analoghe che abbiamo utilizzato in lezioni precedenti. 
+Il codice della funzione dovrebbe essere autoesplicativo. 
+Utilizzeremo lo _schema di colori_ `rainbow`, ma possiamo sceglierne un altro se preferiamo:  
+"""
+
+# ╔═╡ f0efe02e-500a-44fc-8654-17c205b21e46
+colorschemes
+
+# ╔═╡ 5813e1b2-f5ff-11ea-2849-a1def74fc065
+function show_image(x) 
+	row_vec = length(size(x)) > 1 ? x : x'
+	normalized_vec = row_vec ./ maximum(row_vec)
+	get(colorschemes[:rainbow], normalized_vec)
+end
+
+# ╔═╡ 982590d4-f5ff-11ea-3802-73292c75ad6c
+show_image(x)
 
 # ╔═╡ 81c35324-f5d4-11ea-2338-9f982d38732c
 md"## Matrici diagonali"
 
 # ╔═╡ 2cfda0dc-f5d5-11ea-16c4-b5a33b90e37f
-md"Another example is diagonal matrices. Here's how you might see them in high school:"
+md"""
+Vediamo un altro esempio fondamentale: quello delle [matrici diagonali](https://it.wikipedia.org/wiki/Matrice_diagonale):
+"""
 
 # ╔═╡ 150432d4-f5d5-11ea-32b2-19a2a91d9637
 denseD = [5 0 0 
-	    0 6 0
-	    0 0 -10]	
+	      0 6 0
+	      0 0 -10]	
 
 # ╔═╡ 44215aa4-f695-11ea-260e-b564c6fbcd4a
-md"Julia has a better way of representing them:"
+md"Julia ci permette di rappresentare matrici diagonali in modo conciso nel modo seguente:"
 
 # ╔═╡ 21328d1c-f5d5-11ea-288e-4171ad35326d
 D = Diagonal(denseD)
 
+# ╔═╡ 6f412084-eb5e-48b1-809a-90be230ba6f3
+typeof(D)
+
 # ╔═╡ 75761cc0-81cd-11eb-1186-7d47debd68ca
 md"""
-It even displays nicely, with dots instead of zeros. 
+Come vediamo, Julia rappresenta tali [matrici _sparse_](https://it.wikipedia.org/wiki/Matrice_sparsa) utilizzando dei punti al posto degli zeri, in modo da suggerire che le entrate della matrice uguali a zero vengono gestite in modo particolare dalla struttura di tipo  `Diagonal`. 
 
-We can also create a diagonal matrix from the values on the diagonal:
+Un altro modo di creare una matrice diagonale è di fornire direttamente i valori della diagonale sotto forma di un vettore: 
 """
 
 # ╔═╡ 6bd8a886-f758-11ea-2587-870a3fa9d710
@@ -404,6 +429,9 @@ md"""
 You might guess by visualizing the matrix that it is a multiplication table:
 """
 
+# ╔═╡ 2f75df7e-f601-11ea-2fc2-aff4f335af33
+show_image( outer( rand(10), rand(10) ))
+
 # ╔═╡ 7ff664f0-f74b-11ea-0d2d-b53f19e4f4bf
 md"We can factor out a multiplication table, if it's there:"
 
@@ -543,34 +571,16 @@ RGB.(sum(outer(Ur[:,i], Vr[:,i]) .* Σr[i] for i in 1:n),
 	 sum(outer(Ub[:,i], Vb[:,i]) .* Σb[i] for i in 1:n))
 
 # ╔═╡ 0edd7cca-834f-11eb-0232-ff0850027f76
-md"## Nuova sintassi introdotta"
+md"## Alcune conclusioni e nuova sintassi"
 
 # ╔═╡ 69be8194-81b7-11eb-0452-0bc8b9f22286
 md"""
-* Le `struct` sono un ottimo modo per rappresentare la struttura .
-* `dump` and `Dump`: to see what's inside a data structure.
-* `Diagonal`, `sparse`
-* `error` (throws an exception)
-* `svd` (Singular Value Decomposition)
+* Le `struct` sono un ottimo modo per strutturare i dati che costituiscono un oggetto.
+* La funzione `dump` (e `Dump` in Pluto) ci permette di esaminare il contenuto di una struttra di dati.
+* Matrici diagonali e sparse possono essere efficientemente rappresentate attreverso le funzioni `diagonal` e `sparse`.
+* Possiamo lanciare eccezioni facendo uso della funzione `error`. 
+* La decomposizione a valori singolari di una matrice si può ottenere tramite la funzione `svd`. 
 """
-
-# ╔═╡ 8df84fcc-f5d5-11ea-312f-bf2a3b3ce2ce
-md"# Appendix"
-
-# ╔═╡ 1c462f68-834f-11eb-1447-85848814769b
-[ dump, Diagonal, error, svd]
-
-# ╔═╡ 5813e1b2-f5ff-11ea-2849-a1def74fc065
-begin
-	show_image(M) = get.([ColorSchemes.rainbow], M ./ maximum(M))
-	show_image(x::AbstractVector) = show_image(x')
-end
-
-# ╔═╡ 982590d4-f5ff-11ea-3802-73292c75ad6c
-show_image(x)
-
-# ╔═╡ 2f75df7e-f601-11ea-2fc2-aff4f335af33
-show_image( outer( rand(10), rand(10) ))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1152,14 +1162,18 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─fd9211c0-f5fc-11ea-1745-7f2dae88af9e
 # ╠═f1154df8-f693-11ea-3b16-f32835fcc470
 # ╠═982590d4-f5ff-11ea-3802-73292c75ad6c
+# ╟─1158fcba-1e84-4401-a1d6-a40401a93f05
+# ╠═f0efe02e-500a-44fc-8654-17c205b21e46
+# ╠═5813e1b2-f5ff-11ea-2849-a1def74fc065
 # ╟─81c35324-f5d4-11ea-2338-9f982d38732c
 # ╟─2cfda0dc-f5d5-11ea-16c4-b5a33b90e37f
 # ╠═150432d4-f5d5-11ea-32b2-19a2a91d9637
 # ╟─44215aa4-f695-11ea-260e-b564c6fbcd4a
 # ╠═21328d1c-f5d5-11ea-288e-4171ad35326d
+# ╠═6f412084-eb5e-48b1-809a-90be230ba6f3
 # ╟─75761cc0-81cd-11eb-1186-7d47debd68ca
-# ╟─6bd8a886-f758-11ea-2587-870a3fa9d710
-# ╟─4c533ac6-f695-11ea-3724-b955eaaeee49
+# ╠═6bd8a886-f758-11ea-2587-870a3fa9d710
+# ╠═4c533ac6-f695-11ea-3724-b955eaaeee49
 # ╠═466901ea-f5d5-11ea-1db5-abf82c96eabf
 # ╠═b38c4aae-f5d5-11ea-39b6-7b0c7d529019
 # ╟─93e04ed8-81cd-11eb-214a-a761ef8c406f
@@ -1240,9 +1254,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═b95ce51a-f632-11ea-3a64-f7c218b9b3c9
 # ╠═7ba6e6a6-f5fa-11ea-2bcd-616d5a3c898b
 # ╟─0edd7cca-834f-11eb-0232-ff0850027f76
-# ╠═69be8194-81b7-11eb-0452-0bc8b9f22286
-# ╟─8df84fcc-f5d5-11ea-312f-bf2a3b3ce2ce
-# ╠═1c462f68-834f-11eb-1447-85848814769b
-# ╠═5813e1b2-f5ff-11ea-2849-a1def74fc065
+# ╟─69be8194-81b7-11eb-0452-0bc8b9f22286
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
