@@ -255,7 +255,9 @@ Un altro modo di creare una matrice diagonale è di fornire direttamente i valor
 Diagonal([5, 6, -10])
 
 # ╔═╡ 4c533ac6-f695-11ea-3724-b955eaaeee49
-md"How much information is stored for each representation? We can use Julia's `dump` function to find out:"
+md"""
+Utilizzando la funzione `Dump` possiamo esaminare il contenuto dei diversi tipi tramite cui possiamo rappresentare la stessa matrice:
+"""
 
 # ╔═╡ 466901ea-f5d5-11ea-1db5-abf82c96eabf
 Dump(denseD)
@@ -265,25 +267,25 @@ Dump(D)
 
 # ╔═╡ 93e04ed8-81cd-11eb-214a-a761ef8c406f
 md"""
-We see that `Diagonal` stores only the diagonal entries, not the zeros!
+Come possiamo vedere, il tipo `Diagonal` memorizza solo le entrate diagonali. 
 """
-
-# ╔═╡ e90c55fc-f5d5-11ea-10f1-470ff772985d
-md"""We should always look for *structure* where it exists!"""
 
 # ╔═╡ 19775c3c-f5d6-11ea-15c2-89618e654a1e
 md"## Matrici sparse"
 
 # ╔═╡ 653792a8-f695-11ea-1ae0-43761c502583
-md"A *sparse* matrix is a matrix that has many zeros, and is hence worth storing in a *sparse* representation:"
+md"""
+Le matrici diagonali sono un caso particolare di matrici **sparse**, ovvero matrici in cui la gran parte delle entrate sono zero, e che è dunque opportuno memorizzare utilizzando una rappresentazione che sfrutta tale ridondanza. 
+Consideriamo per esempio la seguente matrice: 
+"""
 
 # ╔═╡ 79c94d2a-f75a-11ea-031d-09d70d229e15
-denseM = [0 0 9; 0 0 0;12 0 4]
+denseM = [0 0 9; 0 0 0; 12 0 4]
 
 # ╔═╡ 10bc5d50-81b9-11eb-2ac7-354a6c6c826b
 md"""
-The above displays a sparse matrix in so-called `(i, j, value)` form.  We could
-store sparse matrices in this way:
+Un modo conciso di rappresentare tale matrice è come una lista di tuple `(i, j, v)`, dove $i$ e $j$ sono la riga e la colonna in cui il valore $v$ appare nella matrice.  
+Una variante di tale idea è la codifica in formato [compressed sparse column](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)):
 """
 
 # ╔═╡ 77d6a952-81ba-11eb-24e3-cb6510a59455
@@ -291,22 +293,32 @@ M = sparse(denseM)
 
 # ╔═╡ 1f3ba55a-81b9-11eb-001f-593b9d8639ca
 md"""
-Although it looks like it's stored like this, in fact the actual storage format is different. In the Julia `SparseArrays.jl` package, the storage format
-is **compressed sparse column** (CSC) format,
-which is generally considered favorable for arithmetic, matrix-vector
-	products and column slicing.  Of course, for specific matrices, other
-		formats might be better.
+Tale formato, CSC, è implementato dal pacchetto Julia [SparseArrays.jl](https://docs.julialang.org/en/v1/stdlib/SparseArrays/), il quale implementa in modo efficiente anche operazioni aritmetiche, prodotti matrice-vettore e [array slicing](https://en.wikipedia.org/wiki/Array_slicing). 
+Ovviamente, per alcuni specifici tipi di matrice, altri formati potrebbero essere più opportuni. 
 
-* `nzval` contains the nonzero matrix entries
-* `rowval` is the "i" or row entry for the corresponding value in nzval
-  * length(rowval) == length(nzval)
-* `colptr[j]` points into nzval and tells you the first nonzero in or after column j
-* The last entry of colptr points beyond the end of nzval to indicate no more columns.
-  * length(colptr) == number of columns + 1
+Facendo il `Dump` di `sparse(M)`, vediamo che è codificato dai dati seguenti: 
 """
 
 # ╔═╡ 3d4a702e-f75a-11ea-031c-333d591fc442
 Dump(sparse(M))
+
+# ╔═╡ 7cc1ec53-d805-4462-91b9-ba9c226776e6
+md"""
+* `nzval` contiene le entrate della matrice diverse da zero
+* in `rowval` l'$i$-esima entrata indica la riga in cui si trova l'$i$-esimo valore di `nzval` (ovvero, abbiamo `length(rowval) == length(nzval)`)
+* `colptr[j]` indica qual'è il valore di `nzval` che corrisponde al primo valore diverso da zero che troviamo a partire dalla colonna $j$; per `colptr` abbiamo `length(colptr) == length(nzval) + 1` ed il suo ultimo valore riporta un indice superiore alla lunghezza di `nzval` per indicare che non vi sono ulteriori colonne.
+"""
+
+# ╔═╡ 43adc012-7946-4f33-8859-e16e50c94f55
+md"""
+#### Esercizio
+"""
+
+# ╔═╡ 9db7783f-c2ed-48be-8ff0-4e63a4a24955
+md"""
+!!! hint "Soluzione"
+	test
+"""
 
 # ╔═╡ 80ff4010-81bb-11eb-374e-215a57defb0b
 md"""
@@ -581,6 +593,14 @@ md"""
 * Possiamo lanciare eccezioni facendo uso della funzione `error`. 
 * La decomposizione a valori singolari di una matrice si può ottenere tramite la funzione `svd`. 
 """
+
+# ╔═╡ a705d2f2-0222-49b1-9306-21aaee0b6467
+md"""
+## Appendice
+"""
+
+# ╔═╡ 2e68fb0a-55b0-419b-9d40-5c1f7c0000c6
+hint(text) = Markdown.MD(Markdown.Admonition("hint", "Suggerimento", [text]))
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1173,11 +1193,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═6f412084-eb5e-48b1-809a-90be230ba6f3
 # ╟─75761cc0-81cd-11eb-1186-7d47debd68ca
 # ╠═6bd8a886-f758-11ea-2587-870a3fa9d710
-# ╠═4c533ac6-f695-11ea-3724-b955eaaeee49
+# ╟─4c533ac6-f695-11ea-3724-b955eaaeee49
 # ╠═466901ea-f5d5-11ea-1db5-abf82c96eabf
 # ╠═b38c4aae-f5d5-11ea-39b6-7b0c7d529019
 # ╟─93e04ed8-81cd-11eb-214a-a761ef8c406f
-# ╟─e90c55fc-f5d5-11ea-10f1-470ff772985d
 # ╟─19775c3c-f5d6-11ea-15c2-89618e654a1e
 # ╟─653792a8-f695-11ea-1ae0-43761c502583
 # ╠═79c94d2a-f75a-11ea-031d-09d70d229e15
@@ -1185,7 +1204,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═77d6a952-81ba-11eb-24e3-cb6510a59455
 # ╟─1f3ba55a-81b9-11eb-001f-593b9d8639ca
 # ╠═3d4a702e-f75a-11ea-031c-333d591fc442
-# ╟─80ff4010-81bb-11eb-374e-215a57defb0b
+# ╟─7cc1ec53-d805-4462-91b9-ba9c226776e6
+# ╠═43adc012-7946-4f33-8859-e16e50c94f55
+# ╠═9db7783f-c2ed-48be-8ff0-4e63a4a24955
+# ╠═80ff4010-81bb-11eb-374e-215a57defb0b
 # ╠═5de72b7c-f5d6-11ea-1b6f-35b830b5fb34
 # ╠═8b60629e-f5d6-11ea-27c8-d934460d3a57
 # ╠═2fd7e52e-f5d7-11ea-3b5a-1f338e2451e0
@@ -1255,5 +1277,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═7ba6e6a6-f5fa-11ea-2bcd-616d5a3c898b
 # ╟─0edd7cca-834f-11eb-0232-ff0850027f76
 # ╟─69be8194-81b7-11eb-0452-0bc8b9f22286
+# ╟─a705d2f2-0222-49b1-9306-21aaee0b6467
+# ╟─2e68fb0a-55b0-419b-9d40-5c1f7c0000c6
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
