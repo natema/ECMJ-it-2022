@@ -41,7 +41,7 @@ PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ deb2af50-8524-11eb-0dd4-9d799ff6d3e2
 md"""
-# l'analisi delle componenti principali
+# La PCA: analisi delle componenti principali
 
 In this notebook we will start looking at more general kinds of **data**, not only images, and we'll try to extract some information from the image using statistical methods, namely [**principal component analysis**](https://en.wikipedia.org/wiki/Principal_component_analysis).  
 
@@ -2023,7 +2023,7 @@ version = "0.9.1+5"
 # ╟─4c1ebac8-81b7-11eb-19fa-f704b4d84a21
 # ╠═cf82077a-81c2-11eb-1de2-09ed6c35d810
 # ╟─c593a748-81b6-11eb-295a-a9800f9dec6d
-# ╠═deb2af50-8524-11eb-0dd4-9d799ff6d3e2
+# ╟─deb2af50-8524-11eb-0dd4-9d799ff6d3e2
 # ╟─2e50a070-853f-11eb-2045-b1cc43c29768
 # ╟─ed7ff6b2-f863-11ea-1a59-eb242a8674e3
 # ╟─fed5845e-f863-11ea-2f95-c331d3c62647

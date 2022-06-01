@@ -667,17 +667,37 @@ armadillo_url = "https://raw.githubusercontent.com/natema/ECMJ-it/main/imgs/arma
 # ╔═╡ f2c11f88-f5f8-11ea-3e02-c1d4fa22031e
 image = load(download(armadillo_url))
 
+# ╔═╡ 3e6947b6-f2e9-41bb-9160-97f18b90946a
+md"""
+Convertiamo l'immagine in un array di valori `Float64`:
+"""
+
 # ╔═╡ 29062f7a-f5f9-11ea-2682-1374e7694e32
 picture = Float64.(channelview(image));
 
 # ╔═╡ 5471fd30-f6e2-11ea-2cd7-7bd48c42db99
 size(picture)
 
+# ╔═╡ 6c4d53b2-b3c2-4e2f-bc2a-b17d73cb3bd0
+md"""
+Separiamo i diversi _canali_, rosso verde e blu, usando la funzione `eachslice`: 
+"""
+
 # ╔═╡ 6156fd1e-f5f9-11ea-06a9-211c7ab813a4
 pr, pg, pb = eachslice(picture, dims=1)
 
+# ╔═╡ 3d775e5c-98ab-427a-aff6-2bf32e9a4cdd
+md"""
+Controlliamo il risultato dell'operazione precedente visualizzando le tre matrici  risultanti:
+"""
+
 # ╔═╡ a9766e68-f5f9-11ea-0019-6f9d02050521
 [RGB.(pr, 0, 0) RGB.(0, pg, 0) RGB.(0, 0, pb)]
+
+# ╔═╡ 1b32370d-a2a5-4ade-9bfc-c33b282a72a0
+md"""
+Calcoliamo le rispettive SVD: 
+"""
 
 # ╔═╡ 0c0ee362-f5f9-11ea-0f75-2d2810c88d65
 begin
@@ -687,12 +707,16 @@ begin
 end;
 
 # ╔═╡ b95ce51a-f632-11ea-3a64-f7c218b9b3c9
-@bind n Slider(1:200, show_value=true)
+md"""
+Vediamo che immagine otteniamo sommando solo i primi $h$ prodotti esterni costituiti dai primi $h$ vettori ricavati dalle precedenti SVD. 
+
+Numero $k$ di prodotti esterni sommati: $(@bind h Slider(1:383, show_value=true, default=16)) (possiamo cliccare sullo slider e usare le frecce "←" e "→" per settarne il valore preciso).
+"""
 
 # ╔═╡ 7ba6e6a6-f5fa-11ea-2bcd-616d5a3c898b
-RGB.(sum(outer(Ur[:,i], Vr[:,i]) .* Σr[i] for i in 1:n), 
-	 sum(outer(Ug[:,i], Vg[:,i]) .* Σg[i] for i in 1:n),
-	 sum(outer(Ub[:,i], Vb[:,i]) .* Σb[i] for i in 1:n))
+RGB.(sum(outer(Ur[:,i], Vr[:,i]) .* Σr[i] for i in 1:h), 
+	 sum(outer(Ug[:,i], Vg[:,i]) .* Σg[i] for i in 1:h),
+	 sum(outer(Ub[:,i], Vb[:,i]) .* Σb[i] for i in 1:h))
 
 # ╔═╡ 0edd7cca-834f-11eb-0232-ff0850027f76
 md"## Alcune conclusioni e nuova sintassi"
@@ -1384,12 +1408,16 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─cffb2728-48d5-4f32-90c7-8a7405be6bf5
 # ╠═b6478e1a-f5f6-11ea-3b92-6d4f067285f4
 # ╠═f2c11f88-f5f8-11ea-3e02-c1d4fa22031e
+# ╟─3e6947b6-f2e9-41bb-9160-97f18b90946a
 # ╠═29062f7a-f5f9-11ea-2682-1374e7694e32
 # ╠═5471fd30-f6e2-11ea-2cd7-7bd48c42db99
+# ╟─6c4d53b2-b3c2-4e2f-bc2a-b17d73cb3bd0
 # ╠═6156fd1e-f5f9-11ea-06a9-211c7ab813a4
+# ╟─3d775e5c-98ab-427a-aff6-2bf32e9a4cdd
 # ╠═a9766e68-f5f9-11ea-0019-6f9d02050521
+# ╟─1b32370d-a2a5-4ade-9bfc-c33b282a72a0
 # ╠═0c0ee362-f5f9-11ea-0f75-2d2810c88d65
-# ╠═b95ce51a-f632-11ea-3a64-f7c218b9b3c9
+# ╟─b95ce51a-f632-11ea-3a64-f7c218b9b3c9
 # ╠═7ba6e6a6-f5fa-11ea-2bcd-616d5a3c898b
 # ╟─0edd7cca-834f-11eb-0232-ff0850027f76
 # ╟─69be8194-81b7-11eb-0452-0bc8b9f22286
