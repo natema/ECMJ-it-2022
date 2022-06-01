@@ -311,68 +311,65 @@ md"""
 
 # ╔═╡ 43adc012-7946-4f33-8859-e16e50c94f55
 md"""
-#### Esercizio
+#### Esercizio - CSC inefficiente
+
+Qual'è un esempio di matrice per il quale il formato CSC non è una scelta efficiente in termini di memoria?
 """
 
 # ╔═╡ 9db7783f-c2ed-48be-8ff0-4e63a4a24955
 md"""
-!!! hint "Soluzione"
-	test
+!!! hint "Soluzione 1"
+	Considerare per esempio 
+	```
+	M2 = sparse([1, 2, 10^6], [4, 9, 10^6], [7, 8, 9])
+	```
+	e discutere l'output di `Dump(M2)`. 
 """
 
-# ╔═╡ 80ff4010-81bb-11eb-374e-215a57defb0b
+# ╔═╡ 313a83f9-06f5-46c5-aec0-1bca8b3408dd
 md"""
- An example where CSC may not be a great choice is the following. The reason is that  `colptr` must have an entry in each column:
+!!! hint "Soluzione 2"
+	Discutere l'output di `Dump(sparse(zeros(10,10)))`. 
 """
-
-# ╔═╡ 5de72b7c-f5d6-11ea-1b6f-35b830b5fb34
-M2 = sparse([1, 2, 10^6], [4, 9, 10^6], [7, 8, 9])
-
-# ╔═╡ 8b60629e-f5d6-11ea-27c8-d934460d3a57
-with_terminal() do
-	dump(M2)
-end
-
-# ╔═╡ 2fd7e52e-f5d7-11ea-3b5a-1f338e2451e0
-M3 = [1 0 2 0 10; 0 3 4 0 9; 0 0 0 5 8; 0 0 0 0 7] 
-
-# ╔═╡ 2e87d4fe-81bc-11eb-0d16-b988bcedcc73
-M4 = M3 .* 0
-
-# ╔═╡ cde79f38-f5d6-11ea-3297-0b5b240f7b9e
-Dump(sparse(M4))
-
-# ╔═╡ aa09c008-f5d8-11ea-1bdc-b51ee6eb2478
-sparse(M4)
 
 # ╔═╡ 62a6ec62-f5d9-11ea-071e-ed33c5dea0cd
 md"""## Vettori aleatori
 """
 
 # ╔═╡ 7f63daf6-f695-11ea-0b80-8702a83103a4
-md"How much structure is there in a *random* vector?"
+md"""
+Quanta struttura possiamo trovare in un vettore aleatorio?
+
+Si tratta di una domanda profonda che si collega a vari argomenti matematicamente ricchi, tra cui la [complessità di Kolmogorov](https://en.wikipedia.org/wiki/Kolmogorov_complexity#Kolmogorov_randomness). 
+
+In questa sede ci manterremo però ad un livello elementare, limitandoci a qualche semplice osservazione diretta. Generiamo un vettore aleatorio:
+"""
 
 # ╔═╡ 67274c3c-f5d9-11ea-3475-c9d228e3bd5a
 v = rand(1:9, 1_000_000)
 
 # ╔═╡ 765c6552-f5d9-11ea-29d3-bfe7b4b04612
-md"""You might guess that there is "no structure". But you can actually think of randomness itself as a structure.
+md"""
+Potremmo essere tentati di dire che _non c'è alcuna struttura_. 
 
-For example, take the mean and standard deviation -- some would say that's the structure.
-
+In un certo senso, però, il fatto che il vettore sia aleatorio costituisce di per sè un'assunzione che ci suggerisce molto sulla sua struttura. 
+Per esempio, ci sono statistici che direbbero che la media e la deviazione standard di un vettore distribuito come sopra riassumono già gran parte di ciò che c'è da sapere su un tale vettore:
 """
 
 # ╔═╡ 126fb3ea-f5da-11ea-2f7d-0b3259a296ce
-mean(v), std(v), 5, sqrt(10 * 2/3)
+mean(v), std(v)
 
-# ╔═╡ ed0b2358-81ce-11eb-3339-93abcc06fd91
+# ╔═╡ 9389f76e-1944-425f-ba0a-f84318be8e0b
 md"""
-If you repeat the calculation, to 3 or 4 digits the mean and standard deviation don't change, and are approximately equal to the theoretical values on the right.
+Le precedenti stime empiriche, calcolate su uno specifico vettore `v` precedentemente generato dalla funzione `rand`, sono molto vicine a quelle teoriche, ovvero: 
 """
+
+# ╔═╡ 56e6bd2e-2602-41ea-a6c3-20fc31631f45
+5, sqrt(10 * 2/3)
 
 # ╔═╡ 24ce92fa-81cf-11eb-30f0-b1e357d79d53
 md"""
-We can also count how many times each digit occurs in the data set:
+Volendo calcolare delle statistiche più specifiche, potremmo calcolare quante volte ciascun valore compare nel vettore `v`: 
 """
 
 # ╔═╡ 2d4500e0-81cf-11eb-1699-d310074fddf5
@@ -380,20 +377,22 @@ We can also count how many times each digit occurs in the data set:
 
 # ╔═╡ 3546ff30-81cf-11eb-3afc-05c5db61366f
 md"""
-We see that each number occurs roughly the same number of times.
+Osserviamo che ciascun valore appare quasi lo stesso numero di volte degli altri. 
+
+Per concludere, proviamo a calcolarci a mano i valori precedentemente calcolati usando le funzioni `mean` e `std`: 
 """
 
-# ╔═╡ 9b9e2c2a-f5da-11ea-369b-b513b196515b
-md"Statisticians (and professors who've just graded exams) might say that under certain circumstances the mean and the variance give you the necessary structure, and the rest can be thrown away."
-
 # ╔═╡ e68b98ea-f5da-11ea-1a9d-db45e4f80241
-m = sum(v) / length(v)  # mean
+m = sum(v) / length(v)  # media
+
+# ╔═╡ 62f23e22-ec4a-4399-b602-0cdec7a29fb8
+mean(v)
 
 # ╔═╡ f20ccac4-f5da-11ea-0e69-413b5e49f423
-σ² = sum( (v .- m) .^ 2 ) / (length(v) - 1)
+σ² = sum( (v .- m) .^ 2 ) / (length(v) - 1) # varianza
 
 # ╔═╡ 12a2e96c-f5db-11ea-1c3e-494ae7446886
-σ = sqrt(σ²)
+σ = sqrt(σ²) # deviazione standard
 
 # ╔═╡ 22487ce2-f5db-11ea-32e9-6f70ab2c0353
 std(v)
@@ -404,48 +403,105 @@ md"Sometimes the summary statistics are all you want. (But sometimes not.)"
 # ╔═╡ 0c2b6408-f5d9-11ea-2b7f-7fece2eecc1f
 md"## [Tavole pitagoriche](https://it.wikipedia.org/wiki/Tavola_pitagorica)"
 
+# ╔═╡ 534eb09e-3ca1-471b-86fa-2db036f735b4
+md"""
+#### Esercizio
+
+Fornire un esempio interessante di matrice di dimensione $n\times n$ senza entrate nulle ma che può essere rappresentata con una struttura di dimensione $O(n)$.
+"""
+
+# ╔═╡ 1f8c0b21-9e74-409a-8547-f6f39e58f400
+md"""
+!!! hint "Soluzione non interessante"
+	```
+	fill(1, 10, 10)
+	```
+"""
+
+# ╔═╡ 89bb3a50-cac1-4b45-b1b8-f47c7e8f7c8c
+md"""
+Scriviamo una funzione `outer` che genera la tavola pitagorica la cui entrata ``(i,j)`` è pari a ``v_i \cdot w_j``. 
+"""
+
 # ╔═╡ 5d767290-f5dd-11ea-2189-81198fd216ce
-outer(v, w) = [x * y for x ∈ v, y ∈ w]  # just a multiplication table
+outer(v, w) = [x * y for x ∈ v, y ∈ w]  
 
 # ╔═╡ 587790ce-f6de-11ea-12d9-fde2a17ae314
-outer(1:10, 1:10)
+md"""
+Generiamo ora in modo interattivo la tavola pitagorica della _tabellina del ``k``_:
 
-# ╔═╡ a39e8256-f6de-11ea-3170-c923b56609da
-md"Did you memorize this in third grade?"
-
-# ╔═╡ 8c84edd0-f6de-11ea-2180-61c6b81aac3b
-@bind k Slider(1:14, show_value=true)
+ $k =$ $(@bind k Slider(1:20, show_value=true, default=9))
+"""
 
 # ╔═╡ 22b73baa-f6df-11ea-197f-bbb4bd1a7ef5
 outer(1:k, 1:k)
+
+# ╔═╡ 3c196bc4-dda0-4ba4-bee6-e5ea67678035
+md"""
+Notare che la funzione `outer` che abbiamo implementato ci permette di generare una  _tavola pitagorica_ in senso più generale, a partire da vettori arbitrari; tecnicamente, si tratta di quel che è chiamato in matematica [prodotto esterno](https://it.wikipedia.org/wiki/Prodotto_diadico):  
+"""
 
 # ╔═╡ b2332814-f6e6-11ea-1c7d-556c7d4687f1
 outer([2,4,6], [10,100,1000])
 
 # ╔═╡ 9ab7a72e-81cf-11eb-2b78-073ff51cae58
 md"""
-A multiplication table is clearly a structure, but it's not sparse -- there are no zeros. Nonetheless you need much less information to reconstruct the matrix.
+La matrice che risulta dal prodotto esterno di due vettori (nell'esempio precedente, ``(2,4,6)`` e ``(10,100,1000)``), salvo casi particolari, non è una matrice sparsa. Tuttavia, sono sufficienti due vettori di dimensione $n$ e $m$ per descrivere la matrice risultante di $nm$ entrate.  
+
+Nel caso della tavola pitagorica, in cui dunque i sopracitati vettori siano della forma $(1, 2, ..., k)$, è addirittura sufficiente un solo valore per avere tutta l'informazione necessaria a ricostruire la tavola. 
+
+#### Esercizio (difficile!) - tavola pitagorica
+
+Implementare una struct `Tavola` che memorizza un solo intero positivo `k` ma restituisce `i*j` quando una sua istanza `t = Tavola(k)` viene chiamata come una matrice, ovvero `t[i, j]`. 
 """
 
-# ╔═╡ fd8dd108-f6df-11ea-2f7c-3d99d054ac15
-md"In the context of 1:k times 1:k, just one number k is needed."
+# ╔═╡ c1f129d2-629d-4b58-af57-122f72e093f5
+md"""
+!!! hint "Suggerimento"
+	Consultare l'esempio sui numeri di Fibonacci della [Lezione 4.0](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl). 
+	Mentre in quel caso volevamo far in modo che un oggetto di tipo `Fibo` potesse essere chiamato come un vettore, qui vogliamo far si che l'oggetto possa essere chiamato come una matrice. Per far ciò bisogna implementare il metodo `getindex` dove gli indici forniti sono di tipo [`Vararg{Int}`](https://docs.julialang.org/en/v1/base/base/#Core.Vararg):
+	```
+	Base.getindex(A::Tavola, I::Vararg{Int}) = I[1]*I[2]
+	```
+"""
+
+# ╔═╡ fee03cf9-b573-47e8-9033-a78ee38faa73
+md"""
+!!! hint "Soluzione"
+	```
+	struct Tabella
+		k::Int
+	end
+
+	Base.getindex(t::Tabella, I::Vararg{Int}) = I[1]*I[2]
+	```
+	Test:
+	```
+	t = Tabella(10)
+	t[2, 4] # 8
+	```
+"""
 
 # ╔═╡ 165788b2-f601-11ea-3e69-cdbbb6558e54
-md"If you look at the following matrix? Does it have any structure? It's certainly more hidden."
+md"""
+Se ora guardiamo una generica matrice, è naturale chiedersi se abbia o meno una certa struttura:
+"""
 
 # ╔═╡ 22941bb8-f601-11ea-1d6e-0d955297bc2e
-outer( rand(3), rand(4) )  # but it's just a multiplication table
+Mᵣ = outer( rand(5), rand(7) )  
 
 # ╔═╡ c33bf00e-81cf-11eb-1e1a-e5a879a45093
 md"""
-You might guess by visualizing the matrix that it is a multiplication table:
+Nel caso della precedente matrice `Mᵣ`, possiamo provare a visualizzarla per vedere se una qualche struttura salta ai nostri occhi:
 """
 
 # ╔═╡ 2f75df7e-f601-11ea-2fc2-aff4f335af33
-show_image( outer( rand(10), rand(10) ))
+show_image( Mᵣ )
 
 # ╔═╡ 7ff664f0-f74b-11ea-0d2d-b53f19e4f4bf
-md"We can factor out a multiplication table, if it's there:"
+md"""
+Di seguito vediamo come [fattorizzare](https://it.wikipedia.org/wiki/Fattorizzazione)  una matrice come prodotto esterno di due vettori, assumendo che sia possibile farlo. Nel caso in cui tale assunzione fosse errata però... 
+"""
 
 # ╔═╡ a0611eaa-81bc-11eb-1d23-c12ab14138b1
 md"""
@@ -455,82 +511,82 @@ Un'eccezione è qualsiasi cosa che può interrompere un programma, ad esempio da
 """
 
 # ╔═╡ a4728944-f74b-11ea-03c3-9123908c1f8e
-function factor( mult_table ) 
-	v = mult_table[:, 1]
-	w = mult_table[1, :]
+function factor( tavola ) 
+	v = tavola[:, 1]
+	w = tavola[1, :]
 	
 	if v[1] ≠ 0 
 		w /= v[1] 
 	end
 	
-	# Good code has a check:
-	if outer(v, w) ≈ mult_table
+	# Del buon codice controlla il risultato: 
+	if outer(v, w) ≈ tavola
 	   return v, w
 	else
-		error("Input is not a multiplication table")
+		error("L'input non è un prodotto esterno")
 	end
 end
 
 # ╔═╡ 05c35402-f752-11ea-2708-59cf5ef74fb4
-factor( outer([1, 2, 3], [2, 2, 2] ) )
+factor( outer([1, 0, -1], [1, -1, -1] ) )
+
+# ╔═╡ 7f049de0-b46d-4c5e-b4a5-567ae5e562cc
+md"""
+#### Esercizio - Problemino di conteggio
+
+- Quante sono le possibili matrici $n\times n$ le cui entrate sono uguali a $-1$, $0$ oppure $1$?
+- E i possibili prodotto esterni risultanti da due vettori di dimensione $n$ le cui entrate prendono valore nell'insieme $\{-1, 0, 1\}$?
+"""
 
 # ╔═╡ 8c11b19e-81bc-11eb-184b-bf6ffefe29de
 md"""
-A random 2x2 matrix is not a multiplication table. Most matrices are not given by multiplication tables.
+Come conseguenza dell'esercizio precedente, una matrice aleatoria in pratica non è mai un prodotto esterno: 
 """
 
 # ╔═╡ 8baaa994-f752-11ea-18d9-b3d0a6b9f7d9
 factor( rand(2,2) )
 
-# ╔═╡ d92bece4-f754-11ea-0242-99f198bb5b7b
-md" Let's add two (or more) multiplication tables:"
-
-# ╔═╡ e740999c-f754-11ea-2089-4b7a9aec6030
-A = sum( outer(rand(3),rand(3)) for i=1:2 )
-
-# ╔═╡ 0a79a7b4-f755-11ea-1b2d-21173567b257
-md"Is it possible, given the matrix, to find the structure? E.g. to show that a matrix is a sum of outer products (multiplication table)."
-
-# ╔═╡ 5adb98c2-f6e0-11ea-1fde-53b0fd6639c3
-md"The answer is yes: The **Singular-Value Decomposition** (SVD) from algebra can find the structure!"
-
-# ╔═╡ 487d6f9c-81d0-11eb-3bb0-336a4beb9b38
+# ╔═╡ 7a2f88fb-ccad-42ec-8f8c-b5a9e14b3eea
 md"""
-Let's take the SVD and calculate the sum of two outer products:
+### Visualizzare prodotti esterni
 """
 
-# ╔═╡ 5a493052-f601-11ea-2f5f-f940412905f2
-begin
-	U, Σ, V = svd(A)
-	
-    outer( U[:, 1], V[:, 1] * Σ[1] ) + outer( U[:, 2], V[:, 2] * Σ[2] )
-end
-
-# ╔═╡ 55b76aee-81d0-11eb-0bcc-413f5bd14360
+# ╔═╡ 2370f3a5-3fc6-4e62-a615-d23e9277aa72
 md"""
-We see that we reconstruct the original matrix!"
+Consideriamo il seguente prodotto esterno:
 """
-
-# ╔═╡ 709bf30a-f755-11ea-2e82-bd511e598c77
-B = rand(3,3)
-
-# ╔═╡ 782532b0-f755-11ea-1385-cd1a28c4b9d5
-begin
-	UU, ΣΣ, VV = svd( B )
-    outer( UU[:,1], VV[:,1] * ΣΣ[1] ) + outer( UU[:,2], VV[:,2] * ΣΣ[2] ) 
-end
-
-# ╔═╡ 5bc4ab0a-f755-11ea-0fad-4987ad9fc02f
-md"and it can approximate too!"
 
 # ╔═╡ a5d637ea-f5de-11ea-3b70-877e876bc9c9
 flag = outer([1,1,1,2,2,2,1,1,1], [1,1,1,1,1,1,1,1,1])
 
+# ╔═╡ 7b1dbc34-459a-4143-8090-8a705444a5a2
+md"""
+La funzione `distinguishable_colors` restituisce automaticamente un array di colori distinti: 
+"""
+
 # ╔═╡ 21bbb60a-f5df-11ea-2c1b-dd716a657df8
 cs = distinguishable_colors(100)
 
+# ╔═╡ b02ba1b5-fee7-4722-9f9a-defce9b54dd6
+md"""
+In modo alquanto conveniente, se forniamo una matrice di interi `flag` come argomento all'array di colori `cs`, ci verrà restituita l'immagine in cui ogni entrata $(i,j)$ di `flag` è colorata col colore `cs[flag[i,j]]`:
+"""
+
 # ╔═╡ 2668e100-f5df-11ea-12b0-073a578a5edb
 cs[flag]
+
+# ╔═╡ c2690dcb-b00c-4c49-88f3-9681e164e506
+md"""
+In Julia, similmente alla comune notazione matematica, possiamo ottenere la [trasposta di una matrice](https://it.wikipedia.org/wiki/Matrice_trasposta) utilizzando semplicemente il simbolo di apice: 
+"""
+
+# ╔═╡ d774117f-f545-4273-9075-bc79d7bf7868
+flag'
+
+# ╔═╡ 6c916683-b337-4ce6-9786-6229d749dc2f
+md"""
+Possiamo indovinare l'immmagine che risulterà se visualizziamo la somma di `flag` e della sua trasposta:
+"""
 
 # ╔═╡ 483e0a1f-9890-4c3d-8165-15497db43c7f
 flag + flag'
@@ -539,14 +595,70 @@ flag + flag'
 cs[flag + flag']
 
 # ╔═╡ f5fcdeea-f75c-11ea-1fc3-731f0ef1ad14
-outer([1,1,1,2,2,2,1,1,1], [1,1,1,1,1,1,1,1,1]) + outer([1,1,1,1,1,1,1,1,1], [1,1,1,2,2,2,1,1,1])
+md"""
+#### Esercizio - Prodotti esterni trasposti
+
+Qual'è la relazione tra un prodotto esterno e la trasposta della matrice risultante? Si può scrivere quest'ultima direttamente come prodotto esterno?
+"""
 
 # ╔═╡ 0373fbf6-f75d-11ea-2a9e-cbb714d69cf4
-cs[outer([1,1,1,2,2,2,1,1,1], [1,1,1,1,1,1,1,1,1]) + outer([1,1,1,1,1,1,1,1,1], [1,1,1,2,2,2,1,1,1])]
+md"""
+!!! hint "\"Soluzione\""
+	Confrontare l'immagine sopra ottenuta con `cs[flag + flag']` e 
+	```
+	cs[
+		outer([1,1,1,2,2,2,1,1,1], [1,1,1,1,1,1,1,1,1]) + 
+		outer([1,1,1,1,1,1,1,1,1], [1,1,1,2,2,2,1,1,1])
+	])
+	```
+"""
 
 # ╔═╡ ebd72fb8-f5e0-11ea-0630-573337dff753
 md"""
-## Singular Value Decomposition (SVD): A tool to find structure
+## La [_singular value decomposition_](https://en.wikipedia.org/wiki/Singular_value_decomposition) (SVD)
+"""
+
+# ╔═╡ e740999c-f754-11ea-2089-4b7a9aec6030
+A = sum( outer(rand(2),rand(2)) for i=1:2 )
+
+# ╔═╡ 0a79a7b4-f755-11ea-1b2d-21173567b257
+md"""
+È possibile capire se una matrice si può esprimere come somma di prodotti esterni?
+
+La risposta è si: si tratta dell'idea più profonda dell'algebra lineare, ovvero la [decomposizione ai valori singolari](https://it.wikipedia.org/wiki/Decomposizione_ai_valori_singolari), in inglese **SVD** (singular value decomposition):
+"""
+
+# ╔═╡ 5a493052-f601-11ea-2f5f-f940412905f2
+begin
+	U, Σ, V = svd(A)
+	
+	A ≈ outer( U[:, 1], V[:, 1] * Σ[1] ) + outer( U[:, 2], V[:, 2] * Σ[2] ) 
+end
+
+# ╔═╡ 55b76aee-81d0-11eb-0bcc-413f5bd14360
+md"""
+Come vediamo, la matrice originale $A$ è ricostruita come prodotto esterno delle colonne delle matrici $U$ e $V$ risultanti dalla decomposizione a valori singolari, moltiplicate per dei fattori $Σᵢ$ su cui ci soffermiamo in seguito. 
+
+Per ora, facciamo un'osservazione importante: cosa succede se consideriamo solo i primi 2 prodotti esterni quando proviamo a _ricostruire_ $A$ ricombinando l'output della SVD?
+"""
+
+# ╔═╡ 709bf30a-f755-11ea-2e82-bd511e598c77
+B = rand(3, 3)
+
+# ╔═╡ 782532b0-f755-11ea-1385-cd1a28c4b9d5
+begin
+	UU, ΣΣ, VV = svd( B )
+    outer( UU[:,1], VV[:,1] * ΣΣ[1] ) + outer( UU[:,2], VV[:,2] * ΣΣ[2] ) 
+end
+
+# ╔═╡ 5bc4ab0a-f755-11ea-0fad-4987ad9fc02f
+md"""
+Come vediamo, una ricostruzione parziale usando la SVD sembra fornire una buona approssimazione della matrice di partenza. 
+"""
+
+# ╔═╡ cffb2728-48d5-4f32-90c7-8a7405be6bf5
+md"""
+### SVD di immagini
 """
 
 # ╔═╡ b6478e1a-f5f6-11ea-3b92-6d4f067285f4
@@ -1205,39 +1317,37 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─1f3ba55a-81b9-11eb-001f-593b9d8639ca
 # ╠═3d4a702e-f75a-11ea-031c-333d591fc442
 # ╟─7cc1ec53-d805-4462-91b9-ba9c226776e6
-# ╠═43adc012-7946-4f33-8859-e16e50c94f55
-# ╠═9db7783f-c2ed-48be-8ff0-4e63a4a24955
-# ╠═80ff4010-81bb-11eb-374e-215a57defb0b
-# ╠═5de72b7c-f5d6-11ea-1b6f-35b830b5fb34
-# ╠═8b60629e-f5d6-11ea-27c8-d934460d3a57
-# ╠═2fd7e52e-f5d7-11ea-3b5a-1f338e2451e0
-# ╠═2e87d4fe-81bc-11eb-0d16-b988bcedcc73
-# ╠═cde79f38-f5d6-11ea-3297-0b5b240f7b9e
-# ╠═aa09c008-f5d8-11ea-1bdc-b51ee6eb2478
+# ╟─43adc012-7946-4f33-8859-e16e50c94f55
+# ╟─9db7783f-c2ed-48be-8ff0-4e63a4a24955
+# ╟─313a83f9-06f5-46c5-aec0-1bca8b3408dd
 # ╟─62a6ec62-f5d9-11ea-071e-ed33c5dea0cd
 # ╟─7f63daf6-f695-11ea-0b80-8702a83103a4
 # ╠═67274c3c-f5d9-11ea-3475-c9d228e3bd5a
 # ╟─765c6552-f5d9-11ea-29d3-bfe7b4b04612
 # ╠═126fb3ea-f5da-11ea-2f7d-0b3259a296ce
-# ╟─ed0b2358-81ce-11eb-3339-93abcc06fd91
+# ╟─9389f76e-1944-425f-ba0a-f84318be8e0b
+# ╠═56e6bd2e-2602-41ea-a6c3-20fc31631f45
 # ╟─24ce92fa-81cf-11eb-30f0-b1e357d79d53
 # ╠═2d4500e0-81cf-11eb-1699-d310074fddf5
 # ╟─3546ff30-81cf-11eb-3afc-05c5db61366f
-# ╟─9b9e2c2a-f5da-11ea-369b-b513b196515b
 # ╠═e68b98ea-f5da-11ea-1a9d-db45e4f80241
+# ╠═62f23e22-ec4a-4399-b602-0cdec7a29fb8
 # ╠═f20ccac4-f5da-11ea-0e69-413b5e49f423
 # ╠═12a2e96c-f5db-11ea-1c3e-494ae7446886
 # ╠═22487ce2-f5db-11ea-32e9-6f70ab2c0353
 # ╟─389ae62e-f5db-11ea-1557-c3adbbee0e5c
 # ╟─0c2b6408-f5d9-11ea-2b7f-7fece2eecc1f
+# ╟─534eb09e-3ca1-471b-86fa-2db036f735b4
+# ╟─1f8c0b21-9e74-409a-8547-f6f39e58f400
+# ╟─89bb3a50-cac1-4b45-b1b8-f47c7e8f7c8c
 # ╠═5d767290-f5dd-11ea-2189-81198fd216ce
-# ╠═587790ce-f6de-11ea-12d9-fde2a17ae314
-# ╟─a39e8256-f6de-11ea-3170-c923b56609da
-# ╠═8c84edd0-f6de-11ea-2180-61c6b81aac3b
+# ╟─587790ce-f6de-11ea-12d9-fde2a17ae314
 # ╠═22b73baa-f6df-11ea-197f-bbb4bd1a7ef5
+# ╟─3c196bc4-dda0-4ba4-bee6-e5ea67678035
 # ╠═b2332814-f6e6-11ea-1c7d-556c7d4687f1
 # ╟─9ab7a72e-81cf-11eb-2b78-073ff51cae58
-# ╟─fd8dd108-f6df-11ea-2f7c-3d99d054ac15
+# ╟─c1f129d2-629d-4b58-af57-122f72e093f5
+# ╟─fee03cf9-b573-47e8-9033-a78ee38faa73
 # ╟─165788b2-f601-11ea-3e69-cdbbb6558e54
 # ╠═22941bb8-f601-11ea-1d6e-0d955297bc2e
 # ╟─c33bf00e-81cf-11eb-1e1a-e5a879a45093
@@ -1246,26 +1356,32 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─a0611eaa-81bc-11eb-1d23-c12ab14138b1
 # ╠═a4728944-f74b-11ea-03c3-9123908c1f8e
 # ╠═05c35402-f752-11ea-2708-59cf5ef74fb4
+# ╟─7f049de0-b46d-4c5e-b4a5-567ae5e562cc
 # ╟─8c11b19e-81bc-11eb-184b-bf6ffefe29de
 # ╠═8baaa994-f752-11ea-18d9-b3d0a6b9f7d9
-# ╟─d92bece4-f754-11ea-0242-99f198bb5b7b
+# ╟─7a2f88fb-ccad-42ec-8f8c-b5a9e14b3eea
+# ╟─2370f3a5-3fc6-4e62-a615-d23e9277aa72
+# ╠═a5d637ea-f5de-11ea-3b70-877e876bc9c9
+# ╟─7b1dbc34-459a-4143-8090-8a705444a5a2
+# ╠═21bbb60a-f5df-11ea-2c1b-dd716a657df8
+# ╟─b02ba1b5-fee7-4722-9f9a-defce9b54dd6
+# ╠═2668e100-f5df-11ea-12b0-073a578a5edb
+# ╟─c2690dcb-b00c-4c49-88f3-9681e164e506
+# ╠═d774117f-f545-4273-9075-bc79d7bf7868
+# ╟─6c916683-b337-4ce6-9786-6229d749dc2f
+# ╠═483e0a1f-9890-4c3d-8165-15497db43c7f
+# ╠═e8d727f2-f5de-11ea-1456-f72602e81e0d
+# ╟─f5fcdeea-f75c-11ea-1fc3-731f0ef1ad14
+# ╟─0373fbf6-f75d-11ea-2a9e-cbb714d69cf4
+# ╟─ebd72fb8-f5e0-11ea-0630-573337dff753
 # ╠═e740999c-f754-11ea-2089-4b7a9aec6030
 # ╟─0a79a7b4-f755-11ea-1b2d-21173567b257
-# ╟─5adb98c2-f6e0-11ea-1fde-53b0fd6639c3
-# ╟─487d6f9c-81d0-11eb-3bb0-336a4beb9b38
-# ╟─5a493052-f601-11ea-2f5f-f940412905f2
+# ╠═5a493052-f601-11ea-2f5f-f940412905f2
 # ╟─55b76aee-81d0-11eb-0bcc-413f5bd14360
 # ╠═709bf30a-f755-11ea-2e82-bd511e598c77
 # ╠═782532b0-f755-11ea-1385-cd1a28c4b9d5
 # ╟─5bc4ab0a-f755-11ea-0fad-4987ad9fc02f
-# ╠═a5d637ea-f5de-11ea-3b70-877e876bc9c9
-# ╠═21bbb60a-f5df-11ea-2c1b-dd716a657df8
-# ╠═2668e100-f5df-11ea-12b0-073a578a5edb
-# ╠═483e0a1f-9890-4c3d-8165-15497db43c7f
-# ╠═e8d727f2-f5de-11ea-1456-f72602e81e0d
-# ╠═f5fcdeea-f75c-11ea-1fc3-731f0ef1ad14
-# ╠═0373fbf6-f75d-11ea-2a9e-cbb714d69cf4
-# ╟─ebd72fb8-f5e0-11ea-0630-573337dff753
+# ╟─cffb2728-48d5-4f32-90c7-8a7405be6bf5
 # ╠═b6478e1a-f5f6-11ea-3b92-6d4f067285f4
 # ╠═f2c11f88-f5f8-11ea-3e02-c1d4fa22031e
 # ╠═29062f7a-f5f9-11ea-2682-1374e7694e32
