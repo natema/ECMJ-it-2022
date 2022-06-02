@@ -49,52 +49,49 @@ Abbiamo già utilizzato spesso la funzione `rand`, e in questo notebook vedremo 
 La possibilità di generare [variabili casuali (o aleatorie)](https://it.wikipedia.org/wiki/Variabile_casuale) è fondamentale allo scopo di simulare sistemi reali, poiché in pratica non è possibile conoscere con molta precisione i parametri iniziali di un sistema complesso, e il comportamento di quest'ultimo presenterà inevitabilmente [caratteristiche di imprevisibilità](https://it.wikipedia.org/wiki/Teoria_del_caos). 
 """
 
+# ╔═╡ 2c9728cd-7647-4d35-bb27-8f2ef16f8638
+std(rand(10000))
+
+# ╔═╡ 9d698a7b-27f5-489e-b1eb-dfed000b31dd
+1/(2*sqrt(3))
+
 # ╔═╡ aeb99f72-8725-11eb-2efd-d3e44686be03
 md"""
-The package that each function comes from is shown in brackets, unless it comes from `Base`.
+## Ripasso di funzioni e pacchetti importanti
+
+Prima di iniziare l'argomento vero e proprio, può essere utile richiamare alcune funzioni fondamentali e il relativo pacchetto/libreria che la fornisce: 
 """
 
 # ╔═╡ 4f9bd326-8724-11eb-2c9b-db1ac9464f1e
 md"""
+#### Libreria `Base`
+Le funzioni seguenti sono implementate in Julia di default, non è dunque necessario importare alcun pacchetto tramite la keyword `using` al fine di usarle: 
+- `if...else...end`
+- `Dict`: il tipo _dizionario_ in Julia
+- `÷` (`\div` + <tab>) oppure `div`: [divisione intera](https://en.wikipedia.org/wiki/Division_(mathematics)#Of_integers) 
+- `sum(S)`: summa degli elementi nella collezione `S`, per esempio un array
+- `count(S)`: conta il numero di elementi `true` in una collezione di booleani
+- `rand(S)`: campionamento casuale da una collezione in `S`
 
-- Julia `Base` library (no `using` required):
+#### Pacchetto `Statistics.jl` 
+Il pacchetto `Statistics.jl` è _pre-installato_ nella libreria standard, non necessita dunque di essere installato ma solo importato con `using`: 
+- `mean(S)`: calcola la media della collezione `S`
+- `std(S)`: calcola la standard deviation della collezione `S`
 
-  - `if...else...end`
-  - `Dict`: Julia's dictionary type
-  - `÷` or `div`:  integer division (type `\div` + <tab>)
+#### Pacchetto `StatsBase.jl`
+- `countmap(S)`: restituisce un dizionario che mappa ogni elemento al suo numero di occorrenze
 
-  - `sum(S)`: sum of elements in the collection `S`, e.g. an array
-  - `count(S)`: count the number of true elements of a Boolean collection
+#### Pacchetto `Plots.jl`
+- `histogram(x)`: produce il grafico di un istogramma del vettore di dati `x`
+- `bar(d)`: disegna il [bar chart](https://en.wikipedia.org/wiki/Bar_chart) del vettore di dati categorici `d`
 
-  - `rand(S)`: random sampling from a collection `S` 
-
-
-- `Statistics.jl` (pre-loaded standard library; just needs `using`)
-
-  - `mean(S)`: calculate the mean of a collection `S`
-  - `std(S)`:  calculate the standard deviation of a collection `S`
-
-
-
-- `StatsBase.jl`:
-  - `countmap`
-
-
-- `Plots.jl`:
-
-  - `histogram(x)`: Plot a histogram of data vector `x` [Plots]
-
-  - `bar(d)`: Plot a bar graph of categorical data [Plots]
-
-
-- `Colors.jl`:
-  - `distinguishable_colors(n)`: Make `n` distinguishable colours [Colors]
-
+#### `Colors.jl`
+- `distinguishable_colors(n)`: Crea un vettore di `n` colori distinti
 """
 
 # ╔═╡ db2d25de-86b1-11eb-0c78-d1ee52e019ca
 md"""
-## Random sampling with `rand`
+## Campionamento casuale con `rand`
 """
 
 # ╔═╡ e33fe4c8-86b1-11eb-1031-cf45717a3dc9
@@ -1833,7 +1830,9 @@ version = "0.9.1+5"
 # ╠═06d2666a-8723-11eb-1395-0febdf3dc2a4
 # ╟─0a70bca4-8723-11eb-1bcf-e9abb9b1ab75
 # ╟─472a41d2-8724-11eb-31b3-0b81612f0083
-# ╠═c41c73a5-055a-4776-be40-fb2df4ae9963
+# ╟─c41c73a5-055a-4776-be40-fb2df4ae9963
+# ╠═2c9728cd-7647-4d35-bb27-8f2ef16f8638
+# ╠═9d698a7b-27f5-489e-b1eb-dfed000b31dd
 # ╟─aeb99f72-8725-11eb-2efd-d3e44686be03
 # ╟─4f9bd326-8724-11eb-2c9b-db1ac9464f1e
 # ╟─db2d25de-86b1-11eb-0c78-d1ee52e019ca
