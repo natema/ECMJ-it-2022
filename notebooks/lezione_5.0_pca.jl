@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -192,9 +192,6 @@ begin
 			size=(500, 400), m=:square, c=:red,
 			framestyle=:origin)
 
-	
-	
-	
 	title!("Plotting a rank-1 matrix gives a straight line!")
 end
 
@@ -264,7 +261,6 @@ begin
 	end
 
 	plot!()
-	
 end
 
 # ╔═╡ 4fb82f18-852f-11eb-278d-cf93571f4adc
@@ -357,6 +353,9 @@ md"""By rotating the axes we can "look in different directions" and calculate th
 # ╔═╡ e8276b4e-f86f-11ea-38be-218a72452b10
 M = [xs_centered ys_centered]'
 
+# ╔═╡ fd42e706-52ef-40c0-becb-1ecee905e01d
+cov(M')
+
 # ╔═╡ 1f373bd0-853f-11eb-0f8e-19cb7f376182
 eigvals(cov(M')) .* 199
 
@@ -369,24 +368,21 @@ svdvals(M)
 # ╔═╡ 1232e848-8540-11eb-089b-2185cc06f23a
 M
 
-# ╔═╡ 7cb04c9a-8358-11eb-1255-8d8c90916c37
-gr()
+# ╔═╡ 7eb51908-f906-11ea-19d2-e947d81cb743
+md"In the following figure, we are rotating the axis (red arrow) around in the left panel. In the right panel we are viewing the data from the point of view of that new coordinate direction, in other words projecting onto that direction, effectively as if we rotated our head so the red vector was horizontal:"
 
 # ╔═╡ cd9e05ee-f86f-11ea-0422-25f8329c7ef2
 R(θ)= [cos(θ) sin(θ)
 	  -sin(θ) cos(θ)]
 
-# ╔═╡ 7eb51908-f906-11ea-19d2-e947d81cb743
-md"In the following figure, we are rotating the axis (red arrow) around in the left panel. In the right panel we are viewing the data from the point of view of that new coordinate direction, in other words projecting onto that direction, effectively as if we rotated our head so the red vector was horizontal:"
+# ╔═╡ c9da6e64-8540-11eb-3984-47fdf8be0dac
+md"""
+## Rotating the data
+"""
 
 # ╔═╡ 4f1980ea-f86f-11ea-3df2-35cca6c961f3
 md"""
 degrees = $(@bind degrees Slider(0:360, default=28, show_value=true)) 
-"""
-
-# ╔═╡ c9da6e64-8540-11eb-3984-47fdf8be0dac
-md"""
-## Rotating the data
 """
 
 # ╔═╡ f70065aa-835a-11eb-00cb-ffa27bcb486e
@@ -401,17 +397,9 @@ p1 = begin
 	projected = ([cos(θ) sin(θ)] * M) .* [cos(θ) sin(θ)]'
 	scatter!(projected[1, :], projected[2, :], m=:3, alpha=0.1, c=:green)
 	
-	
 	lines_x = reduce(vcat, [M[1, i], projected[1, i], NaN] for i in 1:size(M, 2))
 	lines_y = reduce(vcat, [M[2, i], projected[2, i], NaN] for i in 1:size(M, 2))
-	
-	
-# 	for i in 1:size(M, 2)
-# 		plot!([M[1, i], projected[1, i]], [M[2, i], projected[2, i]], ls=:dash, c=:black, alpha=0.1)
-# 	end
-	
 	plot!(lines_x, lines_y, ls=:dash, c=:black, alpha=0.1)
-	
 	
 	plot!([0.7 .* (-cos(θ), -sin(θ)), 0.7 .* (cos(θ), sin(θ))], lw=1, arrow=true, c=:red, alpha=0.3)
 	xlims!(-0.7, 0.7)
@@ -420,51 +408,30 @@ p1 = begin
 	scatter!([M[1, imax]], [M[2, imax]],  ms=3, alpha=1, c=:yellow)
 
 	annotate!(0, 1.2, text("align arrow with cloud", :red, 10))
-end;
-
-# ╔═╡ 8b8e6b2e-8531-11eb-1ea6-637db25b28d5
-p1
+end
 
 # ╔═╡ 88bbe1bc-f86f-11ea-3b6b-29175ddbea04
 p2 = begin
 	M2 = R(θ) * M
 	
 	scatter(M2[1, :], M2[2, :],ratio=1, leg=false, ms=2.5, alpha=0.3, framestyle=:origin, size=(500, 500))
-	
-	# plot!([(-0.6, 0), (0.6, 0)], lw=3, arrow=true, c=:red, xaxis=false, yaxis=false, xticks=[], yticks=[])
-	
-	# scatter!([M2[1, imax]], [M2[2, imax]], ms=3, alpha=1, c=:yellow)
 
 	xlims!(-0.7, 0.7)
 	ylims!(-0.7, 0.7)
 	
 	scatter!(M2[1, :], zeros(size(xs_centered)), ms=3, alpha=0.1, ratio=1, leg=false, framestyle=:origin, c=:green)
 
-	
 	lines2_x = reduce(vcat, [M2[1, i], M2[1, i], NaN] for i in 1:size(M2, 2))
 	lines2_y = reduce(vcat, [M2[2, i], 0, NaN] for i in 1:size(M2, 2))
-	
-	# for i in 1:size(M2, 2)
-	# 	plot!([(M2[1, i], M2[2, i]), (M2[1, i], 0)], ls=:dash, c=:black, alpha=0.1)
-	# end
-	
 	plot!(lines2_x, lines2_y, ls=:dash, c=:black, alpha=0.1)
 	
 	σ = std(M2[1, :])
 	vline!([-2σ, 2σ], ls=:dash, lw=2)
 	
-# 	plot!(0.5 * [-cos(θ), cos(θ)], 0.5 * [sin(θ), -sin(θ)], c=:black, alpha=0.5, lw=1, arrow=true)
-# 	plot!(0.5 * [-sin(θ), sin(θ)], 0.5 * [-cos(θ), cos(θ)], c=:black, alpha=0.5, lw=1, arrow=true)
-	
-# 	plot!(0.5 * [cos(θ), -cos(θ)], 0.5 * [-sin(θ), sin(θ)], c=:black, alpha=0.5, lw=1, arrow=true)
-# 	plot!(0.5 * [sin(θ), -sin(θ)], 0.5 * [cos(θ), -cos(θ)], c=:black, alpha=0.5, lw=1, arrow=true)
-	
 	title!("σ = $(round(σ, digits=4))")
-	
 	annotate!(2σ+0.05, 0.05, text("2σ", 10, :green))
 	annotate!(-2σ-0.05, 0.05, text("-2σ", 10, :green))
-
-end;
+end
 
 # ╔═╡ 2ffe7ed0-f870-11ea-06aa-390581500ca1
 plot(p2)
@@ -525,10 +492,8 @@ end
 begin
 	scatter(xs_centered, ys_centered, ms=5, alpha=0.3, ratio=1, leg=false, 
 			framestyle=:origin)
-
 	plot!([(0, 0), 2*sqrt(fmax) .* (cos(θmax), sin(θmax))], arrow=true, lw=3, c=:red)
 	plot!([(0, 0), 2*sqrt(fmin) .* (cos(θmin), sin(θmin))], arrow=true, lw=3, c=:red)
-
 end
 
 # ╔═╡ cfec1ec4-f8ff-11ea-265d-ab4844f0f739
@@ -619,7 +584,7 @@ scatter(unit_disc[1, :], unit_disc[2, :], ratio=1, leg=false, alpha=0.5, ms=3)
 
 # ╔═╡ 1647a126-85a4-11eb-3923-5f5a6f703403
 md"""
-t = $(@bind tt Slider(0:0.01:1, show_value=true))
+tt = $(@bind tt Slider(0:0.01:1, show_value=true))
 """
 
 # ╔═╡ 40b87cbe-85a4-11eb-30f8-cf7b5e79c19a
@@ -627,7 +592,7 @@ pp1 = begin
 	scatter(unit_disc[1, :], unit_disc[2, :], ratio=1, leg=false, alpha=0.5, title="stretch + rotate")
 	result =  [1 + tt  tt; tt  1] * unit_disc
 	scatter!(result[1, :], result[2, :], alpha=0.2)
-
+	
 	ylims!(-3, 3)
 	xlims!(-3, 3)
 end;
@@ -643,9 +608,7 @@ pp2 = begin
 	
 	ylims!(-3, 3)
 	xlims!(-3, 3)
-
 end;
-
 
 # ╔═╡ 6ec7f980-85a5-11eb-12fc-cb132db28d83
 plot(pp2, pp1)
@@ -702,7 +665,6 @@ M18 = M * V
 
 # ╔═╡ b55dcfd2-84fb-11eb-1766-17dc8b7a17d0
 scatter(M18[1, :], M18[2, :], alpha=0.5, leg=false, ratio=1, xlim=(-5, 5))
-
 
 # ╔═╡ 1cf3e098-f864-11ea-3f3a-c53017b73490
 md"#### Appendix"
@@ -953,7 +915,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -1009,6 +971,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "3c041d2ac0a52a12a27af2782b34900d9c3ee68c"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.11.1"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]
@@ -2074,14 +2039,14 @@ version = "0.9.1+5"
 # ╠═1b8c743e-ec90-11ea-10aa-e3b94f768f82
 # ╟─eb867f18-852e-11eb-005f-e15b6d0d0d95
 # ╟─f7079016-852e-11eb-3bc9-53fa0846276f
-# ╟─870d3efa-f8fc-11ea-1593-1552511dcf86
+# ╠═870d3efa-f8fc-11ea-1593-1552511dcf86
 # ╠═4fb82f18-852f-11eb-278d-cf93571f4adc
 # ╟─5fcf832c-852f-11eb-1354-792933a891a5
 # ╟─ef4a2a54-81bf-11eb-358b-0da2072f20c8
 # ╟─f5358ce4-f86a-11ea-2989-b1f37be89183
 # ╠═2c3721da-f86b-11ea-36cf-3fe4c6622dc6
 # ╟─03ab44c0-f8fd-11ea-2243-1f3580f98a65
-# ╟─6dec0db8-ec93-11ea-24ad-e17870ee64c2
+# ╠═6dec0db8-ec93-11ea-24ad-e17870ee64c2
 # ╟─5fab2c32-f86b-11ea-2f27-ed5feaac1fa5
 # ╟─ae9a2900-ec93-11ea-1ae5-0748221328fc
 # ╟─b81c9db2-ec93-11ea-0dbd-4bd0951cb2cc
@@ -2090,23 +2055,22 @@ version = "0.9.1+5"
 # ╟─3547f296-f86f-11ea-1698-53d3c1a0bc30
 # ╟─7a83101e-f871-11ea-1d87-4946162777b5
 # ╠═e8276b4e-f86f-11ea-38be-218a72452b10
+# ╠═fd42e706-52ef-40c0-becb-1ecee905e01d
 # ╠═1f373bd0-853f-11eb-0f8e-19cb7f376182
 # ╠═31e4b138-84e8-11eb-36a8-8b90746fbb0f
-# ╟─d71fdaea-f86f-11ea-1a1f-45e4d50926d3
+# ╠═d71fdaea-f86f-11ea-1a1f-45e4d50926d3
 # ╠═757c6808-f8fe-11ea-39bb-47e4da65113a
 # ╠═1232e848-8540-11eb-089b-2185cc06f23a
-# ╠═3b71142c-f86f-11ea-0d43-47011d00786c
-# ╠═88bbe1bc-f86f-11ea-3b6b-29175ddbea04
-# ╠═7cb04c9a-8358-11eb-1255-8d8c90916c37
-# ╟─cd9e05ee-f86f-11ea-0422-25f8329c7ef2
 # ╟─7eb51908-f906-11ea-19d2-e947d81cb743
-# ╠═8b8e6b2e-8531-11eb-1ea6-637db25b28d5
-# ╟─4f1980ea-f86f-11ea-3df2-35cca6c961f3
+# ╠═3b71142c-f86f-11ea-0d43-47011d00786c
+# ╠═cd9e05ee-f86f-11ea-0422-25f8329c7ef2
+# ╠═88bbe1bc-f86f-11ea-3b6b-29175ddbea04
 # ╟─c9da6e64-8540-11eb-3984-47fdf8be0dac
+# ╟─4f1980ea-f86f-11ea-3df2-35cca6c961f3
 # ╠═f70065aa-835a-11eb-00cb-ffa27bcb486e
 # ╠═2ffe7ed0-f870-11ea-06aa-390581500ca1
 # ╟─a5cdad52-f906-11ea-0486-755a6403a367
-# ╟─0115c974-f871-11ea-1204-054510848849
+# ╠═0115c974-f871-11ea-1204-054510848849
 # ╠═0935c870-f871-11ea-2a0b-b1b824379350
 # ╠═6646abe0-835b-11eb-328a-55ca22f89c7d
 # ╠═ef850e8e-84e7-11eb-1cb0-870c3000841d
@@ -2114,7 +2078,7 @@ version = "0.9.1+5"
 # ╟─e4af4d26-f877-11ea-1de3-a9f8d389138e
 # ╟─bf57f674-f906-11ea-08eb-9b50818a025b
 # ╠═17e015fe-f8ff-11ea-17b4-a3aa072cd7b3
-# ╟─045b9b98-f8ff-11ea-0d49-5b209319e951
+# ╠═045b9b98-f8ff-11ea-0d49-5b209319e951
 # ╟─cfec1ec4-f8ff-11ea-265d-ab4844f0f739
 # ╠═e6e900b8-f904-11ea-2a0d-953b99785553
 # ╟─301f4d06-8162-11eb-1cd6-31dd8da164b6
@@ -2127,9 +2091,9 @@ version = "0.9.1+5"
 # ╟─91b77acc-85a2-11eb-19bb-bd2bdd0c1a68
 # ╠═f92c75f6-85a3-11eb-1689-23aeaa3daeb7
 # ╠═03069da6-85a4-11eb-2ac5-87b767846550
+# ╟─1647a126-85a4-11eb-3923-5f5a6f703403
 # ╠═40b87cbe-85a4-11eb-30f8-cf7b5e79c19a
 # ╠═28a7d6dc-85a5-11eb-0e4b-b7e9b4c592ed
-# ╟─1647a126-85a4-11eb-3923-5f5a6f703403
 # ╠═6ec7f980-85a5-11eb-12fc-cb132db28d83
 # ╟─92a2827e-84e9-11eb-1e85-6f49b1da7277
 # ╟─e84adec2-84e8-11eb-2157-dd491588ccf0

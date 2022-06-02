@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -20,7 +20,6 @@ begin
 	using Plots, PlutoUI, Colors, Images, StatsBase, Distributions
 	using Statistics
 end
-
 
 # ╔═╡ 3a4957ec-8723-11eb-22a0-8b35322596e2
 md"""
@@ -103,6 +102,9 @@ rand([2, 3, 5, 7, 11])
 # ╔═╡ 30b12f28-86b2-11eb-087b-8d50ec429b89
 rand("MIT")
 
+# ╔═╡ e0315027-d96c-4f41-ba72-05729e754cc3
+['a':'z'...]
+
 # ╔═╡ 4ce946c6-86b2-11eb-1820-0728798665ab
 rand('a':'z')
 
@@ -110,13 +112,13 @@ rand('a':'z')
 typeof('a':'z')
 
 # ╔═╡ 6cdea3ae-86b2-11eb-107a-17bea3f54bc9
-rand()   # random number between 0 and 1
+typeof(rand() )  # random number between 0 and 1
 
 # ╔═╡ 1c769d58-8744-11eb-3bd3-ab11ea1503ed
 rand
 
 # ╔═╡ 297fdfa0-8744-11eb-1934-9fe31e8be534
-methods(rand);
+methods(rand)
 
 # ╔═╡ 776ec3f2-86b3-11eb-0216-9b71d07e99f3
 md"""
@@ -170,13 +172,15 @@ We can also use random images:
 """
 
 # ╔═╡ 78dc94e2-8723-11eb-1ff2-bb7104b62033
-penny_image = load(download("https://www.usacoinbook.com/us-coins/lincoln-memorial-cent.jpg"))
+euro = load(download("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fone-euro-coin-front-back-faces-isolated-white-background-clipping-path-113902500.jpg&f=1&nofb=1"))
 
 # ╔═╡ bb1465c4-8723-11eb-1abc-bdb5a7028cf2
 begin
-	head = penny_image[:, 1:end÷2]
-	tail = penny_image[:, end÷2:end]
-end;
+	margin = 45
+	head = euro[margin:end-margin, margin:end÷2]
+	tail = euro[margin:end-margin, end÷2:end-margin]
+	head, tail
+end
 
 # ╔═╡ e04f3828-8723-11eb-3452-09f821391ad0
 rand( [head, tail], 5, 5)
@@ -711,7 +715,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -767,6 +771,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "3c041d2ac0a52a12a27af2782b34900d9c3ee68c"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.11.1"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
@@ -1829,6 +1836,7 @@ version = "0.9.1+5"
 # ╠═f49191a2-86b1-11eb-3eab-b392ba058415
 # ╠═1abda6c4-86b2-11eb-2aa3-4d1148bb52b7
 # ╠═30b12f28-86b2-11eb-087b-8d50ec429b89
+# ╠═e0315027-d96c-4f41-ba72-05729e754cc3
 # ╠═4ce946c6-86b2-11eb-1820-0728798665ab
 # ╠═fae3d138-8743-11eb-1014-b3a2a9b49aba
 # ╠═6cdea3ae-86b2-11eb-107a-17bea3f54bc9

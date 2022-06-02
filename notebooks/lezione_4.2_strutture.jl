@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -30,14 +30,28 @@ PlutoUI.TableOfContents(aside = true)
 # ╔═╡ ffa71052-2e18-4cec-8675-92369413716f
 supertypes(Int)
 
+# ╔═╡ f88915eb-4ac9-488a-bce5-d5d1de26b079
+subtypes(Number)
+
 # ╔═╡ 5bbf07a0-8833-470d-8603-11563cae6b2c
 Int == Int64
 
 # ╔═╡ 59cdf85e-705c-4d0a-bd67-08a30d1f732d
 Int <: Signed
 
+# ╔═╡ b8bf741e-2066-45b4-aa73-c6c7304eabac
+struct Foo <: AbstractVector{Int}
+	x::Int
+end
+
+# ╔═╡ 042be0de-81e9-42e4-b832-be3e5ae19db3
+subtypes(AbstractVector{Int})
+
 # ╔═╡ 799e705e-b560-4d21-822e-10a6726b3c5e
 Signed <: Int
+
+# ╔═╡ 9470da1c-2f2c-47da-8521-a27cbcea5c40
+typeintersect(Int, Union{Number, String})
 
 # ╔═╡ 62c29c56-313a-44d9-8626-5d181a824c3d
 typejoin(Int, Rational)
@@ -49,11 +63,20 @@ onehot_esplicito = [0, 1, 0, 0, 0, 0]
 # da notare che esiste anche l'encoding _one-cold_
 1 .- onehot_esplicito
 
+# ╔═╡ 4f2ebc4e-136f-4f32-a2ea-fe9ed351c236
+Dump(onehot_esplicito)
+
 # ╔═╡ 4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
 struct OneHotImplicito <: AbstractVector{Int}
-	n::Int
-	k::Int
+	n::Int # lunghezza
+	k::Int # posizione dell'1
 end
+
+# ╔═╡ 60c3ef05-3363-4c41-aa04-9645759a2eb9
+esempio = OneHotImplicito(10, 5)
+
+# ╔═╡ abb64486-1af9-44c2-b4bd-c9d79b58b1e3
+Dump(esempio)
 
 # ╔═╡ 397ac764-f5fe-11ea-20cc-8d7cab19d410
 Base.size(x::OneHotImplicito) = (x.n,)
@@ -61,8 +84,11 @@ Base.size(x::OneHotImplicito) = (x.n,)
 # ╔═╡ 1340e0e5-7d33-4356-affa-60882536b358
 size(zeros(10, 20))
 
+# ╔═╡ e836d268-4e55-4ca6-ac53-3ed21dc7c72b
+size(esempio)
+
 # ╔═╡ 94ca00b6-8f94-4786-a27c-eff7b2ad7ae3
-onehot_implicito = OneHotImplicito(10, 3)
+onehot_implicito = OneHotImplicito(15, 3)
 
 # ╔═╡ 0d28115a-b97e-4ac7-a4b1-555fcd6beefd
 size(onehot_implicito)
@@ -151,7 +177,7 @@ Notare che `x.k == i` restituisce un valore di tipo booleano, `true` oppure `fal
 Int(true), Int(false)
 
 # ╔═╡ c48d7a6b-8e8f-4ab9-a254-d2610371a9b5
-[onehot_implicito[i] for i in 1:10]
+[onehot_implicito[i] for i in 1:15]
 
 # ╔═╡ c5ed7d3e-81cc-11eb-3386-15b72db8155d
 md"""
@@ -167,6 +193,9 @@ md"""
 md"""
 La funzione `dump` mostra i dati che sono internamente memorizzati da un oggetto in Julia:
 """
+
+# ╔═╡ a4d12a9e-17bf-4770-8135-5a59ea2023bb
+dump("Hello")
 
 # ╔═╡ af0d3c22-f756-11ea-37d6-11b630d2314a
 with_terminal() do
@@ -270,6 +299,12 @@ md"""
 Come possiamo vedere, il tipo `Diagonal` memorizza solo le entrate diagonali. 
 """
 
+# ╔═╡ 2713ebca-e7d8-4c97-9ce4-58ecf6c23135
+Mrand = rand(3, 3)
+
+# ╔═╡ 703adc27-6ede-4bb8-a70e-603d3b99a8fb
+Diagonal(Mrand)*ones(3)
+
 # ╔═╡ 19775c3c-f5d6-11ea-15c2-89618e654a1e
 md"## Matrici sparse"
 
@@ -288,8 +323,16 @@ Un modo conciso di rappresentare tale matrice è come una lista di tuple `(i, j,
 Una variante di tale idea è la codifica in formato [compressed sparse column](https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_column_(CSC_or_CCS)):
 """
 
-# ╔═╡ 77d6a952-81ba-11eb-24e3-cb6510a59455
-M = sparse(denseM)
+# ╔═╡ 93081dc7-8839-4ff9-8fa3-727bf3909d24
+esempiorandom = rand(10, 10, 10);
+
+# ╔═╡ e1405ea1-c15a-4493-8508-1e3166dbadaa
+for k in 1:10, j in 1:10, i in 1:10 
+			esempiorandom[i, j, k] = 0
+end
+
+# ╔═╡ f91aa52e-131f-41fd-a8be-5c99a3ec0ec0
+esempiorandom[:, 1, 1]
 
 # ╔═╡ 1f3ba55a-81b9-11eb-001f-593b9d8639ca
 md"""
@@ -298,6 +341,9 @@ Ovviamente, per alcuni specifici tipi di matrice, altri formati potrebbero esser
 
 Facendo il `Dump` di `sparse(M)`, vediamo che è codificato dai dati seguenti: 
 """
+
+# ╔═╡ 77d6a952-81ba-11eb-24e3-cb6510a59455
+M = sparse(denseM)
 
 # ╔═╡ 3d4a702e-f75a-11ea-031c-333d591fc442
 Dump(sparse(M))
@@ -313,7 +359,7 @@ md"""
 md"""
 #### Esercizio - CSC inefficiente
 
-Qual'è un esempio di matrice per il quale il formato CSC non è una scelta efficiente in termini di memoria?
+Qual'è un esempio di matrice sparsa per il quale il formato CSC non è una scelta efficiente in termini di memoria?
 """
 
 # ╔═╡ 9db7783f-c2ed-48be-8ff0-4e63a4a24955
@@ -326,11 +372,20 @@ md"""
 	e discutere l'output di `Dump(M2)`. 
 """
 
+# ╔═╡ 21098b20-768c-4057-be24-c1759731c5ee
+Dump(sparse([1, 2, 10^6], [4, 9, 10^6], [7, 8, 9]))
+
+# ╔═╡ 007252b6-512d-4e52-bd49-7cd28089c833
+sparse([1, 10^6], [1, 10^6], [7, 9])
+
 # ╔═╡ 313a83f9-06f5-46c5-aec0-1bca8b3408dd
 md"""
 !!! hint "Soluzione 2"
 	Discutere l'output di `Dump(sparse(zeros(10,10)))`. 
 """
+
+# ╔═╡ 04235b78-ab35-4921-a7f3-9c5510ead4b4
+Dump(sparse(zeros(1000, 1000)))
 
 # ╔═╡ 62a6ec62-f5d9-11ea-071e-ed33c5dea0cd
 md"""## Vettori aleatori
@@ -372,6 +427,12 @@ md"""
 Volendo calcolare delle statistiche più specifiche, potremmo calcolare quante volte ciascun valore compare nel vettore `v`: 
 """
 
+# ╔═╡ c3907a07-2fa2-4844-b024-cd4bcdb63bb1
+v .== 3
+
+# ╔═╡ f6f76dcf-9ffa-4b25-a317-b258d1c865d0
+sum(v .== 3)
+
 # ╔═╡ 2d4500e0-81cf-11eb-1699-d310074fddf5
 [sum(v .== i) for i in 1:9]
 
@@ -396,6 +457,9 @@ mean(v)
 
 # ╔═╡ 22487ce2-f5db-11ea-32e9-6f70ab2c0353
 std(v)
+
+# ╔═╡ 3946be76-a09c-4ef0-a0af-99a7149af55c
+median(v)
 
 # ╔═╡ 389ae62e-f5db-11ea-1557-c3adbbee0e5c
 md"Sometimes the summary statistics are all you want. (But sometimes not.)"
@@ -527,8 +591,14 @@ function factor( tavola )
 	end
 end
 
+# ╔═╡ 71359767-d4d3-4e23-af8c-76ade69be3a8
+Mouter = outer([-1, 0, -1], [1, -1, -1] )
+
 # ╔═╡ 05c35402-f752-11ea-2708-59cf5ef74fb4
-factor( outer([1, 0, -1], [1, -1, -1] ) )
+factor( Mouter )
+
+# ╔═╡ 35914770-d46b-4075-98c5-fe5a0fc06564
+factor(rand(10, 10))
 
 # ╔═╡ 7f049de0-b46d-4c5e-b4a5-567ae5e562cc
 md"""
@@ -583,6 +653,9 @@ In Julia, similmente alla comune notazione matematica, possiamo ottenere la [tra
 # ╔═╡ d774117f-f545-4273-9075-bc79d7bf7868
 flag'
 
+# ╔═╡ eb1e7375-acf9-44b5-848c-ee027b7ab158
+cs[flag']
+
 # ╔═╡ 6c916683-b337-4ce6-9786-6229d749dc2f
 md"""
 Possiamo indovinare l'immmagine che risulterà se visualizziamo la somma di `flag` e della sua trasposta:
@@ -627,6 +700,9 @@ md"""
 
 La risposta è si: si tratta dell'idea più profonda dell'algebra lineare, ovvero la [decomposizione ai valori singolari](https://it.wikipedia.org/wiki/Decomposizione_ai_valori_singolari), in inglese **SVD** (singular value decomposition):
 """
+
+# ╔═╡ 93f71bbe-1555-478d-ac4b-4f770ea8f55d
+svd(A)
 
 # ╔═╡ 5a493052-f601-11ea-2f5f-f940412905f2
 begin
@@ -685,6 +761,9 @@ Separiamo i diversi _canali_, rosso verde e blu, usando la funzione `eachslice`:
 
 # ╔═╡ 6156fd1e-f5f9-11ea-06a9-211c7ab813a4
 pr, pg, pb = eachslice(picture, dims=1)
+
+# ╔═╡ eec202ff-9578-437e-a0b6-fac906417290
+pr
 
 # ╔═╡ 3d775e5c-98ab-427a-aff6-2bf32e9a4cdd
 md"""
@@ -767,7 +846,7 @@ PlutoUI = "~0.7.39"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.AbstractFFTs]]
@@ -869,7 +948,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.6"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[deps.FileIO]]
@@ -877,6 +956,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "9267e5f50b0e12fdfd5a2455534345c4cf2c7f7a"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.14.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -1283,22 +1365,30 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─4419ebba-58ca-454e-b024-380fd364c99b
 # ╟─2bb8a710-cc5d-4e4b-b861-ecb99470ef47
 # ╠═ffa71052-2e18-4cec-8675-92369413716f
+# ╠═f88915eb-4ac9-488a-bce5-d5d1de26b079
 # ╠═5bbf07a0-8833-470d-8603-11563cae6b2c
 # ╠═59cdf85e-705c-4d0a-bd67-08a30d1f732d
+# ╠═b8bf741e-2066-45b4-aa73-c6c7304eabac
+# ╠═042be0de-81e9-42e4-b832-be3e5ae19db3
 # ╠═799e705e-b560-4d21-822e-10a6726b3c5e
 # ╟─eb6521e8-4f2e-4319-9c35-384981b321b4
+# ╠═9470da1c-2f2c-47da-8521-a27cbcea5c40
 # ╠═62c29c56-313a-44d9-8626-5d181a824c3d
 # ╟─261c4df2-f5d2-11ea-2c72-7d4b09c46098
 # ╟─3cada3a0-81cc-11eb-04c8-bde26d36a84e
 # ╠═fe2028ba-f6dc-11ea-0228-938a81a91ace
 # ╠═0a902426-f6dd-11ea-0ae4-fb0c47863fe7
 # ╟─8d2c6910-f5d4-11ea-1928-1baf09815687
+# ╠═4f2ebc4e-136f-4f32-a2ea-fe9ed351c236
 # ╟─4794e860-81b7-11eb-2c91-8561c20f308a
 # ╟─67827da8-81cc-11eb-300e-278104d2d958
 # ╠═4624cd26-f5d3-11ea-1cf8-7d6555eae5fa
+# ╠═60c3ef05-3363-4c41-aa04-9645759a2eb9
+# ╠═abb64486-1af9-44c2-b4bd-c9d79b58b1e3
 # ╟─9bdabef8-81cc-11eb-14a1-67a9a7d968c0
 # ╠═1340e0e5-7d33-4356-affa-60882536b358
 # ╠═397ac764-f5fe-11ea-20cc-8d7cab19d410
+# ╠═e836d268-4e55-4ca6-ac53-3ed21dc7c72b
 # ╠═94ca00b6-8f94-4786-a27c-eff7b2ad7ae3
 # ╠═0d28115a-b97e-4ac7-a4b1-555fcd6beefd
 # ╟─a22dcd2c-81cc-11eb-1252-13ace134192d
@@ -1309,6 +1399,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─c5ed7d3e-81cc-11eb-3386-15b72db8155d
 # ╟─e2e354a8-81b7-11eb-311a-35151063c2a7
 # ╟─dc5a96ba-81cc-11eb-3189-25920df48afa
+# ╠═a4d12a9e-17bf-4770-8135-5a59ea2023bb
 # ╠═af0d3c22-f756-11ea-37d6-11b630d2314a
 # ╟─06e3a842-26b8-4417-9cf5-8a083ccdb264
 # ╠═91172a3e-81b7-11eb-0953-9f5e0207f863
@@ -1333,17 +1424,25 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═466901ea-f5d5-11ea-1db5-abf82c96eabf
 # ╠═b38c4aae-f5d5-11ea-39b6-7b0c7d529019
 # ╟─93e04ed8-81cd-11eb-214a-a761ef8c406f
+# ╠═2713ebca-e7d8-4c97-9ce4-58ecf6c23135
+# ╠═703adc27-6ede-4bb8-a70e-603d3b99a8fb
 # ╟─19775c3c-f5d6-11ea-15c2-89618e654a1e
 # ╟─653792a8-f695-11ea-1ae0-43761c502583
 # ╠═79c94d2a-f75a-11ea-031d-09d70d229e15
 # ╟─10bc5d50-81b9-11eb-2ac7-354a6c6c826b
-# ╠═77d6a952-81ba-11eb-24e3-cb6510a59455
+# ╠═93081dc7-8839-4ff9-8fa3-727bf3909d24
+# ╠═e1405ea1-c15a-4493-8508-1e3166dbadaa
+# ╠═f91aa52e-131f-41fd-a8be-5c99a3ec0ec0
 # ╟─1f3ba55a-81b9-11eb-001f-593b9d8639ca
+# ╠═77d6a952-81ba-11eb-24e3-cb6510a59455
 # ╠═3d4a702e-f75a-11ea-031c-333d591fc442
 # ╟─7cc1ec53-d805-4462-91b9-ba9c226776e6
 # ╟─43adc012-7946-4f33-8859-e16e50c94f55
 # ╟─9db7783f-c2ed-48be-8ff0-4e63a4a24955
+# ╠═21098b20-768c-4057-be24-c1759731c5ee
+# ╠═007252b6-512d-4e52-bd49-7cd28089c833
 # ╟─313a83f9-06f5-46c5-aec0-1bca8b3408dd
+# ╠═04235b78-ab35-4921-a7f3-9c5510ead4b4
 # ╟─62a6ec62-f5d9-11ea-071e-ed33c5dea0cd
 # ╟─7f63daf6-f695-11ea-0b80-8702a83103a4
 # ╠═67274c3c-f5d9-11ea-3475-c9d228e3bd5a
@@ -1352,6 +1451,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─9389f76e-1944-425f-ba0a-f84318be8e0b
 # ╠═56e6bd2e-2602-41ea-a6c3-20fc31631f45
 # ╟─24ce92fa-81cf-11eb-30f0-b1e357d79d53
+# ╠═c3907a07-2fa2-4844-b024-cd4bcdb63bb1
+# ╠═f6f76dcf-9ffa-4b25-a317-b258d1c865d0
 # ╠═2d4500e0-81cf-11eb-1699-d310074fddf5
 # ╟─3546ff30-81cf-11eb-3afc-05c5db61366f
 # ╠═e68b98ea-f5da-11ea-1a9d-db45e4f80241
@@ -1359,6 +1460,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═f20ccac4-f5da-11ea-0e69-413b5e49f423
 # ╠═12a2e96c-f5db-11ea-1c3e-494ae7446886
 # ╠═22487ce2-f5db-11ea-32e9-6f70ab2c0353
+# ╠═3946be76-a09c-4ef0-a0af-99a7149af55c
 # ╟─389ae62e-f5db-11ea-1557-c3adbbee0e5c
 # ╟─0c2b6408-f5d9-11ea-2b7f-7fece2eecc1f
 # ╟─534eb09e-3ca1-471b-86fa-2db036f735b4
@@ -1379,7 +1481,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─7ff664f0-f74b-11ea-0d2d-b53f19e4f4bf
 # ╟─a0611eaa-81bc-11eb-1d23-c12ab14138b1
 # ╠═a4728944-f74b-11ea-03c3-9123908c1f8e
+# ╠═71359767-d4d3-4e23-af8c-76ade69be3a8
 # ╠═05c35402-f752-11ea-2708-59cf5ef74fb4
+# ╠═35914770-d46b-4075-98c5-fe5a0fc06564
 # ╟─7f049de0-b46d-4c5e-b4a5-567ae5e562cc
 # ╟─8c11b19e-81bc-11eb-184b-bf6ffefe29de
 # ╠═8baaa994-f752-11ea-18d9-b3d0a6b9f7d9
@@ -1392,6 +1496,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═2668e100-f5df-11ea-12b0-073a578a5edb
 # ╟─c2690dcb-b00c-4c49-88f3-9681e164e506
 # ╠═d774117f-f545-4273-9075-bc79d7bf7868
+# ╠═eb1e7375-acf9-44b5-848c-ee027b7ab158
 # ╟─6c916683-b337-4ce6-9786-6229d749dc2f
 # ╠═483e0a1f-9890-4c3d-8165-15497db43c7f
 # ╠═e8d727f2-f5de-11ea-1456-f72602e81e0d
@@ -1400,6 +1505,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─ebd72fb8-f5e0-11ea-0630-573337dff753
 # ╠═e740999c-f754-11ea-2089-4b7a9aec6030
 # ╟─0a79a7b4-f755-11ea-1b2d-21173567b257
+# ╠═93f71bbe-1555-478d-ac4b-4f770ea8f55d
 # ╠═5a493052-f601-11ea-2f5f-f940412905f2
 # ╟─55b76aee-81d0-11eb-0bcc-413f5bd14360
 # ╠═709bf30a-f755-11ea-2e82-bd511e598c77
@@ -1413,6 +1519,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═5471fd30-f6e2-11ea-2cd7-7bd48c42db99
 # ╟─6c4d53b2-b3c2-4e2f-bc2a-b17d73cb3bd0
 # ╠═6156fd1e-f5f9-11ea-06a9-211c7ab813a4
+# ╠═eec202ff-9578-437e-a0b6-fac906417290
 # ╟─3d775e5c-98ab-427a-aff6-2bf32e9a4cdd
 # ╠═a9766e68-f5f9-11ea-0019-6f9d02050521
 # ╟─1b32370d-a2a5-4ade-9bfc-c33b282a72a0
