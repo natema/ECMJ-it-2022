@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -26,13 +26,13 @@ end
 
 # ╔═╡ c09fe642-887e-11eb-1164-a3dc222d0f3d
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
-Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it-2022), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ 8c7ef773-04e8-41cf-af95-6dbcd09505a1
@@ -75,7 +75,7 @@ md"""
 ## Trovare i cammini
 
 Una volta che avremo deciso come stimare l'importanza di un pixel, potremo assegnare un valore di importanza ad un cammino semplicemente sommando l'importanza di ciascun pixel che lo compone. 
-Sceglieremo allora di rimuovere il cammino di importanza minima. Tale problema dovrebbe ricordarci quello visto nella [precedente lezione sulla programmazione dinamica](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl).
+Sceglieremo allora di rimuovere il cammino di importanza minima. Tale problema dovrebbe ricordarci quello visto nella [precedente lezione sulla programmazione dinamica](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.0_programmazione_dinamica.jl).
 
 Per stimare l'importanza di un pixel, vogliamo far leva sull'intuizione che la gran parte dell'informazione contenuta in un immagine risiede nei _bordi tra gli oggetti_. In tal senso, un pixel sarà importante se si trova su un bordo. 
 Ci serve, allora, un modo per [_identificare i bordi_](https://en.wikipedia.org/wiki/Edge_detection): faremo uso di una convoluzione con un [**filtro di Sobel**](https://en.wikipedia.org/wiki/Sobel_operator#Formulation).
@@ -152,7 +152,7 @@ G_y &= \begin{bmatrix}
 ```
 dove l'operatore $\star$ denota l'operazione di convoluzione e la matrice $A$ è l'array che codifica l'immagine. 
 
-I filtri $G_x$ e $G_y$ possono essere visti come una versione discreta della derivata nelle direzioni $x$ e $y$, come accennato nella [lezione sulla trasformazione di immagini](https://natema.github.io/ECMJ-it/lectures/lezione_2.0_trasformazione_di_immagini.jl.html).
+I filtri $G_x$ e $G_y$ possono essere visti come una versione discreta della derivata nelle direzioni $x$ e $y$, come accennato nella [lezione sulla trasformazione di immagini](https://natema.github.io/ECMJ-it-2022/lectures/lezione_2.0_trasformazione_di_immagini.jl.html).
 Possiamo combinarli per stimare la grandezza di una versione discretizzata del gradiente, definendo 
 
 $$G_\text{total} = \sqrt{G_x^2 + G_y^2}.$$
@@ -686,7 +686,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -736,6 +736,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "3c041d2ac0a52a12a27af2782b34900d9c3ee68c"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.11.1"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]

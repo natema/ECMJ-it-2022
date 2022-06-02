@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -22,13 +22,13 @@ end
 
 # ╔═╡ c09f092a-887e-11eb-1ccc-4367bf05602d
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
 [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/), 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
-Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it-2022), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ b7768310-899a-4926-9bb4-794ce8cb98da
@@ -61,7 +61,7 @@ Utilizzando la [legge dello strumento](https://en.wikipedia.org/wiki/Law_of_the_
 
 Ma come possiamo approssimare un sistema non-lineare con uno lineare?
 
-Nella [lezione sulla differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html) abbiamo visto come calcolare [derivate](https://en.wikipedia.org/wiki/Differential_of_a_function) in Julia. Il concetto di derivata nasce proprio come risposta alla domanda precedente: la derivata di una funzione, che spesso viene inizialmente insegnata descrivendola come _la tangente alla funzione_, non è altro che _l'approssimazione lineare_ della funzione. 
+Nella [lezione sulla differenziazione automatica](https://natema.github.io/ECMJ-it-2022/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html) abbiamo visto come calcolare [derivate](https://en.wikipedia.org/wiki/Differential_of_a_function) in Julia. Il concetto di derivata nasce proprio come risposta alla domanda precedente: la derivata di una funzione, che spesso viene inizialmente insegnata descrivendola come _la tangente alla funzione_, non è altro che _l'approssimazione lineare_ della funzione. 
 Quest'idea è resa rigorosa quando riscriviamo una funzione come serie di Taylor: 
 
 $f(x + \epsilon) = f(x) + \epsilon f'(x) + o(\epsilon)$
@@ -647,7 +647,7 @@ uuid = "5b8099bc-c8ec-5219-889f-1d9e522a28bf"
 version = "0.5.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[DynamicPolynomials]]
@@ -690,6 +690,9 @@ deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers",
 git-tree-sha1 = "d8a578692e3077ac998b50c0217dfd67f21d1e5f"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "4.4.0+0"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
