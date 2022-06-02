@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -26,7 +26,7 @@ end
 
 # ╔═╡ c3ef3bf1-144d-4184-a4b4-f8e56750004c
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
@@ -35,7 +35,7 @@ md"""
 
 # ╔═╡ 9a53f7a0-bf48-4169-ade7-51c44f823064
 md"""
-Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it-2022), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ f98e5845-a4f7-4b88-ab68-e65af688444b
@@ -739,7 +739,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -771,6 +771,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "3c041d2ac0a52a12a27af2782b34900d9c3ee68c"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.11.1"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]

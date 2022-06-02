@@ -28,7 +28,7 @@ using Unitful
 
 # ╔═╡ febfa62a-74fa-11eb-2fe6-df7de43ef4b6
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
@@ -37,7 +37,7 @@ md"""
 
 # ╔═╡ 0dbd746d-e1a2-4b12-a355-f1f9e985a3b7
 md"""
-Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it-2022), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ 01971d25-c4a9-420d-bb0a-4db4919bc626
@@ -646,7 +646,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -696,6 +696,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "3c041d2ac0a52a12a27af2782b34900d9c3ee68c"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.11.1"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]
