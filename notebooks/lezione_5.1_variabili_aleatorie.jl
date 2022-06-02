@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -38,7 +38,15 @@ PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ 472a41d2-8724-11eb-31b3-0b81612f0083
 md"""
-## Julia: Useful tidbits 
+# Variabili aleatorie in Julia
+"""
+
+# ╔═╡ c41c73a5-055a-4776-be40-fb2df4ae9963
+md"""
+In questo notebook vedremo come [campionare](https://en.wikipedia.org/wiki/Sampling_(statistics)) degli oggetti, ovvero generare degli elementi casuali a partire da un certo insieme di possibilità. 
+Abbiamo già utilizzato spesso la funzione `rand`, e in questo notebook vedremo più in dettaglio come utilizzarla. 
+
+La possibilità di generare [variabili casuali (o aleatorie)](https://it.wikipedia.org/wiki/Variabile_casuale) è fondamentale allo scopo di simulare sistemi reali, poiché in pratica non è possibile conoscere con molta precisione i parametri iniziali di un sistema complesso, e il comportamento di quest'ultimo presenterà inevitabilmente [caratteristiche di imprevisibilità](https://it.wikipedia.org/wiki/Teoria_del_caos). 
 """
 
 # ╔═╡ aeb99f72-8725-11eb-2efd-d3e44686be03
@@ -711,7 +719,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -767,6 +775,9 @@ deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "3c041d2ac0a52a12a27af2782b34900d9c3ee68c"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 version = "1.11.1"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
@@ -1822,6 +1833,7 @@ version = "0.9.1+5"
 # ╠═06d2666a-8723-11eb-1395-0febdf3dc2a4
 # ╟─0a70bca4-8723-11eb-1bcf-e9abb9b1ab75
 # ╟─472a41d2-8724-11eb-31b3-0b81612f0083
+# ╠═c41c73a5-055a-4776-be40-fb2df4ae9963
 # ╟─aeb99f72-8725-11eb-2efd-d3e44686be03
 # ╟─4f9bd326-8724-11eb-2c9b-db1ac9464f1e
 # ╟─db2d25de-86b1-11eb-0c78-d1ee52e019ca
