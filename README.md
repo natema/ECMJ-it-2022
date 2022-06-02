@@ -1,4 +1,4 @@
-# Elements of Computational Modeling in Julia (Italian version)
+# ECMJ (Italian version)
 
 This is the material for the course 
 

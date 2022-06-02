@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -12,7 +12,7 @@ end
 
 # ╔═╡ 2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it-2022/)
 
 ### 2022, [Università degli Studi di Roma "Tor Vergata"](http://www.informatica.uniroma2.it/)
 
@@ -20,7 +20,7 @@ md"""
 
 # ╔═╡ 0e6c5977-f56b-425d-ab72-6f7fe120ef1c
 md"""
-Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it-2022), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ ffa5b3a9-b6f2-4423-a143-7476dd6b93b3
@@ -28,7 +28,7 @@ md"""
 
 #### Link utili: 
 
-- [Pagina Github del materiale](https://github.com/natema/ECMJ-it)
+- [Pagina Github del materiale](https://github.com/natema/ECMJ-it-2022)
 - [Pagina ufficiale del corso](http://www.informatica.uniroma2.it/f0?fid=220&srv=0&os=2021&cdl=0&id=ECMJ)
 - [Pagina del docente, Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/)
 """
@@ -99,7 +99,7 @@ In questa lezione abbiamo visto
 - come installare il pacchetto Pluto e lanciare un Pluto notebook, e 
 - come caricare un altro notebook Pluto nel proprio computer.
 
-Nella [prossima lezione](https://www-sop.inria.fr/members/Emanuele.Natale/docs/MScourse/lezione_0.0_-_syllabus.jl.html), cominceremo a familiarizzare con Julia attraverso la manipolazione di immagini. 
+Nella [prossima lezione](https://natema.github.io/ECMJ-it-2022/index.html), cominceremo a familiarizzare con Julia attraverso la manipolazione di immagini. 
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -115,7 +115,7 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.AbstractPlutoDingetjes]]
@@ -148,8 +148,11 @@ deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
