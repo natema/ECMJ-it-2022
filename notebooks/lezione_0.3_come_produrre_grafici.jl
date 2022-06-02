@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -15,7 +15,7 @@ using Plots
 
 # ╔═╡ 4a601a42-5dc6-4ab9-9e5e-55297e28e2dd
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
@@ -24,7 +24,7 @@ md"""
 
 # ╔═╡ 12a7a987-d27b-4068-aa1b-6e2e9d3f6d5d
 md"""
-Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
+Per riportare errori o proporre miglioramenti, non esitate ad aprire un _issue_ sulla  [pagina Github del materiale](https://github.com/natema/ECMJ-it-2022), dove potete anche  mettere una stella nel caso in cui il materiale vi piaccia. 
 """
 
 # ╔═╡ ef62bc29-3818-4548-aacf-07495089c9dc
@@ -338,7 +338,7 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.AbstractPlutoDingetjes]]
@@ -455,7 +455,7 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.8.6"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[deps.EarCut_jll]]
@@ -481,6 +481,9 @@ deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers",
 git-tree-sha1 = "d8a578692e3077ac998b50c0217dfd67f21d1e5f"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "4.4.0+0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
