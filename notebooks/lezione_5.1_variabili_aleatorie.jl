@@ -18,7 +18,7 @@ end
 begin
 	import ImageMagick
 	using Plots, PlutoUI, Colors, Images, StatsBase, Distributions
-	using Statistics
+	using Statistics, BenchmarkTools
 end
 
 
@@ -49,17 +49,11 @@ Abbiamo già utilizzato spesso la funzione `rand`, e in questo notebook vedremo 
 La possibilità di generare [variabili casuali (o aleatorie)](https://it.wikipedia.org/wiki/Variabile_casuale) è fondamentale allo scopo di simulare sistemi reali, poiché in pratica non è possibile conoscere con molta precisione i parametri iniziali di un sistema complesso, e il comportamento di quest'ultimo presenterà inevitabilmente [caratteristiche di imprevisibilità](https://it.wikipedia.org/wiki/Teoria_del_caos). 
 """
 
-# ╔═╡ 2c9728cd-7647-4d35-bb27-8f2ef16f8638
-std(rand(10000))
-
-# ╔═╡ 9d698a7b-27f5-489e-b1eb-dfed000b31dd
-1/(2*sqrt(3))
-
 # ╔═╡ aeb99f72-8725-11eb-2efd-d3e44686be03
 md"""
 ## Ripasso di funzioni e pacchetti importanti
 
-Prima di iniziare l'argomento vero e proprio, può essere utile richiamare alcune funzioni fondamentali e il relativo pacchetto/libreria che la fornisce: 
+Prima di iniziare l'argomento vero e proprio di questo notebook, può essere utile richiamare alcune funzioni fondamentali e il relativo pacchetto/libreria che la fornisce: 
 """
 
 # ╔═╡ 4f9bd326-8724-11eb-2c9b-db1ac9464f1e
@@ -69,25 +63,52 @@ Le funzioni seguenti sono implementate in Julia di default, non è dunque necess
 - `if...else...end`
 - `Dict`: il tipo _dizionario_ in Julia
 - `÷` (`\div` + <tab>) oppure `div`: [divisione intera](https://en.wikipedia.org/wiki/Division_(mathematics)#Of_integers) 
+- `rand(S)`: campionamento casuale da una collezione in `S`
 - `sum(S)`: summa degli elementi nella collezione `S`, per esempio un array
 - `count(S)`: conta il numero di elementi `true` in una collezione di booleani
-- `rand(S)`: campionamento casuale da una collezione in `S`
+"""
 
+# ╔═╡ b2be5898-0cc5-4a20-b4a0-7f56712c14b6
+count(rand(Bool, 100))
+
+# ╔═╡ 42f954ef-212b-41b2-8fe9-bf3d490fe536
+md"""
 #### Pacchetto `Statistics.jl` 
 Il pacchetto `Statistics.jl` è _pre-installato_ nella libreria standard, non necessita dunque di essere installato ma solo importato con `using`: 
 - `mean(S)`: calcola la media della collezione `S`
 - `std(S)`: calcola la standard deviation della collezione `S`
+"""
 
+# ╔═╡ 73288102-3e80-4d13-a05c-137488c9503f
+std(rand(1000))
+
+# ╔═╡ 6f70b17c-a88e-43ad-afc0-325223aad16c
+md"""
 #### Pacchetto `StatsBase.jl`
 - `countmap(S)`: restituisce un dizionario che mappa ogni elemento al suo numero di occorrenze
+"""
 
+# ╔═╡ 08998e69-1744-40ef-a166-953c1ee24e03
+countmap(rand(1:3, 100))
+
+# ╔═╡ a03005f0-f989-4642-8b8f-000b86466a08
+md"""
 #### Pacchetto `Plots.jl`
 - `histogram(x)`: produce il grafico di un istogramma del vettore di dati `x`
 - `bar(d)`: disegna il [bar chart](https://en.wikipedia.org/wiki/Bar_chart) del vettore di dati categorici `d`
+"""
 
+# ╔═╡ 48028d89-d423-4414-a1ae-a3a161b6001c
+bar(rand(1:100, 10), ylim=(0,100))
+
+# ╔═╡ 3c115146-ce4d-40de-84d1-bec3a4e8c7e3
+md"""
 #### `Colors.jl`
 - `distinguishable_colors(n)`: Crea un vettore di `n` colori distinti
 """
+
+# ╔═╡ 97e9017b-0b8d-4df2-8029-1a31cf04ffcd
+rand(distinguishable_colors(3), 10)
 
 # ╔═╡ db2d25de-86b1-11eb-0c78-d1ee52e019ca
 md"""
@@ -96,7 +117,8 @@ md"""
 
 # ╔═╡ e33fe4c8-86b1-11eb-1031-cf45717a3dc9
 md"""
-The `rand` function in Julia is quite versatile: it tries to generate, or **sample**, a random object from the argument that you pass in:
+Abbiamo già familiarizzato parecchio con la funzione `rand`. 
+Passiamo in rassegna vari modi di usarla per generare oggetti casuali: 
 """
 
 # ╔═╡ f49191a2-86b1-11eb-3eab-b392ba058415
@@ -115,87 +137,70 @@ rand('a':'z')
 typeof('a':'z')
 
 # ╔═╡ 6cdea3ae-86b2-11eb-107a-17bea3f54bc9
-rand()   # random number between 0 and 1
+rand()   # numero casuale tra 0 e 1
 
 # ╔═╡ 1c769d58-8744-11eb-3bd3-ab11ea1503ed
 rand
 
 # ╔═╡ 297fdfa0-8744-11eb-1934-9fe31e8be534
-methods(rand);
-
-# ╔═╡ 776ec3f2-86b3-11eb-0216-9b71d07e99f3
-md"""
-We can take random objects from a collection of objects of *any* type, for example:
-"""
-
-# ╔═╡ 5fcf8d4e-8744-11eb-080e-cba749004b08
-distinguishable_colors(10)
-
-# ╔═╡ 4898106a-8744-11eb-128a-35fec741e6b8
-typeof(distinguishable_colors(10))
-
-# ╔═╡ 0926366a-86b2-11eb-0f6d-31ae6981598c
-rand(distinguishable_colors(3))   # from Colors.jl package
+methods(rand)[1:3]
 
 # ╔═╡ 7c8d7b72-86b2-11eb-2dd5-4f77bc5fb8ff
 md"""
-### Several random objects
+### Vari oggetti casuali
 """
 
-# ╔═╡ 2090b7f2-86b3-11eb-2a99-ed98800e1d63
+# ╔═╡ 267a63f8-0656-4965-9a65-ed93e6700562
 md"""
-To sample several random objects from the same collection, we could write an array comprehension:
+Supponiamo di voler creare un vettore di colori casuali:
 """
 
 # ╔═╡ a7dff55c-86b2-11eb-330f-3d6279347095
-[rand(1:6) for i in 1:10]
+[RGB(rand(), rand(), rand()) for i in 1:10]
 
-# ╔═╡ 2db33022-86b3-11eb-17dd-13c534ac9892
+# ╔═╡ 312f1c3f-9a83-4f7b-bdab-8eae38f426b6
 md"""
-But in fact, just adding another argument to `rand` does the trick:
+Vediamo degli esempi più complessi, usando la funzione `map(f, C)` che applica la funzione `f` ad ogni entrata della collezione `C`. 
+Supponiamo di voler creare un vettore in cui l'$i$-esima entrata è casuale con distribuzione uniforme in $(0,i)$: 
+"""
+
+# ╔═╡ ecf66915-67ba-44ce-afa4-cb48856bcf2a
+map(x -> x*rand(), 1:10) 
+
+# ╔═╡ 09296e06-3905-4836-b524-6ee7f0102e8a
+md"""
+L'espressione precedente si può riscrivere in Julia usando la [sintassi `do`](https://docs.julialang.org/en/v1/manual/functions/#man-anonymous-functions):
 """
 
 # ╔═╡ 0de6f23e-86b2-11eb-39ff-318bbc4ecbcf
-rand(1:6, 10)
-
-# ╔═╡ 36c3da4a-86b3-11eb-0b2f-fffdde06fcd2
-md"""
-In fact, you can also generate not only random vectors, but also random matrices:
-"""
-
-# ╔═╡ 940c2bf6-86b2-11eb-0a5e-011abdd6352b
-rand(1:6, 10, 12)
-
-# ╔═╡ 5a4e7fc4-86b3-11eb-3376-0941b79574aa
-rand(distinguishable_colors(5), 10, 10)
+map(1:10) do x
+	x*rand()
+end
 
 # ╔═╡ c433104e-86b3-11eb-20bb-af608bb281cc
 md"""
-We can also use random images:
+Vediamo adesso un esempio utilizzando delle immagini: 
 """
 
 # ╔═╡ 78dc94e2-8723-11eb-1ff2-bb7104b62033
-penny_image = load(download("https://www.usacoinbook.com/us-coins/lincoln-memorial-cent.jpg"))
+euro = load(download("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fone-euro-coin-front-back-faces-isolated-white-background-clipping-path-113902500.jpg&f=1&nofb=1"))
 
 # ╔═╡ bb1465c4-8723-11eb-1abc-bdb5a7028cf2
 begin
-	head = penny_image[:, 1:end÷2]
-	tail = penny_image[:, end÷2:end]
-end;
+	margin = 40
+	head = euro[margin:end-margin, margin:end÷2]
+	tail = euro[margin:end-margin, end÷2:end-margin]
+	head, tail
+end
 
 # ╔═╡ e04f3828-8723-11eb-3452-09f821391ad0
 rand( [head, tail], 5, 5)
 
 # ╔═╡ b7793f7a-8726-11eb-11d8-cd928f1a3645
 md"""
-## Uniform sampling
-"""
+## Diverse distribuzioni di campionamento
 
-# ╔═╡ ba80cc78-8726-11eb-2f33-e364f19295d8
-md"""
-So far, each use of `rand` has done **uniform sampling**, i.e. each possible object as the *same* probability.
-
-Let's *count* heads and tails using the `countmap` function from the `StatsBase.jl` package:
+### Campionamento uniforme
 """
 
 # ╔═╡ 8fe715e4-8727-11eb-2e7f-15b723bb8d9d
@@ -204,49 +209,43 @@ tosses = rand( ["head", "tail"], 10000)
 # ╔═╡ 9da4e6f4-8727-11eb-08cb-d55e3bbff0e4
 toss_counts = countmap(tosses)
 
+# ╔═╡ 175b238e-abfb-4344-957b-3d03b1df0d1d
+md"""
+L'output di countmap è di [tipo `Dict`](https://docs.julialang.org/en/v1/base/collections/#Dictionaries):
+"""
+
+# ╔═╡ ff1f0379-0669-4cc9-8b7a-086abf8786cf
+toss_counts["tail"]
+
 # ╔═╡ 9647840c-8745-11eb-33fc-898ae351ddfe
 "tail" => 3
 
 # ╔═╡ 9d782aa6-8745-11eb-034e-0f8b01be987b
 typeof("tail" => 3)
 
-# ╔═╡ a693582c-8745-11eb-261b-ef79e503420e
-toss_counts["tail"]
-
-# ╔═╡ c3255d7a-8727-11eb-0421-d99faf27c7b0
+# ╔═╡ 28ff621c-8728-11eb-2ec0-2579cb313315
 md"""
-
-We see that `countmap` returns a **dictionary** (`Dict`), which maps **keys** to **values**; we will say more about dictionaries in another chapter.
+Aumentando il numero di lanci della moneta, ci aspettiamo che la media converga a $1/2$:
 """
 
 # ╔═╡ e2037806-8727-11eb-3c36-1500f1dd545b
-prob_tail = toss_counts["tail"] / length(tosses)
-
-# ╔═╡ 28ff621c-8728-11eb-2ec0-2579cb313315
-md"""
-As we increase the number of tosses, we "expect" the probability to get closer to $1/2$.
-"""
+isapprox( mean(rand(0:1, 1_000_000)), 1/2, atol=.001 )
 
 # ╔═╡ 57125768-8728-11eb-3c3b-1dd37e1ac189
 md"""
-## Tossing a weighted coin
+### Compionamento non-uniforme
 """
 
 # ╔═╡ 6a439c78-8728-11eb-1969-27a19d254704
 md"""
-How could we model a coin that is **weighted**, so that it is more likely to come up heads? We want to assign a probability $p = 0.7$ to heads, and $q = 0.3$ to tails.
-"""
-
-# ╔═╡ 9f8ac08c-8728-11eb-10ad-f93ca225ce38
-md"""
-One way would be to generate random integers between 1 and 10 and assign heads to a subset of the possible results with the desired probability, e.g. 1:7 get heads, and 8:10 get tails:
+Supponiamo di voler modellare una moneta che restituisce testa con probabilità $p=.7$.
 """
 
 # ╔═╡ 062b400a-8729-11eb-16c5-235cef648edb
 function simple_weighted_coin()
 	outcome = if rand(1:10) ≤ 7
 		"heads"
-	else      # could have elseif
+	else      
 		"tails"
 	end
 	
@@ -257,14 +256,18 @@ end
 function simple_weighted_coin2()
 	if rand(1:10) ≤ 7
 		"heads"
-	else      # could have elseif
+	else      
 		"tails"
 	end
 end
 
+# ╔═╡ 2a81ba88-8729-11eb-3dcb-1db26e468066
+md"""
+Notare che mentre gli _`if` statement_ restituiscono un valore in Julia, per i `for` questo non vale:
+"""
+
 # ╔═╡ 97cb3dde-8746-11eb-0b00-690f20cb26dc
 result = for i in 1:10
-	
 end
 
 # ╔═╡ 9d8cdc8e-8746-11eb-2b9a-b30a52026f09
@@ -273,32 +276,17 @@ result == nothing
 # ╔═╡ 81a30c9e-8746-11eb-38c8-9be4f6ba2e80
 simple_weighted_coin2()
 
-# ╔═╡ 2a81ba88-8729-11eb-3dcb-1db26e468066
-md"""
-(Note that `if` statements have a return value in Julia.)
-"""
-
 # ╔═╡ 5ea5838a-8729-11eb-1749-030533fb0656
 md"""
-How could we generalise this to an arbitrary probability $p ∈ [0, 1]$?
-
-We can generate a uniform floating-point number between 0 and 1, and check if it is less than $p$. This is called a **Bernoulli trial**.
+Supponiamo di voler generalizzare l'idea precedente ad una qualsiasi probabilità $p$, per es. $p=\frac \pi{10}$:
 """
-
-# ╔═╡ c9f21046-8746-11eb-27c6-910807240fd1
-rand()
 
 # ╔═╡ 806e6aae-8729-11eb-19ea-33722c60edf0
-rand() < 0.314159
-
-# ╔═╡ 90642564-8729-11eb-3cd7-b3d41a1553b4
-md"""
-Note that comparisons also return a value in Julia. Here we have switched from heads/tails to true/false as the output.
-"""
+rand() < π/10
 
 # ╔═╡ 9a426a20-8729-11eb-0c0f-31e1d4dc91bc
 md"""
-Let's make that into a function:
+Definiamo una funzione generale:
 """
 
 # ╔═╡ a4870b14-8729-11eb-20ee-e531d4a7108d
@@ -309,7 +297,7 @@ bernoulli(0.7)
 
 # ╔═╡ 008a40d2-872a-11eb-224d-5b3331f29c99
 md"""
-p = $(@bind p Slider(0.0:0.01:1.0, show_value=true, default=0.7))
+ $p =$ $(@bind p Slider(0.0:0.01:1.0, show_value=true, default=0.7))
 """
 
 # ╔═╡ baed5908-8729-11eb-00e0-9f749406c30c
@@ -317,36 +305,16 @@ countmap( [bernoulli(p) for i in 1:1000] )
 
 # ╔═╡ ed94eae8-86b3-11eb-3f1b-15c7a54903f5
 md"""
-## Bar charts and histograms
+## Grafici a barre e istogrammi
 """
 
 # ╔═╡ f20504de-86b3-11eb-3125-3140e0e060b0
 md"""
-Once we have generated several random objects, it is natural to want to count **how many times** each one occurred.
-"""
-
-# ╔═╡ 7f1a3766-86b4-11eb-353f-b13acaf1503e
-md"""
-Let's roll a (fair) die 1000 times:
-"""
-
-# ╔═╡ 371838f8-86b4-11eb-1633-8d282e42a085
-md"""
-An obvious way to find the counts would be to run through the data looking for 1s, then run through again looking for 2s, etc.:
-"""
-
-# ╔═╡ 9e9d3556-86b5-11eb-3dfb-916e625da235
-md"""
-Note that this is *not* the most efficient algorithm!
-"""
-
-# ╔═╡ 90844738-8738-11eb-0604-3d23662152d9
-md"""
-We can plot **categorical data** using a **bar chart**, `bar` in Plots.jl. This counts each discrete item.
+Una volta che abbiamo generato molti oggetti casuali, è naturale voler contare il numero di occorrenze di ciascun oggetto: 
 """
 
 # ╔═╡ 02d03642-86b4-11eb-365a-63ff61ddd3b5
-rolls = rand(1:6, 100000)   # try modifying 100 by adding more zeros
+rolls = rand(1:6, 100_000)  
 
 # ╔═╡ 94688c1a-8747-11eb-13a3-eb36f731674c
 rolls .== 1
@@ -355,7 +323,15 @@ rolls .== 1
 count(rolls .== 1)
 
 # ╔═╡ 2405eb68-86b4-11eb-31b0-dff8e355d88e
-counts = [count(rolls .== i) for i in 1:6]
+@btime counts = [count(rolls .== i) for i in 1:6]
+
+# ╔═╡ 84d99647-f752-4b30-9e39-392e65857937
+@btime countmap(rolls)
+
+# ╔═╡ 90844738-8738-11eb-0604-3d23662152d9
+md"""
+Possiamo rappresentare [variabili categoriche](https://en.wikipedia.org/wiki/Categorical_variable) usando un **bar chart** (`bar` in [Plots.jl](https://docs.juliaplots.org/latest/)).
+"""
 
 # ╔═╡ 2d71fa88-86b5-11eb-0e55-35566c2246d7
 begin
@@ -519,9 +495,114 @@ histogram( [ sum( randn().^2 for _=1:dof )  for _ = 1:100000], norm=true,
 	alpha=0.5, leg=false)
 
 
+# ╔═╡ 34bee941-9599-4085-8f56-760b8cc6e9d6
+md"""
+## L'attrattore di Lorentz
+"""
+
+# ╔═╡ 4efc394c-9f05-44b1-8604-dce664fb7b48
+md"""
+Concludiamo questo notebook ricollegandoci ad una delle osservazioni iniziali, al fine di motivarla: sistemi reali complessi tendono ad esibire un comprotamento _casuale_, in ragione del fatto che imprecisioni inevitabili nella loro modellizzazione hanno conseguenze cruciali.
+In particolare, vedremo di seguito il classico esempio dell'[attrattore di Lorenz](https://it.wikipedia.org/wiki/Attrattore_di_Lorenz).
+"""
+
+# ╔═╡ 0d5b009f-236b-439c-a2a7-65e3bbc070e3
+md"""
+Definiamo anzitutto una struct che rappresenta lo stato del sistema. 
+Nel nostro caso, si tratta della traiettoria di un punto $(x,y,z)$ nello spazio tridimensionale, in accordo a una funzione definita da tre parametri $(\sigma, \rho, \beta)$; con l'aggiunta della risoluzione temporale $dt$, avremo dunque 7 campi. 
+
+Possiamo definire una struct i cui campi possono essere passati come _keyword_ tramite la macro `@kwdef`:
+"""
+
+# ╔═╡ c33e7902-c79c-4e65-bc20-91dbcb5976f6
+Base.@kwdef mutable struct Lorenz
+    dt::Float64 = 0.01
+    σ::Float64 = 10
+    ρ::Float64 = 28
+    β::Float64 = 2.66
+    x::Float64 = 1
+    y::Float64 = 1
+    z::Float64 = 1
+end
+
+# ╔═╡ 551c4f5a-d53e-483a-8a1b-3e564915b1e8
+attractor = Lorenz()
+
+# ╔═╡ c8014645-ae04-4c4b-a169-59db94203ec0
+md"""
+Definiamo ora la funzione che aggiorna lo stato del sistema da un'istante $t$ al successivo $t+dt$:
+"""
+
+# ╔═╡ 1fe65658-7f75-4856-9e37-31868ccca3e8
+function step!(l::Lorenz)
+    dx = l.σ * (l.y - l.x)
+    dy = l.x * (l.ρ - l.z) - l.y
+    dz = l.x * l.y - l.β * l.z
+    l.x += l.dt * dx
+    l.y += l.dt * dy
+    l.z += l.dt * dz
+end
+
+# ╔═╡ 29983c76-daeb-48d8-8bca-02ffe94697fd
+begin
+	plt = plot3d(
+	    1,
+	    xlim = (-30, 30),
+	    ylim = (-30, 30),
+	    zlim = (0, 60),
+	    title = "Lorenz Attractor",
+	    marker = 2,
+	)
+	@gif for i=1:3000
+	    step!(attractor)
+	    push!(plt, attractor.x, attractor.y, attractor.z)
+	end every 10
+end
+
+# ╔═╡ 4d596dae-abcc-4376-8970-e676264dcae1
+md"""
+### La teoria del caos
+
+Esploriamo in modo interattivo la _sensibilità_ dell'attrattore rispetto ai parametri iniziali: 
+"""
+
+# ╔═╡ 897bfb7d-f394-4c0d-96c9-4d76f0c5029e
+md"""
+ $\sigma=$ $(@bind σ₁ Slider(9.5:.01:10.5, show_value=true, default=10))
+
+ $\rho=$ $(@bind ρ₁ Slider(27.5:.01:28.5, show_value=true, default=28))
+
+ $\beta=$ $(@bind β₁ Slider(2:.01:3, show_value=true, default=2.66))
+
+ fino al tempo $T=$ $(@bind T Slider(1:500, show_value=true, default=500))
+"""
+
+# ╔═╡ e8b34440-85e7-4fa9-b25b-bf54f4b73022
+begin 
+	param_attractor = Lorenz(σ =σ₁, ρ = ρ₁, β = β₁, dt = .01)
+	getpos(l::Lorenz) = (l.x, l.y, l.z)
+	traiettoria = zeros(Float64, 3, 500)
+	traiettoria[:, 1] .= getpos(param_attractor)
+	for i in 2:500
+		step!(param_attractor)
+		traiettoria[:, i] .= getpos(param_attractor)
+	end
+	plot3d(
+		traiettoria[1, 1:T],
+		traiettoria[2, 1:T],
+		traiettoria[3, 1:T],
+		xlim = (-30, 30),
+	    ylim = (-30, 30),
+	    zlim = (0, 60),
+	    title = "Lorenz Attractor",
+	    marker = 2,
+	)
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
@@ -532,6 +613,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
+BenchmarkTools = "~1.3.1"
 Colors = "~0.12.8"
 Distributions = "~0.25.16"
 ImageMagick = "~1.2.1"
@@ -583,6 +665,12 @@ version = "0.4.4"
 
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[BenchmarkTools]]
+deps = ["JSON", "Logging", "Printf", "Profile", "Statistics", "UUIDs"]
+git-tree-sha1 = "4c10eee4af024676200bc7752e536f858c6b8f93"
+uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+version = "1.3.1"
 
 [[Bzip2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1367,6 +1455,10 @@ version = "1.2.2"
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
+[[Profile]]
+deps = ["Printf"]
+uuid = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
+
 [[ProgressMeter]]
 deps = ["Distributed", "Printf"]
 git-tree-sha1 = "afadeba63d90ff223a6a48d2009434ecee2ec9e8"
@@ -1831,10 +1923,17 @@ version = "0.9.1+5"
 # ╟─0a70bca4-8723-11eb-1bcf-e9abb9b1ab75
 # ╟─472a41d2-8724-11eb-31b3-0b81612f0083
 # ╟─c41c73a5-055a-4776-be40-fb2df4ae9963
-# ╠═2c9728cd-7647-4d35-bb27-8f2ef16f8638
-# ╠═9d698a7b-27f5-489e-b1eb-dfed000b31dd
 # ╟─aeb99f72-8725-11eb-2efd-d3e44686be03
 # ╟─4f9bd326-8724-11eb-2c9b-db1ac9464f1e
+# ╠═b2be5898-0cc5-4a20-b4a0-7f56712c14b6
+# ╟─42f954ef-212b-41b2-8fe9-bf3d490fe536
+# ╠═73288102-3e80-4d13-a05c-137488c9503f
+# ╟─6f70b17c-a88e-43ad-afc0-325223aad16c
+# ╠═08998e69-1744-40ef-a166-953c1ee24e03
+# ╟─a03005f0-f989-4642-8b8f-000b86466a08
+# ╠═48028d89-d423-4414-a1ae-a3a161b6001c
+# ╟─3c115146-ce4d-40de-84d1-bec3a4e8c7e3
+# ╠═97e9017b-0b8d-4df2-8029-1a31cf04ffcd
 # ╟─db2d25de-86b1-11eb-0c78-d1ee52e019ca
 # ╟─e33fe4c8-86b1-11eb-1031-cf45717a3dc9
 # ╠═f49191a2-86b1-11eb-3eab-b392ba058415
@@ -1845,45 +1944,36 @@ version = "0.9.1+5"
 # ╠═6cdea3ae-86b2-11eb-107a-17bea3f54bc9
 # ╠═1c769d58-8744-11eb-3bd3-ab11ea1503ed
 # ╠═297fdfa0-8744-11eb-1934-9fe31e8be534
-# ╟─776ec3f2-86b3-11eb-0216-9b71d07e99f3
-# ╠═5fcf8d4e-8744-11eb-080e-cba749004b08
-# ╠═4898106a-8744-11eb-128a-35fec741e6b8
-# ╠═0926366a-86b2-11eb-0f6d-31ae6981598c
 # ╟─7c8d7b72-86b2-11eb-2dd5-4f77bc5fb8ff
-# ╟─2090b7f2-86b3-11eb-2a99-ed98800e1d63
+# ╟─267a63f8-0656-4965-9a65-ed93e6700562
 # ╠═a7dff55c-86b2-11eb-330f-3d6279347095
-# ╟─2db33022-86b3-11eb-17dd-13c534ac9892
+# ╟─312f1c3f-9a83-4f7b-bdab-8eae38f426b6
+# ╠═ecf66915-67ba-44ce-afa4-cb48856bcf2a
+# ╟─09296e06-3905-4836-b524-6ee7f0102e8a
 # ╠═0de6f23e-86b2-11eb-39ff-318bbc4ecbcf
-# ╟─36c3da4a-86b3-11eb-0b2f-fffdde06fcd2
-# ╠═940c2bf6-86b2-11eb-0a5e-011abdd6352b
-# ╠═5a4e7fc4-86b3-11eb-3376-0941b79574aa
 # ╟─c433104e-86b3-11eb-20bb-af608bb281cc
 # ╠═78dc94e2-8723-11eb-1ff2-bb7104b62033
 # ╠═bb1465c4-8723-11eb-1abc-bdb5a7028cf2
 # ╠═e04f3828-8723-11eb-3452-09f821391ad0
 # ╟─b7793f7a-8726-11eb-11d8-cd928f1a3645
-# ╟─ba80cc78-8726-11eb-2f33-e364f19295d8
 # ╠═8fe715e4-8727-11eb-2e7f-15b723bb8d9d
 # ╠═9da4e6f4-8727-11eb-08cb-d55e3bbff0e4
+# ╟─175b238e-abfb-4344-957b-3d03b1df0d1d
+# ╠═ff1f0379-0669-4cc9-8b7a-086abf8786cf
 # ╠═9647840c-8745-11eb-33fc-898ae351ddfe
 # ╠═9d782aa6-8745-11eb-034e-0f8b01be987b
-# ╠═a693582c-8745-11eb-261b-ef79e503420e
-# ╟─c3255d7a-8727-11eb-0421-d99faf27c7b0
-# ╠═e2037806-8727-11eb-3c36-1500f1dd545b
 # ╟─28ff621c-8728-11eb-2ec0-2579cb313315
+# ╠═e2037806-8727-11eb-3c36-1500f1dd545b
 # ╟─57125768-8728-11eb-3c3b-1dd37e1ac189
 # ╟─6a439c78-8728-11eb-1969-27a19d254704
-# ╟─9f8ac08c-8728-11eb-10ad-f93ca225ce38
 # ╠═062b400a-8729-11eb-16c5-235cef648edb
 # ╠═7c099606-8746-11eb-37fe-c3befde06e9d
+# ╟─2a81ba88-8729-11eb-3dcb-1db26e468066
 # ╠═97cb3dde-8746-11eb-0b00-690f20cb26dc
 # ╠═9d8cdc8e-8746-11eb-2b9a-b30a52026f09
 # ╠═81a30c9e-8746-11eb-38c8-9be4f6ba2e80
-# ╟─2a81ba88-8729-11eb-3dcb-1db26e468066
 # ╟─5ea5838a-8729-11eb-1749-030533fb0656
-# ╠═c9f21046-8746-11eb-27c6-910807240fd1
 # ╠═806e6aae-8729-11eb-19ea-33722c60edf0
-# ╟─90642564-8729-11eb-3cd7-b3d41a1553b4
 # ╟─9a426a20-8729-11eb-0c0f-31e1d4dc91bc
 # ╠═a4870b14-8729-11eb-20ee-e531d4a7108d
 # ╠═081e3796-8747-11eb-32ec-dfd998605737
@@ -1891,14 +1981,12 @@ version = "0.9.1+5"
 # ╠═baed5908-8729-11eb-00e0-9f749406c30c
 # ╟─ed94eae8-86b3-11eb-3f1b-15c7a54903f5
 # ╟─f20504de-86b3-11eb-3125-3140e0e060b0
-# ╟─7f1a3766-86b4-11eb-353f-b13acaf1503e
-# ╟─371838f8-86b4-11eb-1633-8d282e42a085
+# ╠═02d03642-86b4-11eb-365a-63ff61ddd3b5
 # ╠═94688c1a-8747-11eb-13a3-eb36f731674c
 # ╠═ad701cdc-8747-11eb-3804-63a0fc881547
 # ╠═2405eb68-86b4-11eb-31b0-dff8e355d88e
-# ╟─9e9d3556-86b5-11eb-3dfb-916e625da235
+# ╠═84d99647-f752-4b30-9e39-392e65857937
 # ╟─90844738-8738-11eb-0604-3d23662152d9
-# ╠═02d03642-86b4-11eb-365a-63ff61ddd3b5
 # ╠═2d71fa88-86b5-11eb-0e55-35566c2246d7
 # ╟─cb8a9762-86b1-11eb-0484-6b6cc8b1b14c
 # ╠═d0c9814e-86b1-11eb-2f29-1d041bccc649
@@ -1931,5 +2019,16 @@ version = "0.9.1+5"
 # ╠═e01b6f70-873c-11eb-04a1-ad8e86578982
 # ╠═b5251f76-873c-11eb-38cb-7db300c8fe3c
 # ╠═da62fd1c-873c-11eb-0758-e7cb48e964f1
+# ╟─34bee941-9599-4085-8f56-760b8cc6e9d6
+# ╟─4efc394c-9f05-44b1-8604-dce664fb7b48
+# ╟─0d5b009f-236b-439c-a2a7-65e3bbc070e3
+# ╠═c33e7902-c79c-4e65-bc20-91dbcb5976f6
+# ╠═551c4f5a-d53e-483a-8a1b-3e564915b1e8
+# ╟─c8014645-ae04-4c4b-a169-59db94203ec0
+# ╠═1fe65658-7f75-4856-9e37-31868ccca3e8
+# ╠═29983c76-daeb-48d8-8bca-02ffe94697fd
+# ╟─4d596dae-abcc-4376-8970-e676264dcae1
+# ╟─897bfb7d-f394-4c0d-96c9-4d76f0c5029e
+# ╠═e8b34440-85e7-4fa9-b25b-bf54f4b73022
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
