@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -43,43 +43,43 @@ md"""
 md"""
 ### Lezione 0
 
-- 0.0. [Presentazione del corso e programma](https://natema.github.io/ECMJ-it/index.html)
-- 0.1. [Installazione di Julia e uso dei notebook Pluto](https://natema.github.io/ECMJ-it/lectures/lezione_0.1_-_installare_julia_e_pluto.jl.html)
-- 0.2. [Introduzione al linguaggio Julia](https://natema.github.io/ECMJ-it/lectures/lezione_0.2_-_introduzione_a_julia.jl.html)
-- 0.3 [Come produrre grafici](https://natema.github.io/ECMJ-it/lectures/lezione_0.3_come_produrre_grafici.jl.html)
-- 0.4 [Esercitazione 0](https://natema.github.io/ECMJ-it/lectures/lezione_0.4_esercitazione.jl.html)
+- 0.0. [Presentazione del corso e programma](https://natema.github.io/ECMJ-it-2022/index.html)
+- 0.1. [Installazione di Julia e uso dei notebook Pluto](https://natema.github.io/ECMJ-it-2022/lectures/lezione_0.1_-_installare_julia_e_pluto.jl.html)
+- 0.2. [Introduzione al linguaggio Julia](https://natema.github.io/ECMJ-it-2022/lectures/lezione_0.2_-_introduzione_a_julia.jl.html)
+- 0.3 [Come produrre grafici](https://natema.github.io/ECMJ-it-2022/lectures/lezione_0.3_come_produrre_grafici.jl.html)
+- 0.4 [Esercitazione 0](https://natema.github.io/ECMJ-it-2022/lectures/lezione_0.4_esercitazione.jl.html)
 """
 
 # ╔═╡ 0ed9194c-47bd-46f8-8881-1a62e90057c5
 md"""
 ### Lezione 1
 
-- 1.0. [Immagini come array](https://natema.github.io/ECMJ-it/lectures/lezione_1.0_immagini_come_array.jl.html)
-- 1.1. [Introduzione al concetto di astrazione](https://natema.github.io/ECMJ-it/lectures/lezione_1.1_introduzione_al_concetto_di_astrazione.jl.html)
-- 1.2. [Esercitazione 1](https://natema.github.io/ECMJ-it/lectures/lezione_1.2_esercitazione.jl.html)
+- 1.0. [Immagini come array](https://natema.github.io/ECMJ-it-2022/lectures/lezione_1.0_immagini_come_array.jl.html)
+- 1.1. [Introduzione al concetto di astrazione](https://natema.github.io/ECMJ-it-2022/lectures/lezione_1.1_introduzione_al_concetto_di_astrazione.jl.html)
+- 1.2. [Esercitazione 1](https://natema.github.io/ECMJ-it-2022/lectures/lezione_1.2_esercitazione.jl.html)
 """
 
 # ╔═╡ e828a20d-5d8e-4bde-bfb2-99f8a634182c
 md"""
 ### Lezione 2 
 
-- 2.0. [Trasformazione di immagini](https://natema.github.io/ECMJ-it/lectures/lezione_2.0_trasformazione_di_immagini.jl.html)
-- 2.1. [Trasformazioni lineari](https://natema.github.io/ECMJ-it/lectures/lezione_2.1_trasformazioni_lineari.jl.html)
+- 2.0. [Trasformazione di immagini](https://natema.github.io/ECMJ-it-2022/lectures/lezione_2.0_trasformazione_di_immagini.jl.html)
+- 2.1. [Trasformazioni lineari](https://natema.github.io/ECMJ-it-2022/lectures/lezione_2.1_trasformazioni_lineari.jl.html)
 """
 
 # ╔═╡ 22c1247c-678a-4c75-ad55-301f1bf0b4d7
 md"""
 ### Lezione 3
 
-- 2.2. [Trasformazioni e differenziazione automatica](https://natema.github.io/ECMJ-it/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
-- 3.0 [Altre trasformazioni](https://natema.github.io/ECMJ-it/lectures/lezione_3.0_altre_trasformazioni.jl.html)
+- 2.2. [Trasformazioni e differenziazione automatica](https://natema.github.io/ECMJ-it-2022/lectures/lezione_2.2_trasformazioni_e_differenziazione_automatica.jl.html)
+- 3.0 [Altre trasformazioni](https://natema.github.io/ECMJ-it-2022/lectures/lezione_3.0_altre_trasformazioni.jl.html)
 """
 
 # ╔═╡ 046a0d16-eb6f-48da-936c-cddf015b4f2b
 md"""
 ### Lezione 4
 
-- 3.1. [Il metodo di Newton](https://natema.github.io/ECMJ-it/lectures/lezione_3.1_il_metodo_di_newton.jl)
+- 3.1. [Il metodo di Newton](https://natema.github.io/ECMJ-it-2022/lectures/lezione_3.1_il_metodo_di_newton.jl)
 """
 
 # ╔═╡ 20469a84-0122-459e-81f1-8f43c93aea69
@@ -93,15 +93,15 @@ md"""
 md"""
 ### Lezione 6
 
-- 4.0 [Programmazione dinamica](https://natema.github.io/ECMJ-it/lectures/lezione_4.0_programmazione_dinamica.jl)
-- 4.1 [Seam carving](https://natema.github.io/ECMJ-it/lectures/lezione_4.1_seam_carving.jl)
+- 4.0 [Programmazione dinamica](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.0_programmazione_dinamica.jl)
+- 4.1 [Seam carving](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.1_seam_carving.jl)
 """
 
 # ╔═╡ 0badf048-88a1-45f3-b5ad-b964bca9d1c0
 md"""
 ### Lezione 7
-- 4.2 [Strutture](https://natema.github.io/ECMJ-it/lectures/lezione_4.2_strutture.jl)
-- 5.1 [Variabili aleatorie](https://natema.github.io/ECMJ-it/lectures/lezione_5.1_variabili_aleatorie.jl)
+- 4.2 [Strutture](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.2_strutture.jl)
+- 5.1 [Variabili aleatorie](https://natema.github.io/ECMJ-it-2022/lectures/lezione_5.1_variabili_aleatorie.jl)
 """
 
 # ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
@@ -114,7 +114,7 @@ md"""
 
 ### Lezione 12
 
-- 12.0. [Un primo modello climatico](https://natema.github.io/ECMJ-it/lectures/lezione_12.0_un_primo_modello_climatico.jl.html)
+- 12.0. [Un primo modello climatico](https://natema.github.io/ECMJ-it-2022/lectures/lezione_12.0_un_primo_modello_climatico.jl.html)
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -130,7 +130,7 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.7.3"
 manifest_format = "2.0"
 
 [[deps.AbstractPlutoDingetjes]]
@@ -163,8 +163,11 @@ deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
