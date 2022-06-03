@@ -398,30 +398,24 @@ end
 # ╔═╡ f8b2dd20-8737-11eb-1593-43659c693109
 md"""
 ### Normalizzare l'asse $y$
-"""
 
-# ╔═╡ 89bb366a-8737-11eb-10a6-e754ee817f9a
-md"""
-Notice that the *shape* of the curve seems to converge to a bell-shaped curve, but the axes do not. What can we do about this?
-
-We need to **normalise** so that the total shaded *area* is 1. We can use the histogram option `norm=true` to do so.
+L'istogramma appare convergere ad una distribuziona a campana, tuttavia all'aumentare di $n$ cambiano anche i valori degli assi. 
+Al fine di **normalizzare** l'asse $y$ dell'istogramma, è sufficiente passare l'opzione `norm=true`:
 """
 
 # ╔═╡ 14f0a090-8737-11eb-0ccf-391249267401
 histogram(data, alpha=0.5, legend=false, bins=50, norm=true,
-			c=:lightsalmon1, title="n = $n", ylims=(0, 0.05))  
+			c=:blue, title=L"$n =$"*" $n", ylims=(0, 0.07))  
 
 
 # ╔═╡ e305467e-8738-11eb-1213-eb11aaebe151
 md"""
-### Normalising the $x$ axis
+### Normalizzare l'asse $x$
 """
 
 # ╔═╡ e8341288-8738-11eb-27ae-0795fa7e4a7e
 md"""
-As we changed $n$ above, the range of values on the $x$ axis also changed. We want to find a way to rescale $x$ at the same time so that both axes and shape stop changing as we increase $n$.
-
-We need to make sure that the data is centred in the same place -- we will choose 0. And we need to make sure that the width is the same -- we will divide by the standard deviation.
+Normalizzare l'asse $x$ è più complicato: per farlo possiamo _centrare_ il range di valori assunti dalle ascisse, e scalarle per la deviazione standard:
 """
 
 # ╔═╡ 07e8ae34-873b-11eb-1df2-175392ac4678
@@ -434,7 +428,7 @@ mean(data), std(data)
 normalised_data = ( data .- mean(data) ) ./ std(data)   
 
 # ╔═╡ bfc52118-873b-11eb-0fbb-952c60bc7cc2
-histogram(normalised_data, bins=-5 - (1/(2σ)):(1/σ):5, norm=true,
+histogram(normalised_data, bins=-5:(1/σ):5, norm=true,
 	alpha=0.5, leg=false, ylim=(0, 0.41), size=(500, 300))
 
 # ╔═╡ aa6126f8-873b-11eb-3b4a-0f96fe07b7fb
@@ -442,43 +436,61 @@ plot!(x -> exp(-x^2 / 2) / √(2π), lw=2, c=:red, alpha=0.5)
 
 # ╔═╡ 308547c6-873d-11eb-3a42-833f8bf496ae
 md"""
-Note that in the limit, the data becomes *continuous*, no longer discrete. The probability of any particular value is 0 ! We then talk about a **probability density function**, $f(x)$; the integral of this function over the interval $[a, b]$ gives the probability of being in that interval.
+Notare che quando $n\rightarrow \infty$ la probabilità di ogni singolo valore tende a 0.
+Per tale ragione parliamo di [_densità_ di probabilità](https://it.wikipedia.org/wiki/Funzione_di_densit%C3%A0_di_probabilit%C3%A0) $f(x)$: la probabilità che il valore della variabile casuale $X$ con densità $f$ sia compreso tra $a$ e $b$ è calcolata considerando l'_integrale_ di $f$ in tale intervallo: 
+
+$\Pr(a\leq X \leq b) = \int_a^b f(x) dx.$
 """
 
 # ╔═╡ cb2fb68e-8749-11eb-29ea-9729ac0c63b4
 md"""
-### Options for plotting functions
+### Alcune opzioni per il grafico di funzioni
 """
 
 # ╔═╡ e0a1863e-8735-11eb-1182-1b3c59b1e05a
 md"""
-Other options for the `histogram` function options:
-- `legend=false` turns off the legend (key), i.e. the plot labels
-- `bins=50` specifies the number of **bins**; can also be a vector of bin edges
-- `linetype=:stephist`: use steps instead of bars
-
-
-- `alpha`: a general plot option specifying transparency (0=invisible; 1=opaque)
-- `c` or `color`: a general plot option for the colour
-- `lw`: line width (default=1)
-
-
-There are several different ways to specify colours. [Here](http://juliagraphics.github.io/Colors.jl/stable/namedcolors/) is a list of named colours, but you can also specify `RGB(0.1, 0.2, 0.3)`.
+Vediamo brevemente alcune opzioni che possiamo passare alla funzione `histogram` per controllare alcune proprietà dell'istogramma che viene prodotto: 
+- `legend=false` rimuove la legenda
+- `linetype=:stephist`: disegna l'istogramma come una funzione a gradini anziché come un insieme di barre
+- `bins=50` specifica il numero di _bin_ (canestri), ovvero il numero di intervalli che vengono rappresentati dalle barre; tali intervalli non devono necessariamente essere omogenei:
 """
 
-# ╔═╡ 900af0c8-86ba-11eb-2270-71b1869b9a1a
+# ╔═╡ 766fa4da-6983-438a-a396-34bcebd5cf5e
+begin
+	histogram(.5*rand(100), bins=[0:.1:.5...], norm=true)
+	histogram!(.5 .+ .5*rand(100), bins=[.5:.05:1...], norm=true)
+end
+
+# ╔═╡ 73b54885-063e-4de7-81f9-7054bb1f7742
 md"""
-Note that `linetype=:stephist` will give a stepped version of the histogram:
+- `alpha`: la trasparenza del grafico (0 per invisibile, 1 per completamente opaco)
+- `c` o `color`: specifica il colore del grafico
+- `lw`: spessore del tratto del grafico (default=1)
+
+Una lista dei nomi dei colori forniti dal pacchetto `Colors.jl` si può trovare [nella rispettiva pagina della documentazione](http://juliagraphics.github.io/Colors.jl/stable/namedcolors/); in alternativa si può specificare un colore come oggetto `RGB`, per esempio:
 """
+
+# ╔═╡ 467f3ce5-f177-4648-86f2-65359f128ac8
+md"""
+ $(r, g, b)=$ ( $(@bind r Slider(0:.1:1, show_value=true, default=.3)),
+				$(@bind g Slider(0:.1:1, show_value=true, default=.3)), 
+				$(@bind b Slider(0:.1:1, show_value=true, default=.7)))
+"""
+
+# ╔═╡ b25033a3-4d49-44ae-8523-bad9641f3317
+random_vec = rand(100)
+
+# ╔═╡ 606e459c-2f4c-4915-ba7c-82627a8a9348
+histogram(random_vec, c=RGB(r, g, b))
 
 # ╔═╡ be6e4c00-873c-11eb-1413-5326aba54216
 md"""
-## Sampling from other distributions
+## Altre distribuzioni: la [chi-quadro](https://it.wikipedia.org/wiki/Distribuzione_chi_quadrato)
 """
 
 # ╔═╡ 9a1136c2-873c-11eb-124f-c3939972ce4a
 md"""
-dof = $(@bind dof Slider(1:50, show_value=true))  
+Gradi di libertà `dof` = $(@bind dof Slider(1:50, show_value=true, default=3))  
 """
 
 # ╔═╡ e01b6f70-873c-11eb-04a1-ad8e86578982
@@ -488,11 +500,9 @@ chisq_data = rand( Chisq(dof), 100000 )
 histogram( chisq_data, norm=true, bins=100, size=(500, 300), leg=false, alpha=0.5,
 	xlims=(0, 10*√(dof)))
 
-
 # ╔═╡ da62fd1c-873c-11eb-0758-e7cb48e964f1
-histogram( [ sum( randn().^2 for _=1:dof )  for _ = 1:100000], norm=true,
+histogram( [ sum( randn().^2 for _ in 1:dof ) for _ in 1:100000 ], norm=true,
 	alpha=0.5, leg=false)
-
 
 # ╔═╡ 34bee941-9599-4085-8f56-760b8cc6e9d6
 md"""
@@ -2159,8 +2169,7 @@ version = "0.9.1+5"
 # ╠═514f6be0-86b8-11eb-30c9-d1020f783afe
 # ╟─dd753568-8736-11eb-1f20-1b81110ae807
 # ╠═8ab9001a-8737-11eb-1009-5717fbe83af7
-# ╠═f8b2dd20-8737-11eb-1593-43659c693109
-# ╟─89bb366a-8737-11eb-10a6-e754ee817f9a
+# ╟─f8b2dd20-8737-11eb-1593-43659c693109
 # ╠═14f0a090-8737-11eb-0ccf-391249267401
 # ╟─e305467e-8738-11eb-1213-eb11aaebe151
 # ╟─e8341288-8738-11eb-27ae-0795fa7e4a7e
@@ -2172,7 +2181,11 @@ version = "0.9.1+5"
 # ╟─308547c6-873d-11eb-3a42-833f8bf496ae
 # ╟─cb2fb68e-8749-11eb-29ea-9729ac0c63b4
 # ╟─e0a1863e-8735-11eb-1182-1b3c59b1e05a
-# ╟─900af0c8-86ba-11eb-2270-71b1869b9a1a
+# ╠═766fa4da-6983-438a-a396-34bcebd5cf5e
+# ╟─73b54885-063e-4de7-81f9-7054bb1f7742
+# ╟─467f3ce5-f177-4648-86f2-65359f128ac8
+# ╠═b25033a3-4d49-44ae-8523-bad9641f3317
+# ╠═606e459c-2f4c-4915-ba7c-82627a8a9348
 # ╟─be6e4c00-873c-11eb-1413-5326aba54216
 # ╟─9a1136c2-873c-11eb-124f-c3939972ce4a
 # ╠═e01b6f70-873c-11eb-04a1-ad8e86578982

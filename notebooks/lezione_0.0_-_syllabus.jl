@@ -101,19 +101,30 @@ md"""
 md"""
 ### Lezione 7
 - 4.2 [Strutture](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.2_strutture.jl)
+"""
+
+# ╔═╡ 5ebf6539-001d-4505-a6f3-6b755360b3cd
+md"""
+### Lezione 8
 - 5.1 [Variabili aleatorie](https://natema.github.io/ECMJ-it-2022/lectures/lezione_5.1_variabili_aleatorie.jl)
 """
 
-# ╔═╡ 56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
+# ╔═╡ 5b2bdd22-b39c-4e31-9058-c97a44b541d8
 md"""
-----
-```
-...
-```
-----
+### Lezione 9 
+- TBD
+"""
 
-### Lezione 12
+# ╔═╡ cdcc67c2-181a-4c77-b1a2-7a24f09cbb6c
+md"""
+### Lezione 10 
+- TBD
+"""
 
+# ╔═╡ 33a5c35a-8802-4699-bd16-1869b4ed2fae
+md"""
+### Lezione 11
+Ultima lezione!
 - 12.0. [Un primo modello climatico](https://natema.github.io/ECMJ-it-2022/lectures/lezione_12.0_un_primo_modello_climatico.jl.html)
 """
 
@@ -349,6 +360,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─20469a84-0122-459e-81f1-8f43c93aea69
 # ╟─25c62482-13e0-4a0c-b84c-cf70bace1bb9
 # ╟─0badf048-88a1-45f3-b5ad-b964bca9d1c0
-# ╟─56e3d20f-8b3c-4dec-a3b6-c93341f9b80f
+# ╟─5ebf6539-001d-4505-a6f3-6b755360b3cd
+# ╟─5b2bdd22-b39c-4e31-9058-c97a44b541d8
+# ╟─cdcc67c2-181a-4c77-b1a2-7a24f09cbb6c
+# ╟─33a5c35a-8802-4699-bd16-1869b4ed2fae
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
