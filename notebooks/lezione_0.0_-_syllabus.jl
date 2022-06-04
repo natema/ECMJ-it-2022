@@ -12,7 +12,7 @@ end
 
 # ╔═╡ 2c6cbae3-a506-4c7a-8ee6-a8a8241afecc
 md"""
-# [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it/)
+# [Elementi di Modellizzazione Computazionale in Julia (2022)](https://natema.github.io/ECMJ-it-2022/)
 
 ### [Emanuele Natale](https://www-sop.inria.fr/members/Emanuele.Natale/)
 """
