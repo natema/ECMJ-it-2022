@@ -112,18 +112,13 @@ md"""
 # ╔═╡ 5b2bdd22-b39c-4e31-9058-c97a44b541d8
 md"""
 ### Lezione 9 
-- TBD
+- 5.0 [Analisi delle componenti principali](https://natema.github.io/ECMJ-it-2022/lectures/lezione_5.0_pca.jl)
+- 6.0. [Simulare il guasto di componenti](https://natema.github.io/ECMJ-it-2022/lectures/lezione_6.0_simulare_il_guasto_di_componenti.jl)
 """
 
 # ╔═╡ cdcc67c2-181a-4c77-b1a2-7a24f09cbb6c
 md"""
 ### Lezione 10 
-- TBD
-"""
-
-# ╔═╡ 33a5c35a-8802-4699-bd16-1869b4ed2fae
-md"""
-### Lezione 11
 Ultima lezione!
 - 12.0. [Un primo modello climatico](https://natema.github.io/ECMJ-it-2022/lectures/lezione_12.0_un_primo_modello_climatico.jl.html)
 """
@@ -363,6 +358,5 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─5ebf6539-001d-4505-a6f3-6b755360b3cd
 # ╟─5b2bdd22-b39c-4e31-9058-c97a44b541d8
 # ╟─cdcc67c2-181a-4c77-b1a2-7a24f09cbb6c
-# ╟─33a5c35a-8802-4699-bd16-1869b4ed2fae
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

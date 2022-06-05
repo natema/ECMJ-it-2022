@@ -40,9 +40,9 @@ PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ deb2af50-8524-11eb-0dd4-9d799ff6d3e2
 md"""
-# La PCA: analisi delle componenti principali
+# Analisi delle componenti principali
 
-In questo notebook consideriamo finalmente tipi più generali di **dati**, anziché limitarci principalmente a immagini, e vedremo come estrarre informazioni dai dati utilizzando una tecnica matematica fondamentale, ovvero la [**principal component analysis**](https://en.wikipedia.org/wiki/Principal_component_analysis).  
+In questo notebook consideriamo finalmente tipi più generali di **dati**, anziché limitarci principalmente a immagini, e vedremo come estrarre informazioni dai dati utilizzando una tecnica matematica fondamentale, ovvero la [**principal component analysis (PCA)**](https://en.wikipedia.org/wiki/Principal_component_analysis).  
 
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/GaussianScatterPCA.svg/1024px-GaussianScatterPCA.svg.png)
 
@@ -617,30 +617,6 @@ scatter(M_svd[1, :], M_svd[2, :], alpha=0.5, leg=false, ratio=1, xlim=(-5, 5))
 
 # ╔═╡ ad38b6cf-f6f3-4fdb-a95e-f75c25fed14c
 M_svd
-
-# ╔═╡ 1cf3e098-f864-11ea-3f3a-c53017b73490
-md"## Appendice"
-
-# ╔═╡ 72bb11b0-f88f-11ea-0e55-b1108300f854
-loss(M1, M2) = sum( (M1[i] - M2[i])^2 for i in 1:length(M1) if !ismissing(M2[i]) )
-
-# ╔═╡ feeeb24a-f88f-11ea-287f-219e53615f32
-function split_up(v, m, n)
-	return v[1:m], v[m+1:m+n], v[m+n+1:2m+n], v[2m+n+1:2m+2n]
-end
-
-# ╔═╡ 0bcc8852-f890-11ea-3715-11cbead7f636
-function ff(v, m, n)
-	v1, w1, v2, w2 = split_up(v, m, n)
-	
-	loss(outer(v1, w1) + outer(v2, w2), M3)
-end
-
-# ╔═╡ 7040dc72-f893-11ea-3d22-4fbd452faa41
-ff2(v) = ff(v, m, n)
-
-# ╔═╡ 1dbcf15a-f890-11ea-008c-8935edfbdb1c
-ff(rand(total), m, n)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -2003,11 +1979,5 @@ version = "0.9.1+5"
 # ╠═aec542a2-84fb-11eb-322c-27fc2c45f6ef
 # ╠═b55dcfd2-84fb-11eb-1766-17dc8b7a17d0
 # ╠═ad38b6cf-f6f3-4fdb-a95e-f75c25fed14c
-# ╟─1cf3e098-f864-11ea-3f3a-c53017b73490
-# ╠═72bb11b0-f88f-11ea-0e55-b1108300f854
-# ╠═feeeb24a-f88f-11ea-287f-219e53615f32
-# ╠═0bcc8852-f890-11ea-3715-11cbead7f636
-# ╠═7040dc72-f893-11ea-3d22-4fbd452faa41
-# ╠═1dbcf15a-f890-11ea-008c-8935edfbdb1c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

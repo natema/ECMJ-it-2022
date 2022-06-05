@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.5
 
 using Markdown
 using InteractiveUtils
@@ -35,7 +35,7 @@ PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ f3aad4f0-8cc2-11eb-1a25-535297327c65
 md"""
-# Modeling with stochastic simulation
+# Simulare il guasto di componenti
 """
 
 # ╔═╡ b6b055b6-8cae-11eb-29e5-b507c1a2b9bf
@@ -949,7 +949,7 @@ deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[EarCut_jll]]
@@ -975,6 +975,9 @@ deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers",
 git-tree-sha1 = "d8a578692e3077ac998b50c0217dfd67f21d1e5f"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "4.4.0+0"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]
@@ -1693,7 +1696,7 @@ version = "0.9.1+5"
 # ╠═9a0cec14-08db-11eb-3cfa-4d1c327c63f1
 # ╟─fb6cdc08-8b44-11eb-09f5-43c167aa53fd
 # ╟─f3aad4f0-8cc2-11eb-1a25-535297327c65
-# ╟─b6b055b6-8cae-11eb-29e5-b507c1a2b9bf
+# ╠═b6b055b6-8cae-11eb-29e5-b507c1a2b9bf
 # ╟─bcfaedfa-8cae-11eb-10a1-cb7be7dc2e6b
 # ╟─d2c19564-8b44-11eb-1077-ddf6d1395b59
 # ╟─ac4f6944-08d9-11eb-0b3c-f5e0a8b8c17e
