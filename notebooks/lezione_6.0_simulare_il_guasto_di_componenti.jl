@@ -156,10 +156,7 @@ HTML("3 $("<br>"^num_breaks) 4")
 # ╔═╡ 71fbc75e-8bf3-11eb-3ac9-dd5401033c78
 md"""
 ## Variabili aleatorie di Bernoulli 
-"""
 
-# ╔═╡ 7c01f6a6-8bf3-11eb-3c4d-ad7e206a9277
-md"""
 Una [variabile aleatoria di Bernoulli](https://it.wikipedia.org/wiki/Distribuzione_di_Bernoulli) modella il lancio di una moneta: è uguale a 1 (testa) con probabilità $p$, e $0$ (croce) con probabilità $1-p$. 
 """
 
@@ -176,130 +173,103 @@ Quali sono la media e la varianza del campione `filps`?
 # ╔═╡ 4edaec4a-8bf4-11eb-3094-010ebe9b56ab
 md"""
 ### Costruire il tipo `Bernoulli`
-"""
 
-# ╔═╡ 2f730912-1a6c-4c87-bb79-2e4cc4dd34c9
-md"""
-# WORK IN PROGRESS!
-"""
-
-# ╔═╡ 9d66e31e-8cad-11eb-3ad0-3980ba66cb0e
-md"""
-
-Currently we need one function for sampling from a Bernoulli random variable, a different function to calculate its mean, a different function for its standard deviation, etc. 
-
-From a mathematical point of view we have the concept "Bernoulli random variable" and we are calculating properties of that concept. Computationally we can *do the same thing!* by creating a new *object* to represent "a Bernoulli random variable".
+Sopra abbiamo usato una funzione per generare una variabile aleatoria di Bernoulli, e altre due funzioni per calcolarne la media e la varianza. 
+Dal punto di vista matematico, la media e la varianza della variabile aleatoria sono proprietà di quest'ultima. 
+Nel [notebook sulle strutture](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.2_strutture.jl) abbiamo visto come rendere quest'ultima osservazione concreta implementando un nuovo _tipo di oggetto_:
 """
 
 # ╔═╡ 8405e310-8bf8-11eb-282b-d93b4fc683aa
-struct Bernoulli   # weighted coin flip
+"""
+Lancio di una moneta che dà testa con probabilità ``p``.
+"""
+struct Bernoulli 
 	p::Float64
 end
 
 # ╔═╡ af2594c4-8cad-11eb-0fff-f59e65102b3f
 md"""
-We want to be able to sample from it, using `rand`, and take its `mean`.
-To do so we will **extend** (sometimes called "overload") the `rand` function from Julia's `Base` library, and the `mean` function from the `Statistics` standard library. Note that we are *adding methods* to these functions; you will do this in the homework.
+Tra i metodi di cui vorremmo disponesse il tipo che stiamo definendo, vi sono il metodo `rand` e `mean`. Operiamo dunque un [_overloading_](https://en.wikipedia.org/wiki/Function_overloading) di quest'ultime funzioni, rispettivamente delle librerie standard `Base` e `Statistics`:
 """
 
 # ╔═╡ 8aa60da0-8bf8-11eb-0fa2-11aeecb89564
 Base.rand(X::Bernoulli) = Int( rand() < X.p )
 
+# ╔═╡ 2d9c560e-8bf9-11eb-1ac5-f77f7caf776f
+Statistics.mean(X::Bernoulli) = X.p
+
 # ╔═╡ 8d56b6d2-8cc8-11eb-0dbd-b3533dde4aa3
 md"""
-[Recall: In Julia the convention is that functions and variable names start with lower-case letters; types start with upper case. Maybe with an exception for 1-letter variable names for mathematical objects.]
+Ricordiamo che per convenzione in Julia i nomi di variabili iniziano con la lettera minuscola mentre i tipi iniziano con la maiuscola (con la possibili eccezioni per variabili mathematiche di una sola lettera).
 """
 
 # ╔═╡ a034c2a6-8bf8-11eb-0f06-0b35a0e8e68d
-B = Bernoulli(0.25)
-
-# ╔═╡ c166edb6-8cc8-11eb-0436-f74164ff6ea7
-methods(Bernoulli)
-
-# ╔═╡ d25dc130-8cc8-11eb-177f-63a1792494c0
-Bernoulli(1//4)
-
-# ╔═╡ 3ef23da4-8cb4-11eb-0d5f-d5ee8fc56227
-md"""
-The object `B` really represents "a Bernoulli random variable with probability of success $p$". Since all such random variables are the same, this represents *any* Bernoulli random variable with that probability.
-
-We should use this type any time we need a Bernoulli random variable. If you need this in another notebook you will either need to copy and paste the definition or, better, make your own mini-library. However, note that types like this are already available in the `Distributions.jl` package and the new `MeasureTheory.jl` package.
-"""
-
-# ╔═╡ 2d9c560e-8bf9-11eb-1ac5-f77f7caf776f
-Statistics.mean(X::Bernoulli) = X.p
+B = Bernoulli(1//4)
 
 # ╔═╡ ce94541c-8bf9-11eb-1ac9-51e66a017813
 mean(B)
 
-# ╔═╡ a057e7ee-8bf9-11eb-2ceb-2dda3718a70a
+# ╔═╡ fa2a4404-fea7-41b2-bc26-3983f1d4bbd3
 md"""
-## Running the stochastic simulation
+Verifichiamo i metodi disponibili per il typo `Bernoulli`: 
 """
 
-# ╔═╡ 4a743662-8cb6-11eb-26a6-d911e60653e4
+# ╔═╡ c166edb6-8cc8-11eb-0436-f74164ff6ea7
+methods(Bernoulli)
+
+# ╔═╡ 3ef23da4-8cb4-11eb-0d5f-d5ee8fc56227
 md"""
-Let's take the simulation and run it a few times.
+L'oggetto `B` rappresenta a tutti gli effetti una _variabile random Bernoulli di parametro $p$_. Per futuri usi, questa e molte altre distribuzioni sono implementate nei pacchetti [Distributions.jl](https://juliastats.org/Distributions.jl/stable/) e [MeasureTheory.jl](https://cscherrer.github.io/MeasureTheory.jl/stable/).
+"""
+
+# ╔═╡ a057e7ee-8bf9-11eb-2ceb-2dda3718a70a
+md"""
+## Eseguire la simulazione 
+"""
+
+# ╔═╡ ec5faae8-5ddc-42a2-993b-0fcc41b47012
+md"""
+Immaginiamo di rappresentare una popolazione di individui malati con un vettore di booleani, e che ogni individuo, ad ogni istante di tempo discreto, può guarire con una probabilità fissata $p_r$ uguale per tutti: 
 """
 
 # ╔═╡ 9282eca0-08db-11eb-2e36-d761594b427c
-T = 100
+T = 100 # massimo valore di $t$
 
 # ╔═╡ fe0aa72c-8b46-11eb-15aa-49ae570e5858
 md"""
-N = $(@bind N Slider(1:1000, show_value=true, default=70))
+ $N =$ $(@bind N Slider(1:1000, show_value=true, default=70))
 
-p = $(@bind ppp Slider(0:0.01:1, show_value=true, default=0.25))
+ $p_r =$ $(@bind pᵣ Slider(0:0.01:1, show_value=true, default=0.25))
 
-t = $(@bind t Slider(1:T, show_value=true))
+ $t =$ $(@bind t Slider(1:T, show_value=true, default=1))
 """
-
-# ╔═╡ 39a69c2a-0846-11eb-35c1-53c68a9f71e5
-p = 0.1
 
 # ╔═╡ caa3faa2-08e5-11eb-33fe-cbbc00cfd459
 md"""
-## Time evolution of the mean: Intuitive derivation
-"""
+## Evoluzione temporale della media
 
-# ╔═╡ 2174aeba-08e6-11eb-09a9-2d6a882a2604
-md"""
-The mean seems to behave in a rather predictable way over time. Can we derive this?
+Negli esempi precedenti abbiamo visto come la media sembri comportarsi in modo assai più deterministico nel tempo. Osserviamo che _in media_ il numero di lampadine ancora funzionanti $N_t$ si comporta come segue:
 
-Let $N_t$ be the number of green light bulbs at time $t$. This decreases because some bulbs fail. Since bulbs fail with probability $p$, the number of bulbs that fail at time $t$ is, on average, $p N_t$. [Note that one time unit corresponds to one *sweep* of the simulation.]
+$${\color{lightgreen} N_{t+1}} - {\color{lightgreen}N_t} = -{\color{red} p \, N_t}$$
 
-At time $t$ there are $N_t$ green bulbs.
-How many decay? Each decays with probability $p$, so *on average* $p N_t$ fail, so are removed from the number of infectious, giving the change
+ovvero
 
-$$\Delta N_t = {\color{lightgreen} N_{t+1}} - {\color{lightgreen}N_t} = -{\color{red} p \, N_t}$$
+$$N_{t+1} = (1 - p) N_t ,$$
 
-So
-
-$${\color{lightgreen} N_{t+1}} = {\color{lightgreen}N_t} - {\color{red} p \, N_t}$$
-
-or
-
-$$N_{t+1} = (1 - p) N_t .$$
-
-"""
-
-# ╔═╡ f5756dd6-0847-11eb-0870-fd06ad10b6c7
-md"""
-We can now take one step backwards:
-
-
-$$N_{t+1} = (1 - p) (1 - p) N_{t-1} = (1 - p)^2 N_{t-1}$$
-
-
-and then continue to solve the recurrence:
+che dunque _srotolando la riccorrenza_ ci dà
 
 $$N_t = (1-p)^t \, N_0.$$
 """
 
 # ╔═╡ 113c31b2-08ed-11eb-35ef-6b4726128eff
 md"""
+# WIP
+
 Let's compare the exact and numerical results:
 """
+
+# ╔═╡ 6a545268-0846-11eb-3861-c3d5f52c061b
+exact = [N * (1-pp)^t for t in 0:T]
 
 # ╔═╡ 3cd1ad48-08ed-11eb-294c-f96b0e7c33bb
 md"""
@@ -414,79 +384,76 @@ var(flips)
 # ╔═╡ e2d764d0-0845-11eb-0031-e74d2f5acaf9
 function step!(infectious, p)
 	for i in 1:length(infectious)
-		
-		if infectious[i] && bernoulli(p)
+		if infectious[i] && Bool(bernoulli(p))
 			infectious[i] = false
 		end
 	end
-	
 	return infectious
 end
 
 # ╔═╡ 58d8542c-08db-11eb-193a-398ce01b8635
 begin
-	infected = [true for i in 1:N]
-		
-	results = [copy(step!(infected, ppp)) for i in 1:T]
-	pushfirst!(results, trues(N))
+	infected = trues(N)
+	results = [copy(infected)]
+	for i in 2:T
+		nextstep = copy(step!(infected, pᵣ)) 
+		push!(results, nextstep)
+	end
+	results
 end
 
+# ╔═╡ cb6ca4af-76f1-4795-bf94-607bb042711f
+results[1:3]
+
 # ╔═╡ 33f9fc36-0846-11eb-18c2-77f92fca3176
-function simulate_recovery(p, T)
-	infectious = trues(N)
-	num_infectious = [N]
+function simulate_failure(p, T)
+	alive = trues(N)
+	num_alive = [N]
 	
 	for t in 1:T
-		step!(infectious, p)
-		push!(num_infectious, count(infectious))
+		step!(alive, p)
+		push!(num_alive, count(alive))
 	end
 	
-	return num_infectious
+	return num_alive
 end
 
 # ╔═╡ cb278624-08dd-11eb-3375-276bfe8d7b3a
 begin
-	pp = 0.05
+	p = 0.05
+	plot(simulate_failure(p, T), label="Run 1", alpha=0.5, lw=2, m=:o)
+	plot!(simulate_failure(p, T), label="Run 2", alpha=0.5, lw=2, m=:o)
+	plot!(simulate_failure(p, T), label="Run 3", alpha=0.5, lw=2, m=:o)
 	
-	plot(simulate_recovery(pp, T), label="run 1", alpha=0.5, lw=2, m=:o)
-	plot!(simulate_recovery(pp, T), label="run 2", alpha=0.5, lw=2, m=:o)
-	
-	xlabel!("time t")
-	ylabel!("number of light bulbs that are alive")
+	xlabel!("Tempo t")
+	ylabel!("Numero di lampadine funzionanti")
 end
 
-# ╔═╡ 6a545268-0846-11eb-3861-c3d5f52c061b
-exact = [N * (1-pp)^t for t in 0:T]
-
 # ╔═╡ f3c85814-0846-11eb-1266-63f31f351a51
-all_data = [simulate_recovery(pp, T) for i in 1:30];
+all_data = [simulate_failure(p, T) for i in 1:30];
 
 # ╔═╡ 01dbe272-0847-11eb-1331-4360a575ff14
 begin
-	plot(all_data, alpha=0.1, leg=false, m=:o, ms=1,
-		size=(500, 400), label="")
-	xlabel!("time t")
-	ylabel!("number still functioning")
+	plot(all_data, alpha=0.1, leg=false, 
+		m=:o, ms=1, size=(500, 400), label="")
+	xlabel!("Tempo t")
+	ylabel!("Numero di lampadine funzionanti")
 end
 
 # ╔═╡ be8e4ac2-08dd-11eb-2f72-a9da5a750d32
-plot!(mean(all_data), leg=true, label="mean",
-		lw=3, c=:red, m=:o, alpha=0.5, 
-		size=(500, 400))
+plot!(mean(all_data), leg=true, label="Media", 
+	lw=3, c=:red, m=:o, alpha=0.5, size=(500, 400))
 
 # ╔═╡ 8bc52d58-0848-11eb-3487-ef0d06061042
 begin
-	plot(replace.(all_data, 0.0 => NaN), 
-		yscale=:log10, alpha=0.3, leg=false, m=:o, ms=1,
-		size=(500, 400))
+	plot(replace.(all_data, 0.0 => NaN), yscale=:log10, 
+		alpha=0.3, leg=false, m=:o, ms=1, size=(500, 400))
+	plot!(mean(all_data), yscale=:log10, 
+		lw=3, c=:red, m=:o, label="mean", alpha=0.5)
 	
-	plot!(mean(all_data), yscale=:log10, lw=3, c=:red, m=:o, label="mean", alpha=0.5)
-	
-	xlabel!("time t")
-	ylabel!("number still functioning")
+	xlabel!("Tempo t")
+	ylabel!("Numero di lampadine funzionanti")
 end
-
-
 
 # ╔═╡ 4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
 begin
@@ -499,11 +466,8 @@ begin
 end
 	
 
-# ╔═╡ e2f45234-8cc8-11eb-2be9-598eb590592a
-rand(B)
-
-# ╔═╡ bc5d6fae-8cad-11eb-3351-a734d2366557
-rand(B)
+# ╔═╡ 3a1ed6b3-4217-4198-a2f3-a98e0fb6af14
+[rand(B) for i in 1:20]
 
 # ╔═╡ 1173ebbe-8cb1-11eb-0a21-7d40a2c8a855
 rand(Binomial(10, 0.25))
@@ -1680,7 +1644,6 @@ version = "0.9.1+5"
 # ╠═d5cffd96-8cc6-11eb-2714-975d46d4fa27
 # ╠═fc715452-8cc6-11eb-0246-e941f7698cfe
 # ╟─71fbc75e-8bf3-11eb-3ac9-dd5401033c78
-# ╟─7c01f6a6-8bf3-11eb-3c4d-ad7e206a9277
 # ╠═ba7ffe78-0845-11eb-2847-851a407dd2ec
 # ╟─dcd279b0-8bf3-11eb-0cb9-95f351626ed1
 # ╠═b6786ec8-8bf3-11eb-1347-61f231fd3b4c
@@ -1688,37 +1651,32 @@ version = "0.9.1+5"
 # ╠═0e7a04a4-8bf4-11eb-2e9d-fb48c23b8d8c
 # ╠═093275e4-8cc8-11eb-136f-3ffe522c4125
 # ╟─4edaec4a-8bf4-11eb-3094-010ebe9b56ab
-# ╟─2f730912-1a6c-4c87-bb79-2e4cc4dd34c9
-# ╟─9d66e31e-8cad-11eb-3ad0-3980ba66cb0e
 # ╠═8405e310-8bf8-11eb-282b-d93b4fc683aa
 # ╟─af2594c4-8cad-11eb-0fff-f59e65102b3f
 # ╠═8aa60da0-8bf8-11eb-0fa2-11aeecb89564
+# ╠═2d9c560e-8bf9-11eb-1ac5-f77f7caf776f
 # ╟─8d56b6d2-8cc8-11eb-0dbd-b3533dde4aa3
 # ╠═a034c2a6-8bf8-11eb-0f06-0b35a0e8e68d
-# ╠═c166edb6-8cc8-11eb-0436-f74164ff6ea7
-# ╠═d25dc130-8cc8-11eb-177f-63a1792494c0
-# ╠═e2f45234-8cc8-11eb-2be9-598eb590592a
-# ╟─3ef23da4-8cb4-11eb-0d5f-d5ee8fc56227
-# ╠═bc5d6fae-8cad-11eb-3351-a734d2366557
-# ╠═2d9c560e-8bf9-11eb-1ac5-f77f7caf776f
+# ╠═3a1ed6b3-4217-4198-a2f3-a98e0fb6af14
 # ╠═ce94541c-8bf9-11eb-1ac9-51e66a017813
+# ╟─fa2a4404-fea7-41b2-bc26-3983f1d4bbd3
+# ╠═c166edb6-8cc8-11eb-0436-f74164ff6ea7
+# ╟─3ef23da4-8cb4-11eb-0d5f-d5ee8fc56227
 # ╟─a057e7ee-8bf9-11eb-2ceb-2dda3718a70a
-# ╟─4a743662-8cb6-11eb-26a6-d911e60653e4
+# ╟─ec5faae8-5ddc-42a2-993b-0fcc41b47012
 # ╠═e2d764d0-0845-11eb-0031-e74d2f5acaf9
 # ╠═9282eca0-08db-11eb-2e36-d761594b427c
-# ╠═58d8542c-08db-11eb-193a-398ce01b8635
 # ╟─fe0aa72c-8b46-11eb-15aa-49ae570e5858
+# ╠═58d8542c-08db-11eb-193a-398ce01b8635
+# ╠═cb6ca4af-76f1-4795-bf94-607bb042711f
 # ╠═33f9fc36-0846-11eb-18c2-77f92fca3176
-# ╠═39a69c2a-0846-11eb-35c1-53c68a9f71e5
 # ╠═cb278624-08dd-11eb-3375-276bfe8d7b3a
 # ╠═f3c85814-0846-11eb-1266-63f31f351a51
 # ╠═01dbe272-0847-11eb-1331-4360a575ff14
-# ╟─be8e4ac2-08dd-11eb-2f72-a9da5a750d32
-# ╟─8bc52d58-0848-11eb-3487-ef0d06061042
+# ╠═be8e4ac2-08dd-11eb-2f72-a9da5a750d32
+# ╠═8bc52d58-0848-11eb-3487-ef0d06061042
 # ╟─caa3faa2-08e5-11eb-33fe-cbbc00cfd459
-# ╟─2174aeba-08e6-11eb-09a9-2d6a882a2604
-# ╟─f5756dd6-0847-11eb-0870-fd06ad10b6c7
-# ╟─113c31b2-08ed-11eb-35ef-6b4726128eff
+# ╠═113c31b2-08ed-11eb-35ef-6b4726128eff
 # ╟─6a545268-0846-11eb-3861-c3d5f52c061b
 # ╟─4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
 # ╟─3cd1ad48-08ed-11eb-294c-f96b0e7c33bb
