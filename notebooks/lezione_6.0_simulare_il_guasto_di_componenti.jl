@@ -130,68 +130,57 @@ Notare che potremmo usare tre apici consecutivi (`\"\""`) per rappresentare stri
 # ╔═╡ 1894b388-8cac-11eb-2287-97f985df1fbd
 HTML(s)
 
+# ╔═╡ 88dd73cc-33ae-4151-bbe3-e14d9895f0b3
+md"""
+Qualche altro esempio di codice HMTL in Pluto: 
+"""
+
 # ╔═╡ 86299112-8cc6-11eb-257a-9d803feac359
 html"3 <br> 4"
 
-# ╔═╡ 9eb69e94-8cc6-11eb-323b-5587cc743571
-HTML("3 <br> 4")
-
 # ╔═╡ b8d01ae4-8cc6-11eb-1d16-47095532f738
-@bind num_breaks Slider(1:10, show_value=true)
+@bind num_breaks Slider(1:10, show_value=true, default=2)
 
 # ╔═╡ c5bc97aa-8cc6-11eb-3564-fd96184ff2c3
-repeat("<br>", 5)
+repeat("<br>", 3) # un modo di ripetere una stringa
+
+# ╔═╡ e1769d6d-9896-4054-ad3b-52f7751711e2
+"<br>" * "<br>" * "<br>" # stringhe si possono concatenare con `*`
 
 # ╔═╡ d5cffd96-8cc6-11eb-2714-975d46d4fa27
-"<br>"^5
-
-# ╔═╡ da6525f0-8cc6-11eb-31ec-cd7d515f054a
-"<br>" * "<br>" * "<br>"
+"<br>"^3 # sintassi equivalente all'uso di `repeat`
 
 # ╔═╡ fc715452-8cc6-11eb-0246-e941f7698cfe
 HTML("3 $("<br>"^num_breaks) 4")
 
 # ╔═╡ 71fbc75e-8bf3-11eb-3ac9-dd5401033c78
 md"""
-## Math: Bernoulli random variables
+## Variabili aleatorie di Bernoulli 
 """
 
 # ╔═╡ 7c01f6a6-8bf3-11eb-3c4d-ad7e206a9277
 md"""
-Recall that a **Bernoulli random variable** models a weighted coin: it takes the value 1, with probability $p$, and 0, with probability $q = (1 - p)$:
+Una [variabile aleatoria di Bernoulli](https://it.wikipedia.org/wiki/Distribuzione_di_Bernoulli) modella il lancio di una moneta: è uguale a 1 (testa) con probabilità $p$, e $0$ (croce) con probabilità $1-p$. 
 """
 
 # ╔═╡ dcd279b0-8bf3-11eb-0cb9-95f351626ed1
 md"""
-Note that `rand() < p` returns a `Bool` (true or false). We are converting to `Int` to get a value 1 or 0.
-"""
-
-# ╔═╡ fbada990-8bf3-11eb-2bb7-d786362669e8
-md"""
-Let's generate (sample) some Bernoulli random variates:
+Notare che `rand() < p` restituisce un booleano `Bool` (`true` o `false`), che convertiamo con `Int` per ottenere un valore uguale a 1 o 0.
 """
 
 # ╔═╡ ac98f5da-8bf3-11eb-076f-597ce4455e76
 md"""
-It is natural to ask what the **mean**, or **expected value**, is:
-"""
-
-# ╔═╡ 0e7a04a4-8bf4-11eb-2e9d-fb48c23b8d8c
-sample_mean(data) = sum(data) / length(data)
-
-# ╔═╡ 111eccd2-8bf4-11eb-097c-7582f811d146
-md"""
-If you think about how to calculate the mean (sum up and divide by the total number of flips), it just gives the proportion of 1s, which should be around $p$.
-
-#### Exercise: 
-Calculate the variance of a Bernoulli random variable. 
-
-Hint: What happens when you sum the squares? Remember that you also need to center the data. 
+Quali sono la media e la varianza del campione `filps`?
 """
 
 # ╔═╡ 4edaec4a-8bf4-11eb-3094-010ebe9b56ab
 md"""
-## Julia: Make it a type!
+### Costruire il tipo `Bernoulli`
+"""
+
+# ╔═╡ 2f730912-1a6c-4c87-bb79-2e4cc4dd34c9
+md"""
+# WORK IN PROGRESS!
 """
 
 # ╔═╡ 9d66e31e-8cad-11eb-3ad0-3980ba66cb0e
@@ -411,16 +400,16 @@ end
 bar(countmap(simulation[:]), c=:red, legend=false, xlim=(0, tₛ+.5), size=(500, 300))
 
 # ╔═╡ ba7ffe78-0845-11eb-2847-851a407dd2ec
-bernoulli(p) = rand() < p
-
-# ╔═╡ 45bb6df0-8cc7-11eb-100f-37c2a76df464
-bernoulli(0.25)
+bernoulli(p) = Int(rand() < p)
 
 # ╔═╡ b6786ec8-8bf3-11eb-1347-61f231fd3b4c
 flips = [Int(bernoulli(0.25)) for i in 1:100]
 
+# ╔═╡ 0e7a04a4-8bf4-11eb-2e9d-fb48c23b8d8c
+mean(flips)
+
 # ╔═╡ 093275e4-8cc8-11eb-136f-3ffe522c4125
-sample_mean(flips)
+var(flips)
 
 # ╔═╡ e2d764d0-0845-11eb-0031-e74d2f5acaf9
 function step!(infectious, p)
@@ -1683,25 +1672,23 @@ version = "0.9.1+5"
 # ╠═5a0b407e-8cb7-11eb-0c0d-c7767a6b0a1d
 # ╠═fe53ee0c-8cb6-11eb-19bc-2976da1abe16
 # ╠═1894b388-8cac-11eb-2287-97f985df1fbd
+# ╟─88dd73cc-33ae-4151-bbe3-e14d9895f0b3
 # ╠═86299112-8cc6-11eb-257a-9d803feac359
-# ╠═9eb69e94-8cc6-11eb-323b-5587cc743571
 # ╠═b8d01ae4-8cc6-11eb-1d16-47095532f738
 # ╠═c5bc97aa-8cc6-11eb-3564-fd96184ff2c3
+# ╠═e1769d6d-9896-4054-ad3b-52f7751711e2
 # ╠═d5cffd96-8cc6-11eb-2714-975d46d4fa27
-# ╠═da6525f0-8cc6-11eb-31ec-cd7d515f054a
 # ╠═fc715452-8cc6-11eb-0246-e941f7698cfe
 # ╟─71fbc75e-8bf3-11eb-3ac9-dd5401033c78
 # ╟─7c01f6a6-8bf3-11eb-3c4d-ad7e206a9277
 # ╠═ba7ffe78-0845-11eb-2847-851a407dd2ec
-# ╠═45bb6df0-8cc7-11eb-100f-37c2a76df464
 # ╟─dcd279b0-8bf3-11eb-0cb9-95f351626ed1
-# ╟─fbada990-8bf3-11eb-2bb7-d786362669e8
 # ╠═b6786ec8-8bf3-11eb-1347-61f231fd3b4c
 # ╟─ac98f5da-8bf3-11eb-076f-597ce4455e76
 # ╠═0e7a04a4-8bf4-11eb-2e9d-fb48c23b8d8c
 # ╠═093275e4-8cc8-11eb-136f-3ffe522c4125
-# ╟─111eccd2-8bf4-11eb-097c-7582f811d146
 # ╟─4edaec4a-8bf4-11eb-3094-010ebe9b56ab
+# ╟─2f730912-1a6c-4c87-bb79-2e4cc4dd34c9
 # ╟─9d66e31e-8cad-11eb-3ad0-3980ba66cb0e
 # ╠═8405e310-8bf8-11eb-282b-d93b4fc683aa
 # ╟─af2594c4-8cad-11eb-0fff-f59e65102b3f
