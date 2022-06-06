@@ -38,86 +38,63 @@ md"""
 # Simulare il guasto di componenti
 """
 
-# ╔═╡ b6b055b6-8cae-11eb-29e5-b507c1a2b9bf
-md"""
-## Julia features
-"""
-
-# ╔═╡ bcfaedfa-8cae-11eb-10a1-cb7be7dc2e6b
-md"""
-- Extending a function from another package (not `Base`)
-
-- Why create a new type? Abstractions and concentrating information around objects (organisation!)
-
-- Plotting shapes 
-
-- String interpolation
-
-- Conventions on capitalization of function, variable and type names
-"""
-
 # ╔═╡ d2c19564-8b44-11eb-1077-ddf6d1395b59
 md"""
-## Individual-based ("microscopic") models
+## Modelli basati sull'agente
+
+Nello studio degli [agent-based models](https://en.wikipedia.org/wiki/Agent-based_model), si cerca di capire il comportamento globale di un sistema in funzione delle regole che specificano il comportamento dei singoli individui, per esempio quanti saranno gli individui infettati in un certo momento, assumendo che i singoli individui interagiscono in un certo modo. 
 """
 
-# ╔═╡ ac4f6944-08d9-11eb-0b3c-f5e0a8b8c17e
+# ╔═╡ dd5d1601-b8b0-46bd-864f-863f302d0548
+html"<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Complex_systems_organizational_map.jpg/1024px-Complex_systems_organizational_map.jpg width=500 >"
+
+# ╔═╡ 50689c9e-b9a7-4e20-875a-77ae9e6da5b0
 md"""
+In questo notebook, ci poniamo l'obiettivo di mostrare, in un caso molto semplice, come si possano derivare equazioni **deterministiche** per il comportamento _macroscopico_ di un sistema, a partire dal comportamento _microscopico_ e **probabilistico** dei singoli agenti. 
 
-In **individual-based** models, we literally specify the behaviour, or actions, of each individual in a set of rules. But often we are interested in a global picture of how the whole system, consisting of many individuals, evolves in time: how many infectious individuals there are in total at a given time, for example, or the behaviour of the whole stock market.
-
-In this notebook we will see how we can start from an individual-based probabilistic  (probabilistic) model, and how sometimes we can find **deterministic** equations for a **macroscopic** (system-level) description.
-
-Those macroscopic equations can either be in discrete time (**recurrence relations** or **difference equations**), or we can take a **continuous limit** and convert them into **ordinary differential equations**.
-
+Le equazioni macroscopiche possono essere a **tempo discreto** (nella forma di [equazioni di ricorrenza](https://it.wikipedia.org/wiki/Relazione_di_ricorrenza) oppure [equazioni alle differenze](https://it.wikipedia.org/wiki/Equazione_alle_differenze)), oppure a **tempo continuo** (nella forma di [equazioni differenziali](https://it.wikipedia.org/wiki/Equazione_differenziale)). 
 """
 
 # ╔═╡ 4ca399f4-8b45-11eb-2d2b-8189e04fc804
 md"""
-## Modelling time to success (or time to failure)
+## Modellare il tempo di successo o fallimento 
+
+Iniziamo con un modello molto semplice di **tempo di successo**. Supponiamo di giocare una partita in cui abbiamo una probabilità $p$ di successo ad ogni turno. Di quanti turni abbiamo mediamente bisogno prima di avere successo? Ad esempio, di quanti lanci di dado abbiamo bisogno prima di ottenere un 6? Quanti lanci di 2 dadi ci vorranno prima di ottenere un doppio 6?
+
+Il precedente problema può tornare utile come modello di molte situazioni diverse, ad esempio: il tempo di guasto di una lampadina o di un macchinario; il tempo di decadimento di un nucleo radioattivo; il tempo di guarigione da un'infezione, ecc.
+
+
 """
 
-# ╔═╡ 57080632-8b45-11eb-1003-05afb2331b25
+# ╔═╡ 34895756-6c21-497f-a603-1aaa07eb9097
+html"<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Carbonfilament.jpg/1024px-Carbonfilament.jpg width=300>"
+
+# ╔═╡ 43745d01-7906-4722-a427-244b7465ca4a
 md"""
-Let's start with a very simple model of **time to success**. Suppose we are playing a game in which we have a probability $p$ of success on each turn. How many turns do we need until we succeed? For example, how many rolls of a die do we need until we roll a 6? How many rolls of 2 dice until we get a double 6?
-"""
+Più precisamente, la domanda di base assume la forma seguente:
+> Supponiamo di avere $N$ lampadine che funzionano correttamente il giorno $0$. 
+> - Se, ogni giorno, ogni lampadina ha una probabilità $p$ di guastarsi, quante sono ancora funzionanti al giorno $t$?
+> - Quanto durerà in media una determinata lampadina?
+> - E se le lampadine si guastassero esattamente a mezzanotte? Potremmo immaginare un modello più realistico?
 
-# ╔═╡ 139ecfec-8b46-11eb-2649-2f77833d749a
-md"""
-This can be used as a model in many different situations, for example: Time to failure of a light bulb or a piece of machinery; time for a radioactive nucleus to decay; time to recover from an infection, etc.
-"""
-
-# ╔═╡ f9a75ac4-08d9-11eb-3167-011eb698a32c
-md"""
-
-The basic question is:
-
-> Suppose we have $N$ light bulbs that are working correctly on day $0$. 
-> 
-> - If each bulb has probability $p$ to fail on each day, how many are still working at day number $t$?
-> - How long, on average, will a given bulb last?
-> - And, do light bulbs really fail exactly at midnight each night? Can you imagine a more realistic model?
-
-
-
-As usual we will take a computational thinking point of view: let's code up the simulation and plot the results. Then we can step back and 
+Come al solito, adotteremo un punto di vista computazionale: scriveremo il codice della simulazione e ne visualizzeremo i risultati. 
 """
 
 # ╔═╡ 17812c7c-8cac-11eb-1d0a-6512415f6938
 md"""
-## Visualizing component failure
+### Visualizzare il fallimento di componenti
 """
 
 # ╔═╡ 179a4db2-8cac-11eb-374f-0f24dc81ebeb
 md"""
-M= $(@bind M Slider(2:20, show_value=true, default=8))
+ $M=$ $(@bind M Slider(2:20, show_value=true, default=8))
 """
 
 # ╔═╡ 17cf895a-8cac-11eb-017e-c79ffcab60b1
 md"""
-p= $(@bind prob Slider(0.01:.01:1, show_value=true, default=.1))
+ $p =$ $(@bind prob Slider(0.01:.01:1, show_value=true, default=.1))
 
-t = $(@bind tt Slider(1:100, show_value=true, default=1))
+ $tₛ =$ $(@bind tₛ Slider(1:100, show_value=true, default=20))
 """
 
 # ╔═╡ a38fe2b2-8cae-11eb-19e8-d563e82855d3
@@ -126,24 +103,18 @@ gr()
 # ╔═╡ 18da7920-8cac-11eb-07f4-e109298fd5f1
 begin
 	rectangle(w, h, x, y) = (x .+ [0, w, w, 0], y .+ [0, 0, h, h])
-	
 	circle(r, x, y) = (θ = range(0, 2π, length=30); (x .+ r .* cos.(θ), y .+ r .* sin.(θ)))
 end
 
 # ╔═╡ a9447530-8cb6-11eb-38f7-ff69a640e3c4
 md"""
-## String interpolation
-"""
+## Interpolazione di stringhe
 
-# ╔═╡ c1fde6ba-8cb6-11eb-2170-af6bc84c01a7
-md"""
-As an aside, how could we display a picture of Daniel Bernoulli and resize it in Pluto? To do so we use a piece of HTML, which we represent as a string. We need to substitute the *value* of a Julia variable into the string, which we do with string interpolation, with the syntax `$(variable)` inside the string.
-		
-Then we convert the string to HTML with the `HTML(...)` constructor:
+Come possiamo visualizzare un'immagine di Daniel Bernoulli e ridimensionarla in Pluto? Per farlo utilizziamo del codice HTML, che rappresentiamo come una stringa. Per sostituire il *valore* di una variabile in Julia all'interno di una stringa, usiamo l'interpolazione di stringhe scrivendo `$(nome_variabile)` all'interno della stringa stessa. Dopodiché, convertiamo la stringa in codice HTML con la funzione `HTML(...)`:
 """
 
 # ╔═╡ 18755e3e-8cac-11eb-37bf-1dfa5fbe730a
-@bind bernoulliwidth Slider(10:10:500, show_value=true)
+@bind bernoulliwidth Slider(10:10:500, show_value=true, default=130)
 
 # ╔═╡ f947a976-8cb6-11eb-2ae7-59eba4c6f40f
 url = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/ETH-BIB-Bernoulli%2C_Daniel_%281700-1782%29-Portrait-Portr_10971.tif_%28cropped%29.jpg/440px-ETH-BIB-Bernoulli%2C_Daniel_%281700-1782%29-Portrait-Portr_10971.tif_%28cropped%29.jpg"
@@ -153,7 +124,7 @@ s = "<img src=$(url) width=$(bernoulliwidth) >"
 
 # ╔═╡ fe53ee0c-8cb6-11eb-19bc-2976da1abe16
 md"""
-Note that we can use *three* sets of double quotes (`"`) to represent a **multi-line** string, or to enclose another string that itself contains quotes.
+Notare che potremmo usare tre apici consecutivi (`\"\""`) per rappresentare stringhe su più righe o per includere una stringa che include essa estessa degli apici (come stiamo facendo nel sorgente di questa cella!)
 """
 
 # ╔═╡ 1894b388-8cac-11eb-2287-97f985df1fbd
@@ -390,13 +361,11 @@ function simulate(N, p)
 	
 	while any( v .== 0 ) && t < 100
 		t += 1
-		
 		for i= 1:N, j=1:N
 			if rand() < p && v[i,j]==0
 				v[i,j] = t
 			end					    
 		end
-		
 	end
 	
 	return v
@@ -409,42 +378,37 @@ simulation = simulate(M, prob)
 begin
 	w = .9
 	h = .9
-	c = [RGB(0,1,0), RGB(1,0,0), :purple][1 .+ (simulation .< tt) .+ (simulation .<  (tt.-1))] 
+	c = [:lightgreen, :red, :purple][1 .+ (simulation .<  (tₛ .- 1)) .+ (simulation .< tₛ)] 
 	
 	plot(ratio=1, legend=false, axis=false, ticks=false)
-	
 	for i=1:M, j=1:M
 		plot!(rectangle(w, h, i, j), c=:black, fill=true, alpha=0.5)
 		plot!(circle(0.3, i+0.45, j+0.45), c = c[i, j], fill=true, alpha=0.5)
 	end
-	
 	for i=1:M, j=1:M
-		if simulation[i,j] < tt
+		if simulation[i,j] < tₛ
 	       annotate!(i+0.45, j+0.5, text("$(simulation[i, j])", 7, :white))
 		end
 	end
     
-	
-	plot!(lims=(0.5, M+1.1), title="time = $(tt-1);  failed count: $(sum(simulation.<tt))")
-	
+	plot!(lims=(0.5, M+1.1), title="time = $(tₛ-1);  failed count: $(sum(simulation.<tₛ))")
 end
 
 # ╔═╡ 17fe87a0-8cac-11eb-2938-2d9cd19ecc0f
 begin
-	
 	plot(size=(500, 300))
 	cdf= [ count(simulation .≤ i) for i=0:100] 
-	bar!(cdf, c=:purple, legend=false, xlim=(0,tt),alpha=0.8)
+	bar!(cdf, c=:purple, legend=false, xlim=(0, tₛ),alpha=0.8)
 end
 
 # ╔═╡ 1829091c-8cac-11eb-1b77-c5ed7dd1261b
 begin
 	newcdf = [ count(simulation .> i) for i=0:100] 
-	bar!( newcdf, c=RGB(0,1,0), legend=false, xlim=(0,tt),alpha=0.8)
+	bar!( newcdf, c=:lightgreen, legend=false, xlim=(0, tₛ), alpha=0.8)
 end
 
 # ╔═╡ 1851dd6a-8cac-11eb-18e4-87dbe1714be0
-bar(countmap(simulation[:]), c=:red, legend=false, xlim=(0, tt+.5), size=(500, 300))
+bar(countmap(simulation[:]), c=:red, legend=false, xlim=(0, tₛ+.5), size=(500, 300))
 
 # ╔═╡ ba7ffe78-0845-11eb-2847-851a407dd2ec
 bernoulli(p) = rand() < p
@@ -1696,31 +1660,28 @@ version = "0.9.1+5"
 # ╠═9a0cec14-08db-11eb-3cfa-4d1c327c63f1
 # ╟─fb6cdc08-8b44-11eb-09f5-43c167aa53fd
 # ╟─f3aad4f0-8cc2-11eb-1a25-535297327c65
-# ╠═b6b055b6-8cae-11eb-29e5-b507c1a2b9bf
-# ╟─bcfaedfa-8cae-11eb-10a1-cb7be7dc2e6b
 # ╟─d2c19564-8b44-11eb-1077-ddf6d1395b59
-# ╟─ac4f6944-08d9-11eb-0b3c-f5e0a8b8c17e
+# ╟─dd5d1601-b8b0-46bd-864f-863f302d0548
+# ╟─50689c9e-b9a7-4e20-875a-77ae9e6da5b0
 # ╟─4ca399f4-8b45-11eb-2d2b-8189e04fc804
-# ╟─57080632-8b45-11eb-1003-05afb2331b25
-# ╟─139ecfec-8b46-11eb-2649-2f77833d749a
-# ╟─f9a75ac4-08d9-11eb-3167-011eb698a32c
+# ╟─34895756-6c21-497f-a603-1aaa07eb9097
+# ╟─43745d01-7906-4722-a427-244b7465ca4a
 # ╟─17812c7c-8cac-11eb-1d0a-6512415f6938
 # ╠═178631ec-8cac-11eb-1117-5d872ba7f66e
 # ╟─179a4db2-8cac-11eb-374f-0f24dc81ebeb
-# ╠═17bbf532-8cac-11eb-1e3f-c54072021208
 # ╟─17cf895a-8cac-11eb-017e-c79ffcab60b1
+# ╠═17bbf532-8cac-11eb-1e3f-c54072021208
 # ╠═a38fe2b2-8cae-11eb-19e8-d563e82855d3
 # ╠═17e0d142-8cac-11eb-2d6a-fdf175f5d419
 # ╠═18da7920-8cac-11eb-07f4-e109298fd5f1
-# ╟─17fe87a0-8cac-11eb-2938-2d9cd19ecc0f
-# ╟─1829091c-8cac-11eb-1b77-c5ed7dd1261b
-# ╟─1851dd6a-8cac-11eb-18e4-87dbe1714be0
+# ╠═17fe87a0-8cac-11eb-2938-2d9cd19ecc0f
+# ╠═1829091c-8cac-11eb-1b77-c5ed7dd1261b
+# ╠═1851dd6a-8cac-11eb-18e4-87dbe1714be0
 # ╟─a9447530-8cb6-11eb-38f7-ff69a640e3c4
-# ╟─c1fde6ba-8cb6-11eb-2170-af6bc84c01a7
 # ╠═18755e3e-8cac-11eb-37bf-1dfa5fbe730a
-# ╠═f947a976-8cb6-11eb-2ae7-59eba4c6f40f
+# ╟─f947a976-8cb6-11eb-2ae7-59eba4c6f40f
 # ╠═5a0b407e-8cb7-11eb-0c0d-c7767a6b0a1d
-# ╟─fe53ee0c-8cb6-11eb-19bc-2976da1abe16
+# ╠═fe53ee0c-8cb6-11eb-19bc-2976da1abe16
 # ╠═1894b388-8cac-11eb-2287-97f985df1fbd
 # ╠═86299112-8cc6-11eb-257a-9d803feac359
 # ╠═9eb69e94-8cc6-11eb-323b-5587cc743571
