@@ -59,7 +59,7 @@ begin
 	synthetic_data = rand(3, 90)
 	synthetic_data = hcat(synthetic_data, 0.15 .+ .75*rand(3, 10))
 	blue_points = 1:90
-	red_points = 90:100
+	red_points = 91:100
 end;
 
 # ╔═╡ ece4c162-e14c-46d2-9885-016ac98c3fb2
@@ -123,9 +123,6 @@ end
 
 # ╔═╡ 7d6dd7ee-ac9f-413e-8722-424b9453f754
 show_flag( flag2 )
-
-# ╔═╡ 66a3e783-d8f1-463c-8560-2be7fb5e627c
-show_flag( outer( 2:1, 2:1 ) )
 
 # ╔═╡ cdbe1d8e-f905-11ea-3884-efeeef386dda
 md"""
@@ -199,7 +196,7 @@ begin
 	xs, ys = noisy_image[1, :], noisy_image[2, :]
 	xx, yy = image[1, :], image[2, :]
 	
-	scatter(xs, ys, label="noisy", m=:., alpha=0.3, ms=4, ratio=1)
+	scatter(xs, ys, label="noisy", m=:., alpha=0.3, ms=4, ratio=1, c=:blue)
 	scatter!(xx, yy, label="rango 1", ms=3, alpha=0.3, 
 			size=(500, 400), m=:square, c=:red, leg=:bottomright)
 	title!("Una matrice di rango 1 è una linea retta")
@@ -1899,7 +1896,6 @@ version = "0.9.1+5"
 # ╠═2f256a36-e235-40b5-98f9-f2cf3890be4b
 # ╠═678a0151-0608-4147-b21f-69f3f4f3a22b
 # ╠═7d6dd7ee-ac9f-413e-8722-424b9453f754
-# ╠═66a3e783-d8f1-463c-8560-2be7fb5e627c
 # ╟─cdbe1d8e-f905-11ea-3884-efeeef386dda
 # ╠═9ad13804-815c-11eb-0253-8f8baf15eee3
 # ╠═38adc490-f867-11ea-1de5-3b633aff7c97

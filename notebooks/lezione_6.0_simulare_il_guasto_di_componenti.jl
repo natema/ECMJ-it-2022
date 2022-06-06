@@ -156,10 +156,7 @@ HTML("3 $("<br>"^num_breaks) 4")
 # ╔═╡ 71fbc75e-8bf3-11eb-3ac9-dd5401033c78
 md"""
 ## Variabili aleatorie di Bernoulli 
-"""
 
-# ╔═╡ 7c01f6a6-8bf3-11eb-3c4d-ad7e206a9277
-md"""
 Una [variabile aleatoria di Bernoulli](https://it.wikipedia.org/wiki/Distribuzione_di_Bernoulli) modella il lancio di una moneta: è uguale a 1 (testa) con probabilità $p$, e $0$ (croce) con probabilità $1-p$. 
 """
 
@@ -176,28 +173,23 @@ Quali sono la media e la varianza del campione `filps`?
 # ╔═╡ 4edaec4a-8bf4-11eb-3094-010ebe9b56ab
 md"""
 ### Costruire il tipo `Bernoulli`
-"""
 
-# ╔═╡ 2f730912-1a6c-4c87-bb79-2e4cc4dd34c9
-md"""
-# WORK IN PROGRESS!
-"""
-
-# ╔═╡ 9d66e31e-8cad-11eb-3ad0-3980ba66cb0e
-md"""
-
-Currently we need one function for sampling from a Bernoulli random variable, a different function to calculate its mean, a different function for its standard deviation, etc. 
-
-From a mathematical point of view we have the concept "Bernoulli random variable" and we are calculating properties of that concept. Computationally we can *do the same thing!* by creating a new *object* to represent "a Bernoulli random variable".
+Sopra abbiamo usato una funzione per generare una variabile aleatoria di Bernoulli, e altre due funzioni per calcolarne la media e la varianza. 
+Dal punto di vista matematico, la media e la varianza della variabile aleatoria sono proprietà di quest'ultima. 
+Nel [notebook sulle strutture](https://natema.github.io/ECMJ-it-2022/lectures/lezione_4.2_strutture.jl) abbiamo visto come rendere quest'ultima osservazione concreta implementando un nuovo _tipo di oggetto_:
 """
 
 # ╔═╡ 8405e310-8bf8-11eb-282b-d93b4fc683aa
-struct Bernoulli   # weighted coin flip
+"""
+Lancio di una moneta che dà testa con probabilità ``p``.
+"""
+struct Bernoulli 
 	p::Float64
 end
 
 # ╔═╡ af2594c4-8cad-11eb-0fff-f59e65102b3f
 md"""
+Tra i metodi di cui vorremmo disponesse il tipo che stiamo definendo, 
 We want to be able to sample from it, using `rand`, and take its `mean`.
 To do so we will **extend** (sometimes called "overload") the `rand` function from Julia's `Base` library, and the `mean` function from the `Statistics` standard library. Note that we are *adding methods* to these functions; you will do this in the homework.
 """
@@ -1680,7 +1672,6 @@ version = "0.9.1+5"
 # ╠═d5cffd96-8cc6-11eb-2714-975d46d4fa27
 # ╠═fc715452-8cc6-11eb-0246-e941f7698cfe
 # ╟─71fbc75e-8bf3-11eb-3ac9-dd5401033c78
-# ╟─7c01f6a6-8bf3-11eb-3c4d-ad7e206a9277
 # ╠═ba7ffe78-0845-11eb-2847-851a407dd2ec
 # ╟─dcd279b0-8bf3-11eb-0cb9-95f351626ed1
 # ╠═b6786ec8-8bf3-11eb-1347-61f231fd3b4c
@@ -1688,10 +1679,8 @@ version = "0.9.1+5"
 # ╠═0e7a04a4-8bf4-11eb-2e9d-fb48c23b8d8c
 # ╠═093275e4-8cc8-11eb-136f-3ffe522c4125
 # ╟─4edaec4a-8bf4-11eb-3094-010ebe9b56ab
-# ╟─2f730912-1a6c-4c87-bb79-2e4cc4dd34c9
-# ╟─9d66e31e-8cad-11eb-3ad0-3980ba66cb0e
 # ╠═8405e310-8bf8-11eb-282b-d93b4fc683aa
-# ╟─af2594c4-8cad-11eb-0fff-f59e65102b3f
+# ╠═af2594c4-8cad-11eb-0fff-f59e65102b3f
 # ╠═8aa60da0-8bf8-11eb-0fa2-11aeecb89564
 # ╟─8d56b6d2-8cc8-11eb-0dbd-b3533dde4aa3
 # ╠═a034c2a6-8bf8-11eb-0f06-0b35a0e8e68d

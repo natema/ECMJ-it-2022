@@ -109,6 +109,12 @@ md"""
 - `distinguishable_colors(n)`: Crea un vettore di `n` colori distinti
 """
 
+# ╔═╡ f1842d55-5aba-4961-b82b-0a786510f591
+distinguishable_colors(3)
+
+# ╔═╡ c10e51f4-73bc-44cf-a124-e162ea0abc4b
+typeof(distinguishable_colors(3))
+
 # ╔═╡ 97e9017b-0b8d-4df2-8029-1a31cf04ffcd
 rand(distinguishable_colors(3), 10)
 
@@ -124,7 +130,7 @@ Passiamo in rassegna vari modi di usarla per generare oggetti casuali:
 """
 
 # ╔═╡ f49191a2-86b1-11eb-3eab-b392ba058415
-rand(1:6)
+rand(1:.1:6)
 
 # ╔═╡ 1abda6c4-86b2-11eb-2aa3-4d1148bb52b7
 rand([2, 3, 5, 7, 11])
@@ -132,11 +138,14 @@ rand([2, 3, 5, 7, 11])
 # ╔═╡ 30b12f28-86b2-11eb-087b-8d50ec429b89
 rand("MIT")
 
+# ╔═╡ 34c0d552-7fa4-49b5-88b4-93fa3acdb076
+['a':2:'z'...]
+
 # ╔═╡ 4ce946c6-86b2-11eb-1820-0728798665ab
-rand('a':'z')
+rand('a':2:'z')
 
 # ╔═╡ fae3d138-8743-11eb-1014-b3a2a9b49aba
-typeof('a':'z')
+typeof('a':2:'z')
 
 # ╔═╡ 6cdea3ae-86b2-11eb-107a-17bea3f54bc9
 rand()   # numero casuale tra 0 e 1
@@ -179,6 +188,22 @@ map(1:10) do x
 	x*rand()
 end
 
+# ╔═╡ 9e54d071-16c4-4837-8146-c4929461390e
+md"""
+```
+function f(x)
+	...
+end
+S_modified =map(f, S)
+```
+equivalente
+```
+S_modified = map(S) do x
+	...
+end
+```
+"""
+
 # ╔═╡ c433104e-86b3-11eb-20bb-af608bb281cc
 md"""
 Vediamo adesso un esempio utilizzando delle immagini: 
@@ -196,7 +221,7 @@ begin
 end
 
 # ╔═╡ e04f3828-8723-11eb-3452-09f821391ad0
-rand( [head, tail], 5, 5)
+rand( [head, tail], 3, 5)
 
 # ╔═╡ b7793f7a-8726-11eb-11d8-cd928f1a3645
 md"""
@@ -243,14 +268,18 @@ md"""
 Supponiamo di voler modellare una moneta che restituisce testa con probabilità $p=.7$.
 """
 
+# ╔═╡ 35366d02-c7b2-4783-b5d8-c802d35c60f5
+2 < 1 ? "yes" : "no"
+
 # ╔═╡ 062b400a-8729-11eb-16c5-235cef648edb
+
 function simple_weighted_coin()
+	# outcome = condition ? if_yes : if_Not
 	outcome = if rand(1:10) ≤ 7
 		"heads"
 	else      
 		"tails"
 	end
-	
 	return outcome
 end
 
@@ -270,13 +299,14 @@ Notare che mentre gli _`if` statement_ restituiscono un valore in Julia, per i `
 
 # ╔═╡ 97cb3dde-8746-11eb-0b00-690f20cb26dc
 result = for i in 1:10
+	1
 end
 
 # ╔═╡ 9d8cdc8e-8746-11eb-2b9a-b30a52026f09
 result == nothing
 
 # ╔═╡ 81a30c9e-8746-11eb-38c8-9be4f6ba2e80
-simple_weighted_coin2()
+countmap([ simple_weighted_coin2() for i in 1:1000000 ] )
 
 # ╔═╡ 5ea5838a-8729-11eb-1749-030533fb0656
 md"""
@@ -290,6 +320,9 @@ rand() < π/10
 md"""
 Definiamo una funzione generale:
 """
+
+# ╔═╡ 5081e73f-ddf1-4b6b-b0b0-5c7d619076fe
+countmap([ rand() < π/10 for i in 1:10^8 ] )
 
 # ╔═╡ a4870b14-8729-11eb-20ee-e531d4a7108d
 bernoulli(p) = rand() < p
@@ -351,7 +384,7 @@ md"""
 """
 
 # ╔═╡ d0c9814e-86b1-11eb-2f29-1d041bccc649
-roll_dice(n) = sum( rand(1:12, n) ) # $n$ definito interattivamente sotto
+roll_dice(n) = sum( rand(1:6, n) ) # $n$ definito interattivamente sotto
 
 # ╔═╡ 7a16b674-86b7-11eb-3aa5-83712cdc8580
 trials = 10^6
@@ -359,6 +392,11 @@ trials = 10^6
 # ╔═╡ 2bfa712a-8738-11eb-3248-6f9bb93154e8
 md"""
 ### Convergenza di distribuzioni 
+"""
+
+# ╔═╡ a15fc456-8738-11eb-25bd-b15c2b16d461
+md"""
+Anziché considerare un _diagramma a barre_ (bar chart), come fatto sopra, consideriamo ora un [istogramma](https://it.wikipedia.org/wiki/Istogramma) del lancio degli $n$ dadi considerati. Ricordiamo che tale tipo di grafico conta il numero di elementi che ricadono all'interno di intervalli predeterminati. Quando il numero di dati è piccolo, il grafico appare simile ad un bar chart, ma al crescere di $n$ l'istogramma appare via via più _liscio_:
 """
 
 # ╔═╡ 6c133ab6-86b7-11eb-15f6-7780da5afc31
@@ -374,11 +412,6 @@ data = [experiment() for t in 1:trials]
 
 # ╔═╡ e4abcbf4-86b8-11eb-167a-d97c61e07837
 data
-
-# ╔═╡ a15fc456-8738-11eb-25bd-b15c2b16d461
-md"""
-Anziché considerare un _diagramma a barre_ (bar chart), come fatto sopra, consideriamo ora un [istogramma](https://it.wikipedia.org/wiki/Istogramma) del lancio degli $n$ dadi considerati. Ricordiamo che tale tipo di grafico conta il numero di elementi che ricadono all'interno di intervalli predeterminati. Quando il numero di dati è piccolo, il grafico appare simile ad un bar chart, ma al crescere di $n$ l'istogramma appare via via più _liscio_:
-"""
 
 # ╔═╡ 514f6be0-86b8-11eb-30c9-d1020f783afe
 histogram(data, alpha=0.5, legend=false, bins=200, c=:blue, title=L"$n=$"*"$n")
@@ -405,8 +438,10 @@ Al fine di **normalizzare** l'asse $y$ dell'istogramma, è sufficiente passare l
 
 # ╔═╡ 14f0a090-8737-11eb-0ccf-391249267401
 histogram(data, alpha=0.5, legend=false, bins=50, norm=true,
-			c=:blue, title=L"$n =$"*" $n", ylims=(0, 0.07))  
+			c=:blue, title="Istograma per " * L"n ="*" $n", ylims=(0, 0.07))  
 
+# ╔═╡ e84186d0-7804-478c-b30c-dd86c278ba82
+6*38
 
 # ╔═╡ e305467e-8738-11eb-1213-eb11aaebe151
 md"""
@@ -457,8 +492,8 @@ Vediamo brevemente alcune opzioni che possiamo passare alla funzione `histogram`
 
 # ╔═╡ 766fa4da-6983-438a-a396-34bcebd5cf5e
 begin
-	histogram(.5*rand(100), bins=[0:.1:.5...], norm=true)
-	histogram!(.5 .+ .5*rand(100), bins=[.5:.05:1...], norm=true)
+	histogram(.5*rand(100), bins=[0:.1:.5...], norm=true, c=:blue)
+	histogram!(.5 .+ .5*rand(100), bins=[.5:.05:1...], norm=true, c=:red)
 end
 
 # ╔═╡ 73b54885-063e-4de7-81f9-7054bb1f7742
@@ -470,15 +505,15 @@ md"""
 Una lista dei nomi dei colori forniti dal pacchetto `Colors.jl` si può trovare [nella rispettiva pagina della documentazione](http://juliagraphics.github.io/Colors.jl/stable/namedcolors/); in alternativa si può specificare un colore come oggetto `RGB`, per esempio:
 """
 
+# ╔═╡ b25033a3-4d49-44ae-8523-bad9641f3317
+random_vec = rand(100)
+
 # ╔═╡ 467f3ce5-f177-4648-86f2-65359f128ac8
 md"""
  $(r, g, b)=$ ( $(@bind r Slider(0:.1:1, show_value=true, default=.3)),
 				$(@bind g Slider(0:.1:1, show_value=true, default=.3)), 
 				$(@bind b Slider(0:.1:1, show_value=true, default=.7)))
 """
-
-# ╔═╡ b25033a3-4d49-44ae-8523-bad9641f3317
-random_vec = rand(100)
 
 # ╔═╡ 606e459c-2f4c-4915-ba7c-82627a8a9348
 histogram(random_vec, c=RGB(r, g, b))
@@ -494,15 +529,18 @@ Gradi di libertà `dof` = $(@bind dof Slider(1:50, show_value=true, default=3))
 """
 
 # ╔═╡ e01b6f70-873c-11eb-04a1-ad8e86578982
-chisq_data = rand( Chisq(dof), 100000 )
+chisq_data = rand( Chisq(dof), 100_000 )
 
 # ╔═╡ b5251f76-873c-11eb-38cb-7db300c8fe3c
-histogram( chisq_data, norm=true, bins=100, size=(500, 300), leg=false, alpha=0.5,
-	xlims=(0, 10*√(dof)))
+h_chi = histogram( chisq_data, norm=true, bins=200, size=(500, 300), leg=false, alpha=0.5,
+	xlims=(0, 10*√(dof)));
 
 # ╔═╡ da62fd1c-873c-11eb-0758-e7cb48e964f1
-histogram( [ sum( randn().^2 for _ in 1:dof ) for _ in 1:100000 ], norm=true,
-	alpha=0.5, leg=false)
+h_emp = histogram( [ sum( randn().^2 for _ in 1:dof ) for _ in 1:100_000 ], bins=200, norm=true, size=(500, 300), xlims=(0, 10*√(dof)),
+	alpha=0.5, leg=false);
+
+# ╔═╡ 87e2bc17-6103-433d-a1d0-7bace42299fb
+plot(h_chi, h_emp)
 
 # ╔═╡ 34bee941-9599-4085-8f56-760b8cc6e9d6
 md"""
@@ -522,6 +560,23 @@ Nel nostro caso, si tratta della traiettoria di un punto $(x,y,z)$ nello spazio 
 
 Possiamo definire una struct i cui campi possono essere passati come _keyword_ tramite la macro `@kwdef`:
 """
+
+# ╔═╡ d94d5cad-30a1-47ac-9beb-4dba8145e9e4
+function hello(x ; string = "World")
+	return "Hello " * string
+end
+
+# ╔═╡ 28bcc4d4-8d0b-459a-a4df-255b60dec4ae
+hello(2, string = "Julia!")
+
+# ╔═╡ f6aa61ae-e991-4da1-a105-1848847d1017
+Base.@kwdef struct Point
+	x::Int = 3 
+	y::Int = 3
+end
+
+# ╔═╡ 23c22243-d45d-4810-96e8-4530a854cb59
+Point(y = 4)
 
 # ╔═╡ c33e7902-c79c-4e65-bc20-91dbcb5976f6
 Base.@kwdef mutable struct Lorenz
@@ -588,7 +643,7 @@ md"""
 
 # ╔═╡ e8b34440-85e7-4fa9-b25b-bf54f4b73022
 begin 
-	param_attractor = Lorenz(σ =σ₁, ρ = ρ₁, β = β₁, dt = .01)
+	param_attractor = Lorenz(σ =σ₁, ρ = ρ₁, β = β₁)
 	getpos(l::Lorenz) = (l.x, l.y, l.z)
 	traiettoria = zeros(Float64, 3, 500)
 	traiettoria[:, 1] .= getpos(param_attractor)
@@ -2102,12 +2157,15 @@ version = "0.9.1+5"
 # ╟─a03005f0-f989-4642-8b8f-000b86466a08
 # ╠═48028d89-d423-4414-a1ae-a3a161b6001c
 # ╟─3c115146-ce4d-40de-84d1-bec3a4e8c7e3
+# ╠═f1842d55-5aba-4961-b82b-0a786510f591
+# ╠═c10e51f4-73bc-44cf-a124-e162ea0abc4b
 # ╠═97e9017b-0b8d-4df2-8029-1a31cf04ffcd
 # ╟─db2d25de-86b1-11eb-0c78-d1ee52e019ca
 # ╟─e33fe4c8-86b1-11eb-1031-cf45717a3dc9
 # ╠═f49191a2-86b1-11eb-3eab-b392ba058415
 # ╠═1abda6c4-86b2-11eb-2aa3-4d1148bb52b7
 # ╠═30b12f28-86b2-11eb-087b-8d50ec429b89
+# ╠═34c0d552-7fa4-49b5-88b4-93fa3acdb076
 # ╠═4ce946c6-86b2-11eb-1820-0728798665ab
 # ╠═fae3d138-8743-11eb-1014-b3a2a9b49aba
 # ╠═6cdea3ae-86b2-11eb-107a-17bea3f54bc9
@@ -2120,6 +2178,7 @@ version = "0.9.1+5"
 # ╠═ecf66915-67ba-44ce-afa4-cb48856bcf2a
 # ╟─09296e06-3905-4836-b524-6ee7f0102e8a
 # ╠═0de6f23e-86b2-11eb-39ff-318bbc4ecbcf
+# ╟─9e54d071-16c4-4837-8146-c4929461390e
 # ╟─c433104e-86b3-11eb-20bb-af608bb281cc
 # ╠═78dc94e2-8723-11eb-1ff2-bb7104b62033
 # ╠═bb1465c4-8723-11eb-1abc-bdb5a7028cf2
@@ -2135,6 +2194,7 @@ version = "0.9.1+5"
 # ╠═e2037806-8727-11eb-3c36-1500f1dd545b
 # ╟─57125768-8728-11eb-3c3b-1dd37e1ac189
 # ╟─6a439c78-8728-11eb-1969-27a19d254704
+# ╠═35366d02-c7b2-4783-b5d8-c802d35c60f5
 # ╠═062b400a-8729-11eb-16c5-235cef648edb
 # ╠═7c099606-8746-11eb-37fe-c3befde06e9d
 # ╟─2a81ba88-8729-11eb-3dcb-1db26e468066
@@ -2144,6 +2204,7 @@ version = "0.9.1+5"
 # ╟─5ea5838a-8729-11eb-1749-030533fb0656
 # ╠═806e6aae-8729-11eb-19ea-33722c60edf0
 # ╟─9a426a20-8729-11eb-0c0f-31e1d4dc91bc
+# ╠═5081e73f-ddf1-4b6b-b0b0-5c7d619076fe
 # ╠═a4870b14-8729-11eb-20ee-e531d4a7108d
 # ╠═081e3796-8747-11eb-32ec-dfd998605737
 # ╟─008a40d2-872a-11eb-224d-5b3331f29c99
@@ -2164,13 +2225,14 @@ version = "0.9.1+5"
 # ╠═e8e811de-86b6-11eb-1cbf-6d4aeaee510a
 # ╟─2bfa712a-8738-11eb-3248-6f9bb93154e8
 # ╠═e4abcbf4-86b8-11eb-167a-d97c61e07837
-# ╟─6c133ab6-86b7-11eb-15f6-7780da5afc31
 # ╟─a15fc456-8738-11eb-25bd-b15c2b16d461
+# ╟─6c133ab6-86b7-11eb-15f6-7780da5afc31
 # ╠═514f6be0-86b8-11eb-30c9-d1020f783afe
 # ╟─dd753568-8736-11eb-1f20-1b81110ae807
 # ╠═8ab9001a-8737-11eb-1009-5717fbe83af7
 # ╟─f8b2dd20-8737-11eb-1593-43659c693109
 # ╠═14f0a090-8737-11eb-0ccf-391249267401
+# ╠═e84186d0-7804-478c-b30c-dd86c278ba82
 # ╟─e305467e-8738-11eb-1213-eb11aaebe151
 # ╟─e8341288-8738-11eb-27ae-0795fa7e4a7e
 # ╠═07e8ae34-873b-11eb-1df2-175392ac4678
@@ -2183,17 +2245,22 @@ version = "0.9.1+5"
 # ╟─e0a1863e-8735-11eb-1182-1b3c59b1e05a
 # ╠═766fa4da-6983-438a-a396-34bcebd5cf5e
 # ╟─73b54885-063e-4de7-81f9-7054bb1f7742
-# ╟─467f3ce5-f177-4648-86f2-65359f128ac8
 # ╠═b25033a3-4d49-44ae-8523-bad9641f3317
+# ╟─467f3ce5-f177-4648-86f2-65359f128ac8
 # ╠═606e459c-2f4c-4915-ba7c-82627a8a9348
 # ╟─be6e4c00-873c-11eb-1413-5326aba54216
 # ╟─9a1136c2-873c-11eb-124f-c3939972ce4a
 # ╠═e01b6f70-873c-11eb-04a1-ad8e86578982
 # ╠═b5251f76-873c-11eb-38cb-7db300c8fe3c
 # ╠═da62fd1c-873c-11eb-0758-e7cb48e964f1
+# ╠═87e2bc17-6103-433d-a1d0-7bace42299fb
 # ╟─34bee941-9599-4085-8f56-760b8cc6e9d6
 # ╟─4efc394c-9f05-44b1-8604-dce664fb7b48
 # ╟─0d5b009f-236b-439c-a2a7-65e3bbc070e3
+# ╠═d94d5cad-30a1-47ac-9beb-4dba8145e9e4
+# ╠═28bcc4d4-8d0b-459a-a4df-255b60dec4ae
+# ╠═f6aa61ae-e991-4da1-a105-1848847d1017
+# ╠═23c22243-d45d-4810-96e8-4530a854cb59
 # ╠═c33e7902-c79c-4e65-bc20-91dbcb5976f6
 # ╠═551c4f5a-d53e-483a-8a1b-3e564915b1e8
 # ╟─c8014645-ae04-4c4b-a169-59db94203ec0
