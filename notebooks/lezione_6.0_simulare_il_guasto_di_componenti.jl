@@ -239,14 +239,14 @@ T = 100 # massimo valore di $t$
 md"""
  $N =$ $(@bind N Slider(1:1000, show_value=true, default=70))
 
- $p_r =$ $(@bind pᵣ Slider(0:0.01:1, show_value=true, default=0.25))
+ $p_r =$ $(@bind pᵣ Slider(0:0.01:.1, show_value=true, default=0.05))
 
  $t =$ $(@bind t Slider(1:T, show_value=true, default=1))
 """
 
 # ╔═╡ caa3faa2-08e5-11eb-33fe-cbbc00cfd459
 md"""
-## Evoluzione temporale della media
+### Evoluzione temporale della media
 
 Negli esempi precedenti abbiamo visto come la media sembri comportarsi in modo assai più deterministico nel tempo. Osserviamo che _in media_ il numero di lampadine ancora funzionanti $N_t$ si comporta come segue:
 
@@ -263,40 +263,41 @@ $$N_t = (1-p)^t \, N_0.$$
 
 # ╔═╡ 113c31b2-08ed-11eb-35ef-6b4726128eff
 md"""
-# WIP
-
-Let's compare the exact and numerical results:
+Confrontiamo la stima teorica coi risultati numerici: 
 """
 
 # ╔═╡ 6a545268-0846-11eb-3861-c3d5f52c061b
-exact = [N * (1-pp)^t for t in 0:T]
+exact = [N * (1-pᵣ)^t for t in 0:T]
 
 # ╔═╡ 3cd1ad48-08ed-11eb-294c-f96b0e7c33bb
 md"""
-They agree well, as they should. The agreement is expected to be better (i.e. the fluctuations smaller) for a larger population.
+Le due curve tendono a coincidere per $N$ (numero di individui nel sistema) via via più grandi.
 """
 
 # ╔═╡ f32b936a-8bf6-11eb-1dd7-fd8c5904bf1f
 md"""
-## Binomial distribution
+## Distribuzione binomiale
+
+Sia $N_0$ il numero di lampadine al tempo $0$. 
+Quante di esse saranno guaste al tempo $1$? 
+Chiamiamo quest'ultima quantità $\Delta N_0$. 
+Possiamo stimare che mediamente $\mathbb E[\Delta N_0] = pN_0$ (un'altra notazione usata in fisica per il valor medio $\mathbb E[\Delta N_0]$ è $\langle \Delta N_0 \rangle$). Tuttavia il valore effettivo di $\Delta N_0$ potrebbe discostarsi di molto da $pN_0$. Per esempio, potrebbe anche accadere che tutte le lampadine si guastino al primo passo, seppure si tratta di un evento molto improbabile:
 """
 
-# ╔═╡ f8f38028-8bf6-11eb-321b-8f91e38da495
+# ╔═╡ d5be7579-dc01-474d-911d-635fa6a89860
+let 
+	p = 0.05
+	N = 10
+	p^N # probabilità che tutte le `N` variabili `Bernoulli(p)` siano 1.
+end
+
+# ╔═╡ ec485765-8dd6-4d1d-802b-f14b1879e0df
 md"""
+La distribuzione del numero di lampadine che falliscono al primo passo può essere espressa con la sommatoria
 
-At time $0$ there are $N_0$ light bulbs. How many will turn ``{\color{red} \text{red}}`` (fail) at the first step? Let's call this $\Delta N_0$.
+$\Delta N_0 = \sum_{i=1}^{N_0} B_0^i$
 
-Intuitively, the mean is $\langle \Delta N_0 \rangle = p N_0$, but in fact $\Delta N_0$ is a random variable! In principle, it could be that no light bulbs fail, or all of them fail, but both of those events have very small probability.
-
-For each of the $N_0$ bulbs, $i=1, \ldots, N_0$, we have a Bernoulli random variable that tells us if bulb $i$ will fail. Let's call them we call $B_0^i$.
-Then 
-
-$$\Delta N_0 = \sum_{i=1}^{N_0} B_0^i$$
-"""
-
-# ╔═╡ 2de1ef6c-8cb1-11eb-3dd9-f3904ec1408b
-md"""
-Let's make a type to represent the sum of $N$ Bernoullis with probability $p$. This is called a **binomial random variable**. The *only* information that we require is just that, $N$ and $p$.
+dove $B_0^i$ è 1 se e solo se l'$i$-esima lampadine si guasta tra l'istante $0$ e l'istante $1$. La distribuzione precedente, definita unicamente dai parametri $p$ (probabilità di successo o fallimento) e $N$ (numero di tentativi), è detta [binomiale](https://it.wikipedia.org/wiki/Distribuzione_binomiale), e di seguito la implementeremo come un nuovo tipo: 
 """
 
 # ╔═╡ 48fb6ed6-8cb1-11eb-0894-b526e6c43b01
@@ -307,7 +308,7 @@ end
 
 # ╔═╡ 713a2644-8cb1-11eb-1904-f301e39d141e
 md"""
-Note that does not require (or even allow) methods at first, as some other languages would. You can add methods later, and other people can add methods too if they can load your package. (But they do *not* need to modify *your* code.)
+Notare che, a differenza di altri linguaggi, in Julia non è necessario fornire tale struttura di metodi, che possono essere aggiunti successivamente, anche da altri utenti che caricano il nostro codice come libreria, e che possono dunque estenderlo senza modificare la libreria originale. 
 """
 
 # ╔═╡ 511892e0-8cb1-11eb-3814-b98e8e0bbe5c
@@ -421,16 +422,16 @@ end
 # ╔═╡ cb278624-08dd-11eb-3375-276bfe8d7b3a
 begin
 	p = 0.05
-	plot(simulate_failure(p, T), label="Run 1", alpha=0.5, lw=2, m=:o)
-	plot!(simulate_failure(p, T), label="Run 2", alpha=0.5, lw=2, m=:o)
-	plot!(simulate_failure(p, T), label="Run 3", alpha=0.5, lw=2, m=:o)
+	plot(simulate_failure(pᵣ, T), label="Run 1", alpha=0.5, lw=2, m=:o)
+	plot!(simulate_failure(pᵣ, T), label="Run 2", alpha=0.5, lw=2, m=:o)
+	plot!(simulate_failure(pᵣ, T), label="Run 3", alpha=0.5, lw=2, m=:o)
 	
 	xlabel!("Tempo t")
 	ylabel!("Numero di lampadine funzionanti")
 end
 
 # ╔═╡ f3c85814-0846-11eb-1266-63f31f351a51
-all_data = [simulate_failure(p, T) for i in 1:30];
+all_data = [simulate_failure(pᵣ, T) for i in 1:30];
 
 # ╔═╡ 01dbe272-0847-11eb-1331-4360a575ff14
 begin
@@ -457,12 +458,12 @@ end
 
 # ╔═╡ 4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
 begin
-	plot(mean(all_data), m=:o, alpha=0.5, label="mean of stochastic simulations",
+	plot(mean(all_data), m=:o, alpha=0.5, label="Media delle simulazioni",
 		size=(500, 400))
-	plot!(exact, lw=3, alpha=0.8, label="deterministic model", leg=:right)
-	title!("Experiment vs. theory")
-	xlabel!("time")
-	ylabel!("""number of "greens" """)
+	plot!(exact, lw=3, alpha=0.8, label="Modello deterministico", leg=:right)
+	title!("Teoria vs simulazione")
+	xlabel!("Tempo")
+	ylabel!("Numero di \"sopravvissuti\"")
 end
 	
 
@@ -474,261 +475,161 @@ rand(Binomial(10, 0.25))
 
 # ╔═╡ dfdaf1dc-8cb1-11eb-0287-f150380d323b
 md"""
-N = $(@bind binomial_N Slider(1:100, show_value=true, default=1)); 
-p = $(@bind binomial_p Slider(0.0:0.01:1, show_value=true, default=0))
+ $N =$ $(@bind binomial_N Slider(1:100, show_value=true, default=10))
 
+ $p =$ $(@bind binomial_p Slider(0.0:0.01:1, show_value=true, default=0.25))
 """
 
 # ╔═╡ ca3db0a8-8cb1-11eb-2f7b-c9343a29ed02
 begin
-	binomial_data = [rand(Binomial(binomial_N, binomial_p)) for i in 1:10000]
-	
-	bar(countmap(binomial_data), alpha=0.5, size=(500, 300), leg=false, bin_width=0.5)
+	experiment() = rand(Binomial(binomial_N, binomial_p))
+	binomial_data = [experiment() for i in 1:10000]
+	histogram(binomial_data, alpha=0.5, size=(500, 300), leg=false, bar_width=.9)
 end
 
-# ╔═╡ b3ce9e3a-8c35-11eb-1ad0-81f9b09f963e
+# ╔═╡ 2d85b8f8-7cb5-4fb3-ab6b-51b7c5a6ea0b
 md"""
-Let's call $q := 1 - p$.
-Then for each bulb we are choosing either $p$ (failure) or $q$ (non-failure). (This is the same as flipping $n$ independent, weighted coins.)
+#### Domanda - Istogrammi
 
-The number of ways of choosing such that $k$ bulbs fail is given by the coefficient of $p^k$ in the expansion of $(p + q)^n$, namely the **binomial coefficient**
-
-$$\begin{pmatrix} n \\ k \end{pmatrix} := \frac{n!}{k! \, (n-k)!},$$
-
-where $n! := 1 \times 2 \times \cdots n$ is the factorial of $n$.
-
+Come possiamo alternativamente disegnare un istogramma utilizzando le funzioni `bar` e `countmap`?
 """
 
 # ╔═╡ 2f980870-0848-11eb-3edb-0d4cd1ed5b3d
 md"""
-## Continuous time
+## Tempo continuo
 
-If we look at the graph of the mean as a function of time, it seems to follow a smooth curve. Indeed it makes sense to ask not only how many people have recovered each *day*, but to aim for finer granularity.
+Possiamo immaginare che nelle simulazioni precedentemente considerate le _unità di tempo_ rappresentino diversi giorni. 
+Sotto tale ipotesi, potrebbe adesso interessarci studiare il processo ad un livello più _fine_ di _granularità_. 
+Supponiamo, dunque, di osservare il tempo a passi di tempo di ampiezza $\delta t$. 
+Se invece di osservare il processo ogni giorno, lo osserviamo ogni ora, abbiamo che anche la probabilità degli avvenimenti che ci interessano (per es. il rompersi di una lampadina), va conseguentemente adattata. 
+In particolare, si può dimostrare che la probabilità $p_{\delta t}$ di un avvenimento in un unità di tempo $\delta t$, quando quest'ultima è sufficientemente piccola, è proporzionale ad essa: 
 
-Suppose we instead increment time in steps of $\delta t$; the above analysis was for $\delta t = 1$.
+$p_{\delta t} \simeq  \lambda {\delta t}$
 
-Then we will need to adjust the probability of recovery in each time step. 
-It turns out that to make sense in the limit $\delta t \to 0$, we need to choose the probability $p(\delta t)$ to recover in time $t$ to be proportional to $\delta t$:
+per una opportuna costante $\lambda$, che prende il nome di **rate**. 
+Se indichiamo con $I(t)$ il valore del processo al tempo $t$ (per es. le lampadine ancora funzionanti), allora
 
-$$p(\delta t) \simeq \lambda \, \delta t,$$
+$$I(t + \delta t) - I(t) \simeq -\lambda \,\delta t \, I(t), $$
 
-where $\lambda$ is the recovery **rate**. Note that a rate is a probability *per unit time*.
+ovvero 
 
-We get
-"""
+$$\frac{I(t + \delta t) - I(t)}{\delta t} \simeq -\lambda \, I(t),$$
 
-# ╔═╡ 6af30142-08b4-11eb-3759-4d2505faf5a0
-md"""
-$$I(t + \delta t) - I(t) \simeq -\lambda \,\delta t \, I(t)$$
-"""
+in cui possiamo riconoscere la definizione di derivata. 
+Considerando $\delta t \rightarrow 0$, sotto opportune ipotesi di _differenziabilità_ del processo, avremo allora l'[equazione differenziale ordinaria](https://it.wikipedia.org/wiki/Equazione_differenziale_ordinaria)
 
-# ╔═╡ c6f9feb6-08f3-11eb-0930-83385ca5f032
-md"""
-Dividing by $\delta t$ gives
-
-$$\frac{I(t + \delta t) - I(t)}{\delta t} \simeq -\lambda \, I(t)$$
-
-We recognise the left-hand side as the definition of the **derivative** when $\delta t \to 0$. Taking that limit finally gives
-"""
-
-# ╔═╡ d8d8e7d8-08b4-11eb-086e-6fdb88511c6a
-md"""
 $$\frac{dI(t)}{dt} = -\lambda \, I(t)$$
 
-That is, we obtain an **ordinary differential equation** that gives the solution implicitly. Solving this equation with initial condition $I(0) = I_0$ gives
-"""
+Supponendo che inizialmente $I(0) = I_0$, possiamo verificare che la seguente equazione è una soluzione del problema definito dall'equazione: 
 
-# ╔═╡ 780c483a-08f4-11eb-1205-0b8aaa4b1c2d
-md"""
 $$I(t) = I_0 \exp(-\lambda \, t).$$
-"""
 
-# ╔═╡ a13dd444-08f4-11eb-08f5-df9dd99c8ab5
-md"""
-Alternatively, we can derive this by recognising the exponential in the limit $\delta t \to 0$ of the following expression, which is basically the expression for compounding interest:
-"""
-
-# ╔═╡ cb99fe22-0848-11eb-1f61-5953be879f92
-md"""
-$$I_{t} = (1 - \lambda \, \delta t)^{(t / \delta t)} I_0$$
+Si può alternativamente arrivare all'equazione precedente ragionando sulla ricorrenza $I_{t} = (1 - \lambda \, \delta t)^{(t / \delta t)} I_0$ che rappresenta una versione _arbitrariamente fine_ della ricorrenza $N_t = (1-p)^t N_0$ vista in precedenza. 
 """
 
 # ╔═╡ 8d2858a4-8c38-11eb-0b3b-61a913eed928
 md"""
-## Discrete to continuous
+### Dal discreto al continuo
+
+Confrontiamo le distribuzioni che otteniamo per diversi time step $\delta t$: 
 """
 
 # ╔═╡ 93da8b36-8c38-11eb-122a-85314d6e1921
 function plot_cumulative!(p, N, δ=1; kw...)
     ps = [p * (1 - p)^(n-1) for n in 1:N]
-    cumulative = cumsum(ps)
-
-    ys = [0; reduce(vcat, [ [cumulative[n], cumulative[n]] for n in 1:N ])]
-
-    pop!(ys)
-    pushfirst!(ys, 0)
-
-    xs = [0; reduce(vcat, [ [n*δ, n*δ] for n in 1:N ])];
-
-    # plot!(xs, ys)
+    cumulative = cumsum(ps) # somme cumulative
     scatter!([n*δ for n in 1:N], cumulative; kw...)
 end
 
 # ╔═╡ f1f0529a-8c39-11eb-372b-95d591a573e2
-# plotly()
+plotly()
 
 # ╔═╡ 9572eda8-8c38-11eb-258c-739b511de833
 begin
-	plot(size=(500, 300), leg=false)
-	plot_cumulative!(0.1, 30, 1.0, ms=2, c=:red, alpha=1)
-#	plot_cumulative!(0.1, 30, 0.5, ms=2, c=:red)
-	plot_cumulative!(0.05, 60, 0.5; label="", ms=2, c=:lightgreen, alpha=1)
-	plot_cumulative!(0.025, 120, 0.25; label="", ms=1, c=:lightgreen, alpha=1)
-	plot_cumulative!(0.0125, 240, 0.125; label="", ms=1, c=:lightgreen, alpha=1)
-	
+	plot(size=(500, 300))
+	for i in 0:2
+		plot_cumulative!(0.1/2^i, 2^i*30, 1/2^i, alpha=.3, ms=8/2^i, label="δt=$(1/2^i)")
+	end
+	plot!()
 end
-
-# ╔═╡ 7850b114-8c3b-11eb-276a-df5c332bf6d3
-1 - 0.95^2  # almost 10%
 
 # ╔═╡ 9f41d4f2-8c38-11eb-3eae-a1ec0d86d64c
 begin
 	λ = -log(1 - 0.1)
-	
-	plot!(0:0.01:20, t -> 1 - exp(-λ*t), lw=1)
-	plot!(0:0.01:20, t -> 1 - exp(-0.1*t), lw=1)
-
-	
+	plot!(0:0.01:30, t -> 1 - exp(-λ*t), lw=2, label="δt→0")
 end
 
-# ╔═╡ 148f486c-8c3d-11eb-069f-cd595c5f7177
-md"""
-What does it mean to talk about a **rate** -- a probability per unit time.
-"""
-
-# ╔═╡ 4d61636e-8c3d-11eb-2726-6dc51e8a4f84
-
-
-# ╔═╡ 3ae9fc0a-8c3d-11eb-09d5-13cefa2d9da5
-md"""
-How many light bulbs turn red in 1 second, half a second. Looks like 0 / 0. If have billions of light bulbs.
-"""
-
-# ╔═╡ c92bf164-8c3d-11eb-128c-7bd2c0ad681e
-md"""
-People get sick / light bulbs not on discrete time clock. Limit as $\delta t \to 0$
-
-You measure it discretely
-"""
-
 # ╔═╡ 1336397c-8c3c-11eb-2ecf-eb017a3a65cd
-λ
+md"""
+Qual'è la corretta interpretazione del parametro di rate $\lambda$?
+"""
 
 # ╔═╡ d74bace6-08f4-11eb-2a6b-891e52952f57
 md"""
-## SIR model
+## Il modello SIR
 """
 
 # ╔═╡ dbdf2812-08f4-11eb-25e7-811522b24627
 md"""
-Now let's extend the procedure to the full SIR model, $S \to I \to R$. Since we already know how to deal with recovery, consider just the SI model, where susceptible agents are infected via contact, with probability
+Applicheremo ora quanto visto a un modello di base dell'epidemiologia, il [modello SIR](https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIR_model_without_vital_dynamics), acronimo di _susceptible-infected-recovered_, in formula $S \to I \to R$.
+In tale modello, gli individui _suscettibili_ $S_t$ sono coloro che non si sono finora ammalati e potrebbero dunque ammalarsi, gli individui _infettati_ $I_t$ sono coloro che sono ammalati e potrebbero guarire, e gli individui _ripresi_ $R_t$ sono coloro che sono guariti e sono oramai immuni alla malattia. 
+
+Dal precedente esempio sulle lampadine, sappiamo come modellare il numero di persone che guariscono quando abbiamo $I_t$ infettati, ciascuno che potrebbe guarire con una certa probabilità $c$ ad ogni passo del processo. 
+
+Ci concentriamo pertanto su come modellare le variabili $S_t$ e $I_t$. 
+Sia $N$ il numero totale di individui, ovvero $N=S_t+I_t+R_t$. 
+Supponiamo che ogni individuo può contrarre la malattia con probabilità $b$ da un altro individuo scelto uniformemente a caso dall'intera popolazione di $N$ persone, se quest'ultimo è infetto:
+
+$\Delta I_t = I_{t+1}-I_t = b \cdot I_t\Big(\frac {S_t}{N}\Big).$
 """
 
-# ╔═╡ 238f0716-0903-11eb-1595-df71600f5de7
+# ╔═╡ d6cf9e1a-39d6-4ccb-9b20-eb0cfbe09785
 md"""
-Let's denote by $S_t$ and $I_t$ be the number of susceptible and infectious people at time $t$, respectively, and by $N$ the total number of people.
+### Modello discreto
 
-On average, in each sweep each infectious individual has the chance to interact with one other individual. That individual is chosen uniformly at random from the total population of size $N$. But a new infection occurs only if that chosen individual is susceptible, which happens with probability $S_t / N$, and then if the infection is successful, with probability $b$, say.
+Definiamo le variabili _normalizzate_ $s_t = S_t/N$, $i_t = I_t/N$ e $r_t = R_t/N$. 
 
-Hence the change in the number of infectious people after that step is.
+#### Esercizio - Modello SIR
 
-The decrease in $S_t$ is also given by $\Delta I_t$.
-"""
+Dimostrare che, se ogni individuo può contrarre la malattia da un altro individuo scelto a caso nella popolazione, allora le equazioni che definiscono il modello a tempo discreto sono 
 
-# ╔═╡ 8e771c8a-0903-11eb-1e34-39de4f45412b
-md"""
-$$\Delta I_t = I_{t+1} - I_t = b \, I_t \, \left(\frac{S_t}{N} \right)$$
-"""
-
-# ╔═╡ e83fc5b8-0904-11eb-096b-8da3a1acba12
-md"""
-It is useful to normalize by $N$, so we define
-
-$$s_t := \frac{S_t}{N}; \quad i_t := \frac{I_t}{N}; \quad r_t := \frac{R_t}{N}$$
-"""
-
-# ╔═╡ d1fbea7a-0904-11eb-377d-690d7a16aa7b
-md"""
-Including recovery with probability $c$ we obtain the **discrete-time SIR model**:
-"""
-
-# ╔═╡ dba896a4-0904-11eb-3c47-cbbf6c01e830
-md"""
 $$\begin{align}
-s_{t+1} &= s_t - b \, s_t \, i_t \\
-i_{t+1} &= i_t + b \, s_t \, i_t - c \, i_t\\
-r_{t+1} &= r_t + c \, i_t
+s_{t+1} &= s_t - b \, s_t \, i_t ,\\
+i_{t+1} &= i_t + b \, s_t \, i_t - c \, i_t ,\\
+r_{t+1} &= r_t + c \, i_t.
 \end{align}$$
-"""
-
-# ╔═╡ 267cd19e-090d-11eb-0676-0f88b57da937
-md"""
-Again we can obtain this from the stochastic process by taking expectations (exercise!). [Hint: Ignore recovery to start with and take variables $Y_t^i$ that are $0$ if the person is susceptible and 1 if it is infected.]
 """
 
 # ╔═╡ 4e3c7e62-090d-11eb-3d16-e921405a6b16
 md"""
-And again we can allow the processes to occur in steps of length $\delta t$ and take the limit $\delta t \to 0$. With rates $\beta$ and $\gamma$ we obtain the standard (continuous-time) **SIR model**:
-"""
+### Modello continuo
 
-# ╔═╡ 72061c66-090d-11eb-14c0-df619958e2b6
-md"""
+Come fatto precedentemente, immaginiamo di osservare il processo ad una risoluzione temporale via via più fine, con step di ampiezza $\delta t$, considerando $\delta t \to 0$. Allora, per opportuni rate $\beta$ e $\gamma, abbiamo il modello a tempo continuo
+
 $$\begin{align}
-\textstyle \frac{ds(t)}{dt} &= -\beta \, s(t) \, i(t) \\
-\textstyle \frac{di(t)}{dt} &= +\beta \, s(t) \, i(t) &- \gamma \, i(t)\\
-\textstyle \frac{dr(t)}{dt} &= &+ \gamma \, i(t)
+\textstyle \frac{ds(t)}{dt} &= -\beta \, s(t) \, i(t) ,\\
+\textstyle \frac{di(t)}{dt} &= \beta \, s(t) \, i(t) - \gamma \, i(t),\\
+\textstyle \frac{dr(t)}{dt} &=  \gamma \, i(t).
 \end{align}$$
-"""
 
-# ╔═╡ c07367be-0987-11eb-0680-0bebd894e1be
-md"""
-We can think of this as a model of a chemical reaction with species S, I and R. The term $s(t) i(t)$ is known as the [**mass action**](https://en.wikipedia.org/wiki/Law_of_mass_action) form of interaction.
-
-Note that no analytical solutions of these (simple) nonlinear ODEs are known as a function of time! (However, [parametric solutions are known](https://arxiv.org/abs/1403.2160).)
-"""
-
-# ╔═╡ f8a28ba0-0915-11eb-12d1-336f291e1d84
-md"""
-Below is a simulation of the discrete-time model. Note that the simplest numerical method to solve (approximately) the system of ODEs, the **Euler method**, basically reduces to solving the discrete-time model!  A whole suite of more advanced ODE solvers is provided in the [Julia `DiffEq` ecosystem](https://diffeq.sciml.ai/dev/).
+Di seguito implementiamo una simulazione del modello a tempo discreto. Notare che il metodo numerico più semplice per risolvere (approssimativamente) il sistema ODE (ordinary differential equations), vale a dire il [metodo di Eulero](https://it.wikipedia.org/wiki/Metodo_di_Eulero), si riduce fondamentalmente a risolvere il modello a tempo discreto. Un'intera suite di risolutori di ODE più avanzati è fornita dall'ecosistema [Julia `DiffEq`](https://diffeq.sciml.ai/dev/).
 """
 
 # ╔═╡ d994e972-090d-11eb-1b77-6d5ddb5daeab
 begin
 	NN = 100
-	
 	SS = NN - 1
 	II = 1
 	RR = 0
 end
 
-# ╔═╡ 050bffbc-0915-11eb-2925-ad11b3f67030
-ss, ii, rr = SS/NN, II/NN, RR/NN
-
-# ╔═╡ 1d0baf98-0915-11eb-2f1e-8176d14c06ad
-p_infection, p_recovery = 0.1, 0.01
-
-# ╔═╡ 28e1ec24-0915-11eb-228c-4daf9abe189b
-TT = 1000
-
 # ╔═╡ 349eb1b6-0915-11eb-36e3-1b9459c38a95
-function discrete_SIR(s0, i0, r0, T=1000)
-
-	s, i, r = s0, i0, r0
-	
+function discrete_SIR(SS, II, RR; p_infection=0.1, p_recovery=0.01, T=1000)
+	# create initial state by normalizing initial counts
+	s, i, r = SS/NN, II/NN, RR/NN
 	results = [(s=s, i=i, r=r)]
 	
 	for t in 1:T
-
 		Δi = p_infection * s * i
 		Δr = p_recovery * i
 		
@@ -737,7 +638,6 @@ function discrete_SIR(s0, i0, r0, T=1000)
 		r_new = r      + Δr
 
 		push!(results, (s=s_new, i=i_new, r=r_new))
-
 		s, i, r = s_new, i_new, r_new
 	end
 	
@@ -745,7 +645,7 @@ function discrete_SIR(s0, i0, r0, T=1000)
 end
 
 # ╔═╡ 39c24ef0-0915-11eb-1a0e-c56f7dd01235
-SIR = discrete_SIR(ss, ii, rr)
+SIR = discrete_SIR(SS, II, RR, p_infection=0.1, p_recovery=0.01, T=1000)
 
 # ╔═╡ 442035a6-0915-11eb-21de-e11cf950f230
 begin
@@ -754,7 +654,6 @@ begin
 		m=:o, label="S", alpha=0.2, linecolor=:blue, leg=:right, size=(400, 300))
 	plot!(ts, [x.i for x in SIR], m=:o, label="I", alpha=0.2)
 	plot!(ts, [x.r for x in SIR], m=:o, label="R", alpha=0.2)
-	
 	xlims!(0, 500)
 end
 
@@ -1676,56 +1575,34 @@ version = "0.9.1+5"
 # ╠═be8e4ac2-08dd-11eb-2f72-a9da5a750d32
 # ╠═8bc52d58-0848-11eb-3487-ef0d06061042
 # ╟─caa3faa2-08e5-11eb-33fe-cbbc00cfd459
-# ╠═113c31b2-08ed-11eb-35ef-6b4726128eff
-# ╟─6a545268-0846-11eb-3861-c3d5f52c061b
-# ╟─4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
+# ╟─113c31b2-08ed-11eb-35ef-6b4726128eff
+# ╠═6a545268-0846-11eb-3861-c3d5f52c061b
+# ╠═4c8827b8-0847-11eb-0fd1-cfbdbdcf392e
 # ╟─3cd1ad48-08ed-11eb-294c-f96b0e7c33bb
 # ╟─f32b936a-8bf6-11eb-1dd7-fd8c5904bf1f
-# ╟─f8f38028-8bf6-11eb-321b-8f91e38da495
-# ╟─2de1ef6c-8cb1-11eb-3dd9-f3904ec1408b
+# ╠═d5be7579-dc01-474d-911d-635fa6a89860
+# ╟─ec485765-8dd6-4d1d-802b-f14b1879e0df
 # ╠═48fb6ed6-8cb1-11eb-0894-b526e6c43b01
 # ╟─713a2644-8cb1-11eb-1904-f301e39d141e
 # ╠═511892e0-8cb1-11eb-3814-b98e8e0bbe5c
 # ╠═1173ebbe-8cb1-11eb-0a21-7d40a2c8a855
 # ╟─dfdaf1dc-8cb1-11eb-0287-f150380d323b
 # ╠═ca3db0a8-8cb1-11eb-2f7b-c9343a29ed02
-# ╟─b3ce9e3a-8c35-11eb-1ad0-81f9b09f963e
+# ╟─2d85b8f8-7cb5-4fb3-ab6b-51b7c5a6ea0b
 # ╟─2f980870-0848-11eb-3edb-0d4cd1ed5b3d
-# ╟─6af30142-08b4-11eb-3759-4d2505faf5a0
-# ╟─c6f9feb6-08f3-11eb-0930-83385ca5f032
-# ╟─d8d8e7d8-08b4-11eb-086e-6fdb88511c6a
-# ╟─780c483a-08f4-11eb-1205-0b8aaa4b1c2d
-# ╟─a13dd444-08f4-11eb-08f5-df9dd99c8ab5
-# ╟─cb99fe22-0848-11eb-1f61-5953be879f92
 # ╟─8d2858a4-8c38-11eb-0b3b-61a913eed928
 # ╠═93da8b36-8c38-11eb-122a-85314d6e1921
 # ╠═f1f0529a-8c39-11eb-372b-95d591a573e2
 # ╠═9572eda8-8c38-11eb-258c-739b511de833
-# ╟─7850b114-8c3b-11eb-276a-df5c332bf6d3
-# ╟─9f41d4f2-8c38-11eb-3eae-a1ec0d86d64c
-# ╟─148f486c-8c3d-11eb-069f-cd595c5f7177
-# ╟─4d61636e-8c3d-11eb-2726-6dc51e8a4f84
-# ╟─3ae9fc0a-8c3d-11eb-09d5-13cefa2d9da5
-# ╟─c92bf164-8c3d-11eb-128c-7bd2c0ad681e
+# ╠═9f41d4f2-8c38-11eb-3eae-a1ec0d86d64c
 # ╟─1336397c-8c3c-11eb-2ecf-eb017a3a65cd
 # ╟─d74bace6-08f4-11eb-2a6b-891e52952f57
 # ╟─dbdf2812-08f4-11eb-25e7-811522b24627
-# ╟─238f0716-0903-11eb-1595-df71600f5de7
-# ╟─8e771c8a-0903-11eb-1e34-39de4f45412b
-# ╟─e83fc5b8-0904-11eb-096b-8da3a1acba12
-# ╟─d1fbea7a-0904-11eb-377d-690d7a16aa7b
-# ╟─dba896a4-0904-11eb-3c47-cbbf6c01e830
-# ╟─267cd19e-090d-11eb-0676-0f88b57da937
+# ╟─d6cf9e1a-39d6-4ccb-9b20-eb0cfbe09785
 # ╟─4e3c7e62-090d-11eb-3d16-e921405a6b16
-# ╟─72061c66-090d-11eb-14c0-df619958e2b6
-# ╟─c07367be-0987-11eb-0680-0bebd894e1be
-# ╟─f8a28ba0-0915-11eb-12d1-336f291e1d84
-# ╠═442035a6-0915-11eb-21de-e11cf950f230
-# ╠═d994e972-090d-11eb-1b77-6d5ddb5daeab
-# ╠═050bffbc-0915-11eb-2925-ad11b3f67030
-# ╠═1d0baf98-0915-11eb-2f1e-8176d14c06ad
-# ╠═28e1ec24-0915-11eb-228c-4daf9abe189b
 # ╠═349eb1b6-0915-11eb-36e3-1b9459c38a95
+# ╠═d994e972-090d-11eb-1b77-6d5ddb5daeab
 # ╠═39c24ef0-0915-11eb-1a0e-c56f7dd01235
+# ╠═442035a6-0915-11eb-21de-e11cf950f230
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
