@@ -21,7 +21,7 @@ end
 
 # ╔═╡ 2c343416-2b20-4aa1-ac7b-2fada1606a38
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
