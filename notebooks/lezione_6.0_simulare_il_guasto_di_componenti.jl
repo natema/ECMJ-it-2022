@@ -90,15 +90,15 @@ md"""
  $M=$ $(@bind M Slider(2:20, show_value=true, default=8))
 """
 
+# ╔═╡ a38fe2b2-8cae-11eb-19e8-d563e82855d3
+gr()
+
 # ╔═╡ 17cf895a-8cac-11eb-017e-c79ffcab60b1
 md"""
  $p =$ $(@bind prob Slider(0.01:.01:1, show_value=true, default=.1))
 
  $tₛ =$ $(@bind tₛ Slider(1:100, show_value=true, default=20))
 """
-
-# ╔═╡ a38fe2b2-8cae-11eb-19e8-d563e82855d3
-gr()
 
 # ╔═╡ 18da7920-8cac-11eb-07f4-e109298fd5f1
 begin
@@ -334,6 +334,9 @@ end
 # ╔═╡ 17bbf532-8cac-11eb-1e3f-c54072021208
 simulation = simulate(M, prob)
 
+# ╔═╡ dc381530-edf0-49a9-8ba4-0139ba25d19b
+mean(simulation)
+
 # ╔═╡ 17e0d142-8cac-11eb-2d6a-fdf175f5d419
 begin
 	w = .9
@@ -435,7 +438,7 @@ all_data = [simulate_failure(pᵣ, T) for i in 1:30];
 
 # ╔═╡ 01dbe272-0847-11eb-1331-4360a575ff14
 begin
-	plot(all_data, alpha=0.1, leg=false, 
+	plot(all_data, alpha=0.4, leg=false, 
 		m=:o, ms=1, size=(500, 400), label="")
 	xlabel!("Tempo t")
 	ylabel!("Numero di lampadine funzionanti")
@@ -1521,9 +1524,10 @@ version = "0.9.1+5"
 # ╟─17812c7c-8cac-11eb-1d0a-6512415f6938
 # ╠═178631ec-8cac-11eb-1117-5d872ba7f66e
 # ╟─179a4db2-8cac-11eb-374f-0f24dc81ebeb
-# ╟─17cf895a-8cac-11eb-017e-c79ffcab60b1
 # ╠═17bbf532-8cac-11eb-1e3f-c54072021208
+# ╠═dc381530-edf0-49a9-8ba4-0139ba25d19b
 # ╠═a38fe2b2-8cae-11eb-19e8-d563e82855d3
+# ╟─17cf895a-8cac-11eb-017e-c79ffcab60b1
 # ╠═17e0d142-8cac-11eb-2d6a-fdf175f5d419
 # ╠═18da7920-8cac-11eb-07f4-e109298fd5f1
 # ╠═17fe87a0-8cac-11eb-2938-2d9cd19ecc0f

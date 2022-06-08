@@ -168,11 +168,28 @@ md"""
 Cosa succede se applichiamo una piccola perturbazione ad una matrice di rango 1?
 """
 
+# ╔═╡ a5b62530-f864-11ea-21e8-71ccfed487f8
+noisy_image = image .+ 0.05 .* randn.();
+
+# ╔═╡ 0e822f04-1636-4f8d-ba5e-d22838f55c46
+noisy_image[1:10, 1:10]
+
+# ╔═╡ 0562ba80-31b1-4407-96c2-efa99432ccdc
+image[1:10, 1:10]
+
+# ╔═╡ 57d40881-5a1b-44f4-a73a-e82a9d2eb60c
+image[1:10, 1:10] .- noisy_image[1:10, 1:10]
+
+# ╔═╡ 073e88bf-084b-42eb-8c63-5d74ae84411c
+# Normale N(a, b^2)
+let 
+	a=1
+	b=.5
+	a + b*randn()
+end
+
 # ╔═╡ 6b6c83e0-5a05-4dad-878f-bb772482298a
 heatmap(image, c=:blues, size=(600, 200))
-
-# ╔═╡ a5b62530-f864-11ea-21e8-71ccfed487f8
-noisy_image = image .+ 0.1 .* randn.();
 
 # ╔═╡ f6713bec-815b-11eb-2fc4-6b0326a64b16
 heatmap(noisy_image, c=:blues, size=(600, 200))
@@ -233,6 +250,9 @@ begin
 	xs_centered = xs .- mean(xs)
 	ys_centered = ys .- mean(ys)
 end
+
+# ╔═╡ 1b1bea63-1c35-487e-bb46-53e724f6013f
+mean(xs_centered)
 
 # ╔═╡ 1b8c743e-ec90-11ea-10aa-e3b94f768f82
 scatter(xs_centered, ys_centered, ms=5, alpha=0.5, ratio=1, leg=false, framestyle=:zerolines)
@@ -497,11 +517,25 @@ dove $M$ è una **qualsiasi matrice**, $U$ e $V$ sono [matrici unitarie](https:/
 """
 
 # ╔═╡ 453689c2-85a2-11eb-2cbc-7d6476b42f2f
-let
-	M = [2 1
+begin
+	M3 = [2 1
 		 1 1]
-	svd(M)
+	svd(M3)
 end
+
+# ╔═╡ 66dce193-1430-4645-9206-7e4e1f8f8f5a
+begin 
+	a = 3
+end
+
+# ╔═╡ e7ca90a8-d69e-4a62-a987-aea918baa127
+a
+
+# ╔═╡ 1d89273b-b177-43b1-89eb-0600f4c29423
+U3, Σ3, Vt3 = svd(M3)
+
+# ╔═╡ 55fbac50-a169-427e-8e36-a913b06d3b80
+U3*diagm(Σ3)*Vt3
 
 # ╔═╡ 91b77acc-85a2-11eb-19bb-bd2bdd0c1a68
 md"""
@@ -571,11 +605,11 @@ md"""
 
 # ╔═╡ e84adec2-84e8-11eb-2157-dd491588ccf0
 md"""
-Finora abbiamo ragionato rappresentando $t$ punti come una matrice di 2 righe e $t$ colonne. Potremmo alternativemnte ragionare con delle matrici di $t$ righe e due colonne. La matrice in cui abbiamo scambiato il ruolo di righe e colonne è esattamente quella che viene chiamata _matrice transposta_. 
+Finora abbiamo ragionato rappresentando $t$ punti come una matrice di 2 righe e $t$ colonne. Potremmo alternativemnte ragionare con delle matrici di $t$ righe e due colonne. La matrice in cui abbiamo scambiato il ruolo di righe e colonne è esattamente quella che viene chiamata _matrice trasposta_. 
 
 La decomposizione ai valori singolari decompone la nostra matrice dei dati $M$ in tre matrici $U\Sigma V^T$ dove $V$ ha dimensione $t\times t$, dove $t$ è il numero di dati e nel nostro caso vale più di 100. Come possiamo _visualizzare_ un oggetto con un numero di dimensioni così alto?
 
-Per farlo, considereremo la [matrice esponenziale](https://it.wikipedia.org/wiki/Matrice_esponenziale), che consiste nel generalizzare l'idea di [esponenziale](https://it.wikipedia.org/wiki/Funzione_esponenziale) a spazi di matrici. Quando $A$ è una [matrice antissimetrica](https://it.wikipedia.org/wiki/Matrice_antisimmetrica), il suo esponenziale $\exp(A)$ è una matrice di rotazione. Generiamo dunque una matrice di rotazione per sfruttare tale idea, in modo da avere una famiglia continua di rotazioni:
+Per farlo, considereremo la [matrice esponenziale](https://it.wikipedia.org/wiki/Matrice_esponenziale), che consiste nel generalizzare l'idea di [esponenziale](https://it.wikipedia.org/wiki/Funzione_esponenziale) a spazi di matrici. Quando $A$ è una [matrice antisimetrica](https://it.wikipedia.org/wiki/Matrice_antisimmetrica), il suo esponenziale $\exp(A)$ è una matrice di rotazione. Generiamo dunque una matrice di rotazione per sfruttare tale idea, in modo da avere una famiglia continua di rotazioni:
 """
 
 # ╔═╡ 12010a58-84eb-11eb-106f-cb4e3e0c879b
@@ -1908,8 +1942,12 @@ version = "0.9.1+5"
 # ╠═74c04322-815b-11eb-2308-7b3d571cf613
 # ╟─3f17375a-1682-41ea-95cb-5e4187141f44
 # ╟─dc55775a-815b-11eb-15b7-7993190bffab
-# ╠═6b6c83e0-5a05-4dad-878f-bb772482298a
 # ╠═a5b62530-f864-11ea-21e8-71ccfed487f8
+# ╠═0e822f04-1636-4f8d-ba5e-d22838f55c46
+# ╠═0562ba80-31b1-4407-96c2-efa99432ccdc
+# ╠═57d40881-5a1b-44f4-a73a-e82a9d2eb60c
+# ╠═073e88bf-084b-42eb-8c63-5d74ae84411c
+# ╠═6b6c83e0-5a05-4dad-878f-bb772482298a
 # ╠═f6713bec-815b-11eb-2fc4-6b0326a64b16
 # ╟─c41df86c-f865-11ea-1253-4942bbdbe9d2
 # ╟─f574ad7c-f866-11ea-0efa-d9d0602aa63b
@@ -1918,6 +1956,7 @@ version = "0.9.1+5"
 # ╟─8a611e36-f867-11ea-121f-317b7c145fe3
 # ╟─987c1f2e-f868-11ea-1125-0d8c02843ae4
 # ╠═aec46a9b-f743-4cbd-97a7-3ef3cac78b12
+# ╠═1b1bea63-1c35-487e-bb46-53e724f6013f
 # ╠═1b8c743e-ec90-11ea-10aa-e3b94f768f82
 # ╟─eb867f18-852e-11eb-005f-e15b6d0d0d95
 # ╠═4fb82f18-852f-11eb-278d-cf93571f4adc
@@ -1958,6 +1997,10 @@ version = "0.9.1+5"
 # ╟─aefa84de-f877-11ea-3e26-678008e9739e
 # ╟─9960e1c2-85a0-11eb-3d68-cd3a07a9c0b5
 # ╠═453689c2-85a2-11eb-2cbc-7d6476b42f2f
+# ╠═66dce193-1430-4645-9206-7e4e1f8f8f5a
+# ╠═e7ca90a8-d69e-4a62-a987-aea918baa127
+# ╠═1d89273b-b177-43b1-89eb-0600f4c29423
+# ╠═55fbac50-a169-427e-8e36-a913b06d3b80
 # ╟─91b77acc-85a2-11eb-19bb-bd2bdd0c1a68
 # ╠═2313be5c-2e11-4dc5-9d6a-4b4da563f7b2
 # ╟─f5b22c74-2f35-4455-ac83-f29f23f3ecdb
