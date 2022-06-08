@@ -571,11 +571,11 @@ md"""
 
 # ╔═╡ e84adec2-84e8-11eb-2157-dd491588ccf0
 md"""
-Finora abbiamo ragionato rappresentando $t$ punti come una matrice di 2 righe e $t$ colonne. Potremmo alternativemnte ragionare con delle matrici di $t$ righe e due colonne. La matrice in cui abbiamo scambiato il ruolo di righe e colonne è esattamente quella che viene chiamata _matrice transposta_. 
+Finora abbiamo ragionato rappresentando $t$ punti come una matrice di 2 righe e $t$ colonne. Potremmo alternativemnte ragionare con delle matrici di $t$ righe e due colonne. La matrice in cui abbiamo scambiato il ruolo di righe e colonne è esattamente quella che viene chiamata _matrice trasposta_. 
 
 La decomposizione ai valori singolari decompone la nostra matrice dei dati $M$ in tre matrici $U\Sigma V^T$ dove $V$ ha dimensione $t\times t$, dove $t$ è il numero di dati e nel nostro caso vale più di 100. Come possiamo _visualizzare_ un oggetto con un numero di dimensioni così alto?
 
-Per farlo, considereremo la [matrice esponenziale](https://it.wikipedia.org/wiki/Matrice_esponenziale), che consiste nel generalizzare l'idea di [esponenziale](https://it.wikipedia.org/wiki/Funzione_esponenziale) a spazi di matrici. Quando $A$ è una [matrice antissimetrica](https://it.wikipedia.org/wiki/Matrice_antisimmetrica), il suo esponenziale $\exp(A)$ è una matrice di rotazione. Generiamo dunque una matrice di rotazione per sfruttare tale idea, in modo da avere una famiglia continua di rotazioni:
+Per farlo, considereremo la [matrice esponenziale](https://it.wikipedia.org/wiki/Matrice_esponenziale), che consiste nel generalizzare l'idea di [esponenziale](https://it.wikipedia.org/wiki/Funzione_esponenziale) a spazi di matrici. Quando $A$ è una [matrice antisimetrica](https://it.wikipedia.org/wiki/Matrice_antisimmetrica), il suo esponenziale $\exp(A)$ è una matrice di rotazione. Generiamo dunque una matrice di rotazione per sfruttare tale idea, in modo da avere una famiglia continua di rotazioni:
 """
 
 # ╔═╡ 12010a58-84eb-11eb-106f-cb4e3e0c879b
