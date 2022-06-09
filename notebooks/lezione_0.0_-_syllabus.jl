@@ -123,6 +123,13 @@ Ultima lezione!
 - 12.0. [Un primo modello climatico](https://natema.github.io/ECMJ-it-2022/lectures/lezione_12.0_un_primo_modello_climatico.jl.html)
 """
 
+# ╔═╡ f3320888-02a0-48b5-a206-d5a712ca262e
+md"""
+## Come proseguire?
+
+Gli studenti interessati a un corso più avanzato sull'utilizzo di Julia per calcolo scientifico possono consultare il [materiale del corso ECMJ 2022 al Gran Sasso Science Institute](https://natema.github.io/ECMJ-GSSI-2022/). 
+"""
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -358,5 +365,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─5ebf6539-001d-4505-a6f3-6b755360b3cd
 # ╟─5b2bdd22-b39c-4e31-9058-c97a44b541d8
 # ╟─cdcc67c2-181a-4c77-b1a2-7a24f09cbb6c
+# ╟─f3320888-02a0-48b5-a206-d5a712ca262e
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
