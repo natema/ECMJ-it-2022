@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.9
 
 using Markdown
 using InteractiveUtils
@@ -21,7 +21,7 @@ end
 
 # ╔═╡ 42085492-ac8c-11eb-0620-adcb307077f1
 md"""
-## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it/)
+## [Elementi di Modellizzazione Computazionale in Julia](https://natema.github.io/ECMJ-it-2022/)
 
 #### 
 
@@ -882,7 +882,7 @@ uuid = "5b8099bc-c8ec-5219-889f-1d9e522a28bf"
 version = "0.5.5"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[DynamicPolynomials]]
@@ -948,6 +948,9 @@ deps = ["Dates", "Mmap", "Printf", "Test", "UUIDs"]
 git-tree-sha1 = "0f5e8d0cb91a6386ba47bd1527b240bd5725fbae"
 uuid = "48062228-2e41-5def-b9a4-89aafe57970f"
 version = "0.9.10"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
@@ -2214,7 +2217,7 @@ version = "0.9.1+5"
 # ╟─0b24f105-0166-4a41-97aa-156417d7203a
 # ╟─c6f8dcf6-950d-48ff-b040-55bdd347d74b
 # ╟─cd1dcbc4-2273-4eda-85d9-9af4fd71b3c1
-# ╟─c3b0b7fc-19be-4f04-8787-6349ab9bff7f
+# ╠═c3b0b7fc-19be-4f04-8787-6349ab9bff7f
 # ╟─f5c2d0de-f5d2-43f2-bfca-41bd727b3ca9
 # ╠═2bc4c596-b313-49f6-84b5-5d53f2baf0e9
 # ╟─648dfce3-5363-4539-8f41-f5d27bae4c6f
