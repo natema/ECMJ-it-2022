@@ -9,3 +9,4 @@ which [I](https://www-sop.inria.fr/members/Emanuele.Natale/) have been teaching 
 ### Final projects examples
 - Those in the `Projects` folder. 
 - https://github.com/michelecirillo/ECMJ_project
+- https://github.com/MatteoConcutelli/MST_Julia
