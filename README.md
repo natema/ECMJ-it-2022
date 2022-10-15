@@ -12,3 +12,4 @@ which [I](https://www-sop.inria.fr/members/Emanuele.Natale/) have been teaching 
 - https://github.com/MatteoConcutelli/MST_Julia
 - https://github.com/LuckerZOfficiaL/Julia-Project
 - https://github.com/MatteoStromieri/Julia-Project
+- https://github.com/Edolomby/EuOptionsRomberg-Julia
